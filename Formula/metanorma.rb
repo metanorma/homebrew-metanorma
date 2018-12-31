@@ -12,8 +12,12 @@ class Metanorma < Formula
     # sha256 "XXX" => :sierra
   end
 
+  depends_on "node" => :required
+  depends_on "plantuml" => :optional
+
   def install
     ENV["GEM_HOME"] = libexec
+    system "npm", "install", "-g", "puppeteer"
     system "gem", "build", "metanorma-cli.gemspec"
     system "gem", "install", "metanorma-cli-#{version}.gem"
     bin.install Dir[libexec/"bin/*"]
