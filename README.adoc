@@ -1,0 +1,58 @@
+= Homebrew for Metanorma
+
+image:https://travis-ci.org/riboseinc/homebrew-metanorma.svg?branch=master["Build Status", link="https://travis-ci.org/riboseinc/homebrew-metanorma"]
+
+This tap contains formulae relating to https://www.metanorma.com[Metanorma].
+
+== Install Tap
+
+[source,sh]
+----
+brew tap riboseinc/metanorma
+----
+
+== Install metanorma
+
+To install `metanorma` from release:
+
+----
+brew install metanorma
+----
+
+To install `metanorma` from git repository:
+
+----
+brew install --HEAD metanorma
+----
+
+Or:
+
+[source,sh]
+----
+brew install --HEAD riboseinc/metanorma/metanorma
+----
+
+You can also install via URL:
+
+[source,sh]
+----
+brew install --HEAD https://raw.githubusercontent.com/riboseinc/homebrew-metanorma/master/metanorma.rb
+----
+
+== Acceptable Formulae
+
+You can read Homebrew’s Acceptable Formulae document https://github.com/Homebrew/brew/blob/master/docs/Acceptable-Formulae.md[here].
+
+== Troubleshooting
+
+First, please run `brew update` and `brew doctor`.
+
+Second, read the https://github.com/Homebrew/brew/blob/master/docs/Troubleshooting.md#troubleshooting[Troubleshooting Checklist].
+
+== More Documentation
+
+`brew help`, `man brew` or check https://github.com/Homebrew/brew/tree/master/docs#readme[our documentation].
+
+== License
+
+Code is under the https://github.com/Homebrew/brew/tree/master/LICENSE.txt[BSD 2 Clause license].
