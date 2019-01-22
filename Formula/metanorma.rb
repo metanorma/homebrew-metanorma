@@ -20,7 +20,11 @@ class Metanorma < Formula
 
   def install
     ENV["GEM_HOME"] = libexec
+
+    # on some mac it cannot lookup x86 libraries so we restrict to x86_64 only
     ENV["ARCHFLAGS"] = "-arch x86_64"
+    system "gem", "install", "nokogiri", "-v", "1.8.5"
+    ENV["ARCHFLAGS"] = ""
 
     # workaround to include fixed version of metanorma-standoc
     system "sed", "-i", "--", "s/'metanorma-standoc', \"~> 1.0.6\"/'metanorma-standoc', \"1.1.0\"/g", "metanorma-cli.gemspec"
