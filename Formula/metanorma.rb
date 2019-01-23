@@ -5,9 +5,9 @@ require "language/node"
 class Metanorma < Formula
   desc "Toolchain for publishing metanorma documentation"
   homepage "https://www.metanorma.com"
-  url "https://github.com/riboseinc/metanorma-cli/archive/v1.1.0.tar.gz"
-  # curl -sL https://github.com/riboseinc/metanorma-cli/archive/v1.1.0.tar.gz | shasum -a 256
-  sha256 "4ebbaa84d248376479082d9bdd4c01e6bf5464a81d59c441db7c9632a4286667"
+  url "https://github.com/riboseinc/metanorma-cli/archive/v1.1.3.tar.gz"
+  # curl -sL https://github.com/riboseinc/metanorma-cli/archive/v1.1.3.tar.gz | shasum -a 256
+  sha256 "ac6e32f05e1a23719f249b6c71541424e90717a4618c6d68c708199d2398ad08"
 
   depends_on "node"
   depends_on "plantuml"
@@ -25,9 +25,6 @@ class Metanorma < Formula
     ENV["ARCHFLAGS"] = "-arch x86_64"
     system "gem", "install", "nokogiri", "-v", "1.8.5"
     ENV["ARCHFLAGS"] = ""
-
-    # workaround to include fixed version of metanorma-standoc
-    system "sed", "-i", "--", "s/'metanorma-standoc', \"~> 1.0.6\"/'metanorma-standoc', \"1.1.0\"/g", "metanorma-cli.gemspec"
 
     system "gem", "build", "metanorma-cli.gemspec"
     system "gem", "install", "metanorma-cli-#{version}.gem"
