@@ -5,9 +5,9 @@ require "language/node"
 class Metanorma < Formula
   desc "Toolchain for publishing metanorma documentation"
   homepage "https://www.metanorma.com"
-  url "https://github.com/riboseinc/metanorma-cli/archive/v1.1.3.tar.gz"
-  # curl -sL https://github.com/riboseinc/metanorma-cli/archive/v1.1.3.tar.gz | shasum -a 256
-  sha256 "ac6e32f05e1a23719f249b6c71541424e90717a4618c6d68c708199d2398ad08"
+  url "https://github.com/riboseinc/metanorma-cli/archive/v1.1.5.tar.gz"
+  # curl -sL https://github.com/riboseinc/metanorma-cli/archive/v1.1.5.tar.gz | shasum -a 256
+  sha256 "45c4bcc72a616dd060a6246fdd64e4a372003c3b48d918ce2605e59e772fcf43"
 
   depends_on "node"
   depends_on "plantuml"
