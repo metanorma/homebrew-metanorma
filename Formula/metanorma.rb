@@ -65,10 +65,9 @@ class Metanorma < Formula
     assert_predicate testpath/"test-iso.xml", :exist?
     assert_predicate testpath/"test-iso.html", :exist?
 
-    # blocked by issue https://github.com/riboseinc/homebrew-metanorma/pull/2#issuecomment-455129746
-    # (testpath/"test-csd.adoc").write(METANORMA_TEST_DOC)
-    # system bin/"metanorma", "--type", "csd", testpath/"test-csd.adoc"
-    # assert_predicate testpath/"test-csd.pdf", :exist?
-    # assert_predicate testpath/"test-csd.html", :exist?
+    (testpath/"test-csd.adoc").write(METANORMA_TEST_DOC)
+    system bin/"metanorma", "--type", "csd", testpath/"test-csd.adoc"
+    assert_predicate testpath/"test-csd.pdf", :exist?
+    assert_predicate testpath/"test-csd.html", :exist?
   end
 end
