@@ -11,6 +11,7 @@ class Metanorma < Formula
 
   depends_on "node"
   depends_on "plantuml"
+  depends_on "latexml"
 
   resource "puppeteer" do
     # required by 'metanorma-csd' gem
