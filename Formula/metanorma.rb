@@ -60,6 +60,21 @@ class Metanorma < Formula
       :no-isobib:
     ADOC
 
+    METANORMA_LATEXML_TEST_DOC = <<~'ADOC'
+      = File
+      :stem
+
+      [latexmath]
+      ++++
+      M =
+      \\begin{bmatrix}
+      -\\sin λ_0 & \\cos λ_0 & 0 \\\\
+      -\\sin φ_0 \\cos λ_0 & -\\sin φ_0 \\sin λ_0 & \\cos φ_0 \\\\
+      \\cos φ_0 \\cos λ_0 & \\cos φ_0 \\sin λ_0 & \\sin φ_0
+      \\end{bmatrix}
+      ++++
+    ADOC
+
     (testpath/"test-iso.adoc").write(METANORMA_TEST_DOC)
     system bin/"metanorma", "--type", "iso", testpath/"test-iso.adoc"
     assert_predicate testpath/"test-iso.xml", :exist?
@@ -69,5 +84,10 @@ class Metanorma < Formula
     system bin/"metanorma", "--type", "csd", testpath/"test-csd.adoc"
     assert_predicate testpath/"test-csd.pdf", :exist?
     assert_predicate testpath/"test-csd.html", :exist?
+
+    # https://github.com/riboseinc/metanorma-ogc/issues/21#issuecomment-468264446
+    # (testpath/"test-standoc.adoc").write(METANORMA_LATEXML_TEST_DOC)
+    # system bin/"metanorma", "--type", "standoc", --extensions, "xml", testpath/"test-standoc.adoc"
+    # assert_predicate testpath/"test-standoc.xml", :exist?
   end
 end
