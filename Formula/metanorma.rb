@@ -5,12 +5,13 @@ require "language/node"
 class Metanorma < Formula
   desc "Toolchain for publishing metanorma documentation"
   homepage "https://www.metanorma.com"
-  url "https://github.com/riboseinc/metanorma-cli/archive/v1.1.3.tar.gz"
-  # curl -sL https://github.com/riboseinc/metanorma-cli/archive/v1.1.3.tar.gz | shasum -a 256
-  sha256 "ac6e32f05e1a23719f249b6c71541424e90717a4618c6d68c708199d2398ad08"
+  url "https://github.com/riboseinc/metanorma-cli/archive/v1.1.5.tar.gz"
+  # curl -sL https://github.com/riboseinc/metanorma-cli/archive/v1.1.5.tar.gz | shasum -a 256
+  sha256 "45c4bcc72a616dd060a6246fdd64e4a372003c3b48d918ce2605e59e772fcf43"
 
   depends_on "node"
   depends_on "plantuml"
+  depends_on "latexml"
 
   resource "puppeteer" do
     # required by 'metanorma-csd' gem
@@ -59,15 +60,34 @@ class Metanorma < Formula
       :no-isobib:
     ADOC
 
+    METANORMA_LATEXML_TEST_DOC = <<~'ADOC'
+      = File
+      :stem
+
+      [latexmath]
+      ++++
+      M =
+      \\begin{bmatrix}
+      -\\sin λ_0 & \\cos λ_0 & 0 \\\\
+      -\\sin φ_0 \\cos λ_0 & -\\sin φ_0 \\sin λ_0 & \\cos φ_0 \\\\
+      \\cos φ_0 \\cos λ_0 & \\cos φ_0 \\sin λ_0 & \\sin φ_0
+      \\end{bmatrix}
+      ++++
+    ADOC
+
     (testpath/"test-iso.adoc").write(METANORMA_TEST_DOC)
     system bin/"metanorma", "--type", "iso", testpath/"test-iso.adoc"
     assert_predicate testpath/"test-iso.xml", :exist?
     assert_predicate testpath/"test-iso.html", :exist?
 
-    # blocked by issue https://github.com/riboseinc/homebrew-metanorma/pull/2#issuecomment-455129746
-    # (testpath/"test-csd.adoc").write(METANORMA_TEST_DOC)
-    # system bin/"metanorma", "--type", "csd", testpath/"test-csd.adoc"
-    # assert_predicate testpath/"test-csd.pdf", :exist?
-    # assert_predicate testpath/"test-csd.html", :exist?
+    (testpath/"test-csd.adoc").write(METANORMA_TEST_DOC)
+    system bin/"metanorma", "--type", "csd", testpath/"test-csd.adoc"
+    assert_predicate testpath/"test-csd.pdf", :exist?
+    assert_predicate testpath/"test-csd.html", :exist?
+
+    # https://github.com/riboseinc/metanorma-ogc/issues/21#issuecomment-468264446
+    # (testpath/"test-standoc.adoc").write(METANORMA_LATEXML_TEST_DOC)
+    # system bin/"metanorma", "--type", "standoc", --extensions, "xml", testpath/"test-standoc.adoc"
+    # assert_predicate testpath/"test-standoc.xml", :exist?
   end
 end
