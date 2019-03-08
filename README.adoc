@@ -1,6 +1,6 @@
 = Homebrew for Metanorma
 
-image:https://travis-ci.org/riboseinc/homebrew-metanorma.svg?branch=master["Build Status", link="https://travis-ci.org/riboseinc/homebrew-metanorma"]
+image:https://travis-ci.org/metanorma/homebrew-metanorma.svg?branch=master["Build Status", link="https://travis-ci.org/metanorma/homebrew-metanorma"]
 
 This tap contains formulae relating to https://www.metanorma.com[Metanorma].
 
@@ -10,7 +10,7 @@ At this moment we can only install via URL:
 
 [source,sh]
 ----
-brew install --HEAD https://raw.githubusercontent.com/riboseinc/homebrew-metanorma/master/metanorma.rb
+brew install --HEAD https://raw.githubusercontent.com/metanorma/homebrew-metanorma/master/metanorma.rb
 ----
 
 == Acceptable Formulae
