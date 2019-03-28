@@ -10,7 +10,7 @@ At this moment we can only install via URL:
 
 [source,sh]
 ----
-brew install --HEAD https://raw.githubusercontent.com/metanorma/Formula/homebrew-metanorma/master/metanorma.rb
+brew install --HEAD https://raw.githubusercontent.com/metanorma/homebrew-metanorma/master/Formula/metanorma.rb
 ----
 
 == Acceptable Formulae

@@ -5,13 +5,13 @@ require "language/node"
 class Metanorma < Formula
   desc "Toolchain for publishing metanorma documentation"
   homepage "https://www.metanorma.com"
-  url "https://github.com/metanorma/metanorma-cli/archive/v1.1.5.tar.gz"
-  # curl -sL https://github.com/metanorma/metanorma-cli/archive/v1.1.5.tar.gz | shasum -a 256
-  sha256 "45c4bcc72a616dd060a6246fdd64e4a372003c3b48d918ce2605e59e772fcf43"
+  url "https://github.com/metanorma/metanorma-cli/archive/v1.1.6.tar.gz"
+  # curl -sL https://github.com/metanorma/metanorma-cli/archive/v1.1.6.tar.gz | shasum -a 256
+  sha256 "29cfff9debbb7494a8343eb2ea9464b2aae9909984989a64005c7867dcc9e9f7"
 
+  depends_on "latexml"
   depends_on "node"
   depends_on "plantuml"
-  depends_on "latexml"
 
   resource "puppeteer" do
     # required by 'metanorma-csd' gem
@@ -85,9 +85,8 @@ class Metanorma < Formula
     assert_predicate testpath/"test-csd.pdf", :exist?
     assert_predicate testpath/"test-csd.html", :exist?
 
-    # https://github.com/metanorma/metanorma-ogc/issues/21#issuecomment-468264446
-    # (testpath/"test-standoc.adoc").write(METANORMA_LATEXML_TEST_DOC)
-    # system bin/"metanorma", "--type", "standoc", --extensions, "xml", testpath/"test-standoc.adoc"
-    # assert_predicate testpath/"test-standoc.xml", :exist?
+    (testpath/"test-standoc.adoc").write(METANORMA_LATEXML_TEST_DOC)
+    system bin/"metanorma", "--type", "standoc", "--extensions", "xml", testpath/"test-standoc.adoc"
+    assert_predicate testpath/"test-standoc.xml", :exist?
   end
 end

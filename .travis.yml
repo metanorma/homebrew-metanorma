@@ -1,5 +1,6 @@
 os: osx
-env: OSX=10.14
+env: 
+  - OSX=10.14
 osx_image: xcode10.1
 
 rvm: system
@@ -16,6 +17,8 @@ install:
 script:
   - brew audit --verbose --new-formula Formula/metanorma.rb || true # sometimes it fails because of GitHub API Error: API rate limit exceeded for
   - brew install --verbose --debug metanorma
+  # remove line below once https://github.com/metanorma/metanorma-standoc/pull/63 released
+  - sed -i.bak "s/'r+'/'r+', :external_encoding=>'UTF-8'/" /usr/local/Cellar/metanorma/1.1.6/libexec/gems/metanorma-standoc-1.1.6/lib/asciidoctor/standoc/inline.rb
   - brew test --verbose --debug metanorma
 
 addons:
