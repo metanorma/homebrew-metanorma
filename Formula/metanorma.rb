@@ -46,7 +46,7 @@ class Metanorma < Formula
   def post_install
     cd libexec/"lib/node_modules/puppeteer/" do
       npm_cache = *Language::Node.npm_cache_config
-      system "npm", "install", "--cache=#{npm_cache}" # rubocop:disable FormulaAudit/Miscellaneous
+      system "npm", "install", "--#{npm_cache}" # rubocop:disable FormulaAudit/Miscellaneous
     end
   end
 
