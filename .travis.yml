@@ -13,19 +13,25 @@ matrix:
       os: osx
       osx_image: xcode9.2
       rvm: 2.3
+    - os: linux
+      dist: xenial
 
 before_install:
+  - |
+    if [ "$TRAVIS_OS_NAME" = "linux" ]
+    then 
+      sudo apt-get install -y build-essential curl file git ruby-dev
+      sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
+      export PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
+    fi
   - brew update
 
-install:
-  - mkdir -p $(brew --repo)/Library/Taps/travis
-  - ln -s $PWD $(brew --repo)/Library/Taps/travis/homebrew-testtap
-  - brew tap --repair
-
 script:
+  - chmod 644 Formula/metanorma.rb
   - brew audit --new-formula Formula/metanorma.rb || true # sometimes it fails because of GitHub API Error: API rate limit exceeded for
-  - brew install metanorma
+  - brew install --build-from-source Formula/metanorma.rb
   - brew test metanorma
+  - metanorma help
   - brew uninstall metanorma
 
 addons:
