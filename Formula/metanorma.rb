@@ -17,6 +17,7 @@ class Metanorma < Formula
   depends_on "plantuml"
   depends_on "python"
   depends_on "ruby"
+  depends_on "yq"
 
   resource "puppeteer" do
     # required by 'metanorma-csd' gem
