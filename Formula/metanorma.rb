@@ -22,6 +22,7 @@ class Metanorma < Formula
   uses_from_macos "libxml2"
   uses_from_macos "zlib"
 
+
   resource "puppeteer" do
     # required by 'metanorma-csd' gem
     url "https://registry.npmjs.org/puppeteer/-/puppeteer-1.11.0.tgz"
