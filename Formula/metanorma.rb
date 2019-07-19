@@ -18,6 +18,10 @@ class Metanorma < Formula
   depends_on "python"
   depends_on "ruby"
   depends_on "yq"
+  uses_from_macos "libxslt"
+  uses_from_macos "libxml2"
+  uses_from_macos "zlib"
+
 
   resource "puppeteer" do
     # required by 'metanorma-csd' gem
@@ -43,10 +47,18 @@ class Metanorma < Formula
   def install
     ENV["GEM_HOME"] = libexec
 
-    # on some mac it cannot lookup x86 libraries so we restrict to x86_64 only
-    ENV["ARCHFLAGS"] = "-arch x86_64"
-    system "gem", "install", "nokogiri", "-v", "1.8.5"
-    ENV["ARCHFLAGS"] = ""
+    if OS.mac?
+      # on some mac it cannot lookup x86 libraries so we restrict to x86_64 only
+      ENV["ARCHFLAGS"] = "-arch x86_64"
+      system "gem", "install", "nokogiri", "-v", "1.8.5"
+      ENV["ARCHFLAGS"] = ""
+    else
+      system "gem", "install", "nokogiri", "-v", "1.8.5", "--",
+          "--with-xml2-lib=#{Formula["libxml2"].opt_lib}",
+          "--with-xml2-include=#{Formula["libxml2"].opt_include}",
+          "--with-xslt-lib=#{Formula["libxslt"].opt_include}",
+          "--with-xslt-include=#{Formula["libxslt"].opt_include}"
+    end
 
     system "gem", "build", "metanorma-cli.gemspec"
     system "gem", "install", "metanorma-cli-#{version}.gem"
