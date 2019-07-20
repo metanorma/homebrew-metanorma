@@ -12,7 +12,7 @@ matrix:
     - env: OSX=10.12
       os: osx
       osx_image: xcode9.2
-      rvm: 2.3
+      rvm: 2.4
     - os: linux
       dist: xenial
 
@@ -29,7 +29,7 @@ before_install:
 script:
   - chmod 644 Formula/metanorma.rb
   - brew audit --new-formula Formula/metanorma.rb || true # sometimes it fails because of GitHub API Error: API rate limit exceeded for
-  - brew install --build-from-source Formula/metanorma.rb
+  - travis_wait brew install --build-from-source Formula/metanorma.rb
   - brew test metanorma
   - metanorma help
   - brew uninstall metanorma
