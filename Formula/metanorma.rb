@@ -17,9 +17,9 @@ class Metanorma < Formula
   depends_on "plantuml"
   depends_on "python"
   depends_on "yq"
-  uses_from_macos "ruby"
   uses_from_macos "libxml2"
   uses_from_macos "libxslt"
+  uses_from_macos "ruby"
   uses_from_macos "zlib"
 
   resource "puppeteer" do
