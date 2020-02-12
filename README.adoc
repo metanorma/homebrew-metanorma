@@ -1,6 +1,7 @@
 = Homebrew for Metanorma
 
-image:https://travis-ci.org/metanorma/homebrew-metanorma.svg?branch=master["Build Status", link="https://travis-ci.org/metanorma/homebrew-metanorma"]
+image:https://github.com/metanorma/homebrew-metanorma/workflows/linux/badge.svg["Build Status (Ubuntu)", link="https://github.com/metanorma/homebrew-metanorma/actions?workflow=linux"]
+image:https://github.com/metanorma/homebrew-metanorma/workflows/macos/badge.svg["Build Status (macOS)", link="https://github.com/metanorma/homebrew-metanorma/actions?workflow=macos"]
 
 This tap contains formulae relating to https://www.metanorma.com[Metanorma].
 
