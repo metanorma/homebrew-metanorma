@@ -1,0 +1,78 @@
+name: build
+
+on:
+  pull_request:
+    paths:
+      - 'Formula/*.rb'
+      # - '!.github/workflows/*'
+
+jobs:
+  build-linux:
+    name: Install on Linux
+    runs-on: ubuntu-latest
+    container: homebrew/brew
+    steps:
+      - name: Update Homebrew
+        run: |
+          brew update-reset
+      - name: Checkout tap
+        uses: actions/checkout@master
+      - name: Setup tap
+        run: |
+          mkdir -p $(dirname $(brew --repository $GITHUB_REPOSITORY))
+          ln -s $PWD $(brew --repository $GITHUB_REPOSITORY)
+      # - name: Build bottles
+      #   env:
+      #     HOMEBREW_BINTRAY_URL: https://dl.bintray.com/${{github.event.repository.owner.login}}/bottles-tap
+      #   run: |
+      #     mkdir ~/bottles
+      #     cd ~/bottles
+      #     brew test-bot --root-url=$HOMEBREW_BINTRAY_URL
+      #     mv ~/bottles $GITHUB_WORKSPACE
+      # - name: Cache bottles
+      #   uses: actions/upload-artifact@v1
+      #   with:
+      #     name: bottles
+      #     path: bottles
+  build-macos:
+    name: Install macOS
+    runs-on: macos-latest
+    steps:
+      - name: Update Homebrew
+        run: |
+          brew update-reset
+      - name: Checkout tap
+        uses: actions/checkout@master
+      - name: Setup tap
+        run: |
+          mkdir -p $(dirname $(brew --repository $GITHUB_REPOSITORY))
+          ln -s $PWD $(brew --repository $GITHUB_REPOSITORY)
+
+      - name: Install
+        # Sometimes it fails because of GitHub API Error: API rate limit exceeded for
+        run: |
+          brew audit --new-formula Formula/metanorma.rb || true
+          brew install --build-from-source Formula/metanorma.rb
+
+      - name: Test
+        run: |
+          brew test metanorma
+          metanorma help
+
+      - name: Uninstall
+        run: |
+          brew uninstall metanorma
+
+      # - name: Build bottles
+      #   env:
+      #     HOMEBREW_BINTRAY_URL: https://dl.bintray.com/${{github.event.repository.owner.login}}/bottles-tap
+      #   run: |
+      #     mkdir ~/bottles
+      #     cd ~/bottles
+      #     brew test-bot --root-url=$HOMEBREW_BINTRAY_URL
+      #     mv ~/bottles $GITHUB_WORKSPACE
+      # - name: Cache bottles
+      #   uses: actions/upload-artifact@v1
+      #   with:
+      #     name: bottles
+      #     path: bottles
