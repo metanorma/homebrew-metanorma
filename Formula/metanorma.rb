@@ -8,9 +8,9 @@ class Metanorma < Formula
 
   desc "Toolchain for publishing metanorma documentation"
   homepage "https://www.metanorma.com"
-  url "https://github.com/metanorma/metanorma-cli/archive/v1.1.8.tar.gz"
-  # curl -sL https://github.com/metanorma/metanorma-cli/archive/v1.1.8.tar.gz | shasum -a 256
-  sha256 "977345b1c0a00989cfed3de2ad47ef14013b7d5048cbc0ad5673aefafdc29db1"
+  url "https://github.com/metanorma/metanorma-cli/archive/v1.2.9.tar.gz"
+  # curl -sL https://github.com/metanorma/metanorma-cli/archive/v1.2.9.tar.gz | shasum -a 256
+  sha256 "8cc8a1406bf810ce148ba7c01f1330236208d3ec37a061efb6ae3e14fed453da"
 
   depends_on "latexml"
   depends_on "node"
@@ -24,22 +24,22 @@ class Metanorma < Formula
 
   resource "puppeteer" do
     # required by 'metanorma-csd' gem
-    url "https://registry.npmjs.org/puppeteer/-/puppeteer-1.11.0.tgz"
-    sha256 "5ea179dd3ce90231dc70439876fd2a0b2abd04d7c30f588fb6e2a3b3459d0716"
+    url "https://registry.npmjs.org/puppeteer/-/puppeteer-2.1.1.tgz"
+    sha256 "e7fea5db70b0c2de89a417a46368c3dccf9051da2559e0b8f5900cc52fcae55e"
   end
 
   resource "idnits" do
-    url "https://files.pythonhosted.org/packages/source/i/idnits/idnits-3.0.0.tar.gz"
+    url "https://files.pythonhosted.org/packages/7b/a6/ec79a56c11c9e1d75224196e62c4b130370317f7194dbe4b49f794a656c0/idnits-3.0.0.tar.gz"
     sha256 "ad1027cf2ac04139ca1116eb64f8bb7c0485f050e71f844b11e035a9e0d6ad68"
   end
 
   resource "xml2rfc" do
-    url "https://files.pythonhosted.org/packages/source/x/xml2rfc/xml2rfc-2.22.3.tar.gz"
-    sha256 "943bdb59c532be2ae4981d1cdaa56191e4d2fa0a79cf13125a8ac1a06b391e4e"
+    url "https://files.pythonhosted.org/packages/2f/39/9bc4535ca8fb1bd1b3b02d193d109943765d9f0611de578420ef5a101c10/xml2rfc-2.39.0.tar.gz"
+    sha256 "bf4a3b4cfa873c25f94bb84c9bb8a3775dfb8127a4991c57e609c019fe4471f2"
   end
 
   resource "idnits_files" do
-    url "https://tools.ietf.org/tools/idnits/idnits-2.16.02"
+    url "https://tools.ietf.org/tools/idnits/idnits-2.16.02.tgz"
     sha256 "e9a501fc1f3a4584dda854067398eaebba29f128fb09f80048a760e950c35c49"
   end
 
