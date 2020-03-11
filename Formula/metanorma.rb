@@ -8,9 +8,9 @@ class Metanorma < Formula
 
   desc "Toolchain for publishing metanorma documentation"
   homepage "https://www.metanorma.com"
-  url "https://github.com/metanorma/metanorma-cli/archive/v1.2.9.tar.gz"
+  url "https://github.com/metanorma/metanorma-cli/archive/v1.2.10.1.tar.gz"
   # curl -sL https://github.com/metanorma/metanorma-cli/archive/v1.2.9.tar.gz | shasum -a 256
-  sha256 "8cc8a1406bf810ce148ba7c01f1330236208d3ec37a061efb6ae3e14fed453da"
+  sha256 "d10009f83f09a9e4a987e204d820a455cb2e92571bd67b27cef88b0ba5a82044"
 
   depends_on "latexml"
   depends_on "node"
