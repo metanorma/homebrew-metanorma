@@ -200,7 +200,7 @@ class Metanorma < Formula
     if OS.linux?
       local_chrome = Dir.glob(libexec/"lib/node_modules/puppeteer/.local-chromium/linux-*/chrome-linux/chrome")
 
-      chrome_bin = if chrome.empty?
+      chrome_bin = if local_chrome.empty?
         "chrome"
       else
         local_chrome.first
