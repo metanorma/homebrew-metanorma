@@ -13,12 +13,12 @@ class Metanorma < Formula
   sha256 "7ce2041ea2b698b3302b7de3dd57f4a246b17ebd436cf8ce1a56b417c1d8693c"
 
   depends_on "latexml"
+  depends_on "libxml2"
+  depends_on "libxslt"
   depends_on "node"
   depends_on "plantuml"
   depends_on "python"
   depends_on "yq"
-  uses_from_macos "libxml2"
-  uses_from_macos "libxslt"
   uses_from_macos "ruby"
   uses_from_macos "zlib"
 
