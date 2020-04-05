@@ -46,7 +46,7 @@ class Metanorma < Formula
     sha256 "bd5bc9781dad18e4e0fd318d68b029635fbd6fb373267a46deb45c5d06ea65f2"
   end
 
-  # Dependencies
+  # Dependencies, `hashin decorator==4.4.2 ... -r requirements.txt --verbose` can help build list below
   resource "decorator" do
     url "https://files.pythonhosted.org/packages/da/93/84fa12f2dc341f8cf5f022ee09e109961055749df2d0c75c5f98746cfe6c/decorator-4.4.2.tar.gz"
     sha256 "e3a62f0520172440ca0dcc823749319382e377f37f140a0b99ef45fecb84bfe7"
