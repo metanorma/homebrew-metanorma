@@ -195,6 +195,34 @@ class Metanorma < Formula
     end
   end
 
+  def caveats
+    s = ""
+    if OS.linux?
+      local_chrome = Dir.glob(libexec/"lib/node_modules/puppeteer/.local-chromium/linux-*/chrome-linux/chrome")
+
+      chrome_bin = if chrome.empty?
+        "chrome"
+      else
+        local_chrome.first
+      end
+
+      ldd_command_output = `ldd #{chrome_bin} | grep not`
+
+      s = <<~EOS
+        This formula uses puppeteer node module as dependency.
+        Puppeteer in it's turn have own dependency list which
+        can be installed with host package manager apt-get/yum.
+
+        List of missed dependencies are:
+          #{ldd_command_output}
+
+        Full list of dependencies can be found here:
+          https://github.com/puppeteer/puppeteer/blob/master/docs/troubleshooting.md#chrome-headless-doesnt-launch-on-unix
+      EOS
+    end
+    s
+  end
+
   test do
     METANORMA_TEST_DOC = <<~'ADOC'
       = Document title
