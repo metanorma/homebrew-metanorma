@@ -166,8 +166,8 @@ class Metanorma < Formula
     end
 
     venv = virtualenv_create(libexec/"venv", "python3")
-    %w[idnits xml2rfc decorator id2xml pathlib2 python-magic python-magic-win64 certifi
-       chardet google-i18n-address html5lib idna intervaltree kitchen lxml pycountry
+    %w[lxml idnits xml2rfc decorator id2xml pathlib2 python-magic python-magic-win64 certifi
+       chardet google-i18n-address html5lib idna intervaltree kitchen pycountry
        pyflakes requests six sortedcontainers urllib3 webencodings].each do |r|
       venv.pip_install resource(r)
     end
