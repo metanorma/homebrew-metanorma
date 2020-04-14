@@ -180,7 +180,7 @@ class Metanorma < Formula
 
     bin.install Dir[libexec/"bin/metanorma"]
     bin.env_script_all_files(libexec/"bin",
-      :PATH       => "#{libexec/"idnits_files"}:#{libexec/"bin"}:#{ENV["PATH"]}",
+      :PATH       => "#{libexec/"idnits_files"}:#{libexec/"bin"}:#{libexec/"venv/bin"}:#{ENV["PATH"]}",
       :GEM_HOME   => ENV["GEM_HOME"],
       :NODE_PATH  => libexec/"lib/node_modules",
       :PYTHONPATH => libexec/"venv/site-packages")
@@ -248,6 +248,16 @@ class Metanorma < Formula
       ++++
     ADOC
 
+    METANORMA_IETF_TEST_DOC = <<~'ADOC'
+      :doctype: rfc
+      :mn-document-class: ietf
+      :mn-output-extensions: xml,rfc,txt,html,nits,rxl
+      :docfile: document.adoc
+
+      == Clause
+      Clause
+    ADOC
+
     (testpath/"test-iso.adoc").write(METANORMA_TEST_DOC)
     system bin/"metanorma", "--type", "iso", testpath/"test-iso.adoc"
     assert_predicate testpath/"test-iso.xml", :exist?
@@ -257,6 +267,12 @@ class Metanorma < Formula
     system bin/"metanorma", "--type", "csd", testpath/"test-csd.adoc"
     assert_predicate testpath/"test-csd.pdf", :exist?
     assert_predicate testpath/"test-csd.html", :exist?
+
+    (testpath/"test-ietf.adoc").write(METANORMA_IETF_TEST_DOC)
+    system bin/"metanorma", testpath/"test-ietf.adoc"
+    assert_predicate testpath/"test-ietf.rxl", :exist?
+    assert_predicate testpath/"test-ietf.xml", :exist?
+    assert_predicate testpath/"test-ietf.rfc.xml", :exist?
 
     (testpath/"test-standoc.adoc").write(METANORMA_LATEXML_TEST_DOC)
     system bin/"metanorma", "--type", "standoc", "--extensions", "xml", testpath/"test-standoc.adoc"
