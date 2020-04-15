@@ -220,6 +220,8 @@ class Metanorma < Formula
         Full list of dependencies can be found here:
           https://github.com/puppeteer/puppeteer/blob/master/docs/troubleshooting.md#chrome-headless-doesnt-launch-on-unix
       EOS
+    elsif OS.mac?
+      s = "To finish metanorma installation process please run `metanorma setup`"
     end
     s
   end
