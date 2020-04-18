@@ -25,8 +25,8 @@ class Metanorma < Formula
 
   resource "puppeteer" do
     # required by 'metanorma-csd' gem
-    url "https://registry.npmjs.org/puppeteer/-/puppeteer-2.1.1.tgz"
-    sha256 "e7fea5db70b0c2de89a417a46368c3dccf9051da2559e0b8f5900cc52fcae55e"
+    url "https://registry.npmjs.org/puppeteer/-/puppeteer-3.0.0.tgz"
+    sha256 "16cb3869d3fdd754abe7435f1d4386b6eb9bbf70fe728020e3d5af47cbe35014"
   end
 
   resource "idnits" do
@@ -191,7 +191,9 @@ class Metanorma < Formula
     if OS.mac?
       cd libexec/"lib/node_modules/puppeteer/" do
         npm_cache = Language::Node.npm_cache_config
-        system "npm", "install", "--#{npm_cache}", "--unsafe-perm" # rubocop:disable FormulaAudit/Miscellaneous
+        # rubocop:disable FormulaAudit/Miscellaneous
+        system "npm", "install", "--#{npm_cache}", "--unsafe-perm"
+    	# rubocop:enable FormulaAudit/Miscellaneous
       end
     end
   end
