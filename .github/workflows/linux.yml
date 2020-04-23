@@ -24,7 +24,7 @@ jobs:
       - name: Brew audit
         # Sometimes it fails because of GitHub API Error: API rate limit exceeded for
         run: |
-          brew audit --new-formula Formula/metanorma.rb || true
+          brew audit --new-formula Formula/metanorma.rb
       - name: Brew install
         run: |
           brew install --build-from-source --verbose Formula/metanorma.rb

@@ -155,14 +155,6 @@ class Metanorma < Formula
     system "gem", "install", "metanorma-cli-#{version}.gem"
 
     resource("puppeteer").stage do
-      if OS.mac?
-        # Skip chromium download at install
-        # to avoid 'Failed changing dylib ID of **/libEGL.dylib' postpone chrome installation to first run
-        # we will continue chrome download on post_install
-        # https://discourse.brew.sh/t/how-to-prevent-dylib-from-linkage-fixing/3843
-        ENV["PUPPETEER_SKIP_CHROMIUM_DOWNLOAD"] = "1"
-      end
-
       system "npm", "install", *Language::Node.std_npm_install_args(libexec)
     end
 
@@ -185,17 +177,6 @@ class Metanorma < Formula
       :GEM_HOME   => ENV["GEM_HOME"],
       :NODE_PATH  => libexec/"lib/node_modules",
       :PYTHONPATH => libexec/"venv/site-packages")
-  end
-
-  def post_install
-    if OS.mac?
-      cd libexec/"lib/node_modules/puppeteer/" do
-        npm_cache = Language::Node.npm_cache_config
-        # rubocop:disable FormulaAudit/Miscellaneous
-        system "npm", "install", "--#{npm_cache}", "--unsafe-perm"
-    	# rubocop:enable FormulaAudit/Miscellaneous
-      end
-    end
   end
 
   def caveats
