@@ -25,8 +25,8 @@ class Metanorma < Formula
 
   resource "puppeteer" do
     # required by 'metanorma-csd' gem
-    url "https://registry.npmjs.org/puppeteer/-/puppeteer-3.0.0.tgz"
-    sha256 "16cb3869d3fdd754abe7435f1d4386b6eb9bbf70fe728020e3d5af47cbe35014"
+    url "https://registry.npmjs.org/puppeteer/-/puppeteer-3.0.2.tgz"
+    sha256 "4cf9214e16b723ebeeca2de9081a2344cf6910af645ea19b420ac00424355636"
   end
 
   resource "idnits" do
