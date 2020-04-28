@@ -14,7 +14,7 @@ class Metanorma < Formula
   # < formula-set-version.sh #
 
   depends_on "latexml"
-  depends_on "node"
+  depends_on "node@12"
   depends_on "plantuml"
   depends_on "python"
   depends_on "yq"

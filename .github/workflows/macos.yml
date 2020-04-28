@@ -25,7 +25,6 @@ jobs:
           brew audit --new-formula Formula/metanorma.rb
       - name: Brew install
         run: |
-          brew unlink node@12
           brew install --build-from-source --verbose Formula/metanorma.rb
       - name: Test
         run: |
