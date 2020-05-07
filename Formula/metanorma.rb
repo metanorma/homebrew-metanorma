@@ -15,6 +15,7 @@ class Metanorma < Formula
 
   depends_on "latexml"
   depends_on "node@12"
+  depends_on "openjdk"
   depends_on "plantuml"
   depends_on "python"
   depends_on "yq"
