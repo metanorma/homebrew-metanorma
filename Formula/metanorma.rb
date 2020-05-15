@@ -9,8 +9,8 @@ class Metanorma < Formula
   desc "Toolchain for publishing metanorma documentation"
   homepage "https://www.metanorma.com"
   # > formula-set-version.sh #
-  url "https://github.com/metanorma/metanorma-cli/archive/v1.2.11.tar.gz"
-  sha256 "7ce2041ea2b698b3302b7de3dd57f4a246b17ebd436cf8ce1a56b417c1d8693c"
+  url "https://github.com/metanorma/metanorma-cli/archive/v1.2.12.tar.gz"
+  sha256 "684b1c84bd9d078a7fe1a810de47fddb38c536a405e9b5a3b8f64b9d529183ac"
   # < formula-set-version.sh #
 
   depends_on "latexml"
