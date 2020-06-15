@@ -3,6 +3,22 @@
 require "language/node"
 require "language/python"
 
+class InkScapeRequirement < Requirement
+  fatal true
+
+  satisfy(:build_env => false) do
+    which("inkscape") && `inkscape --version 2>&1 | head -1 | cut -d ' ' -f 2`.to_i > 1.0
+  end
+
+  def message
+    <<~EOS
+      inkscape >= 1.0 is required; install it via one of:
+      Get from https://inkscape.org/release/inkscape-1.0/
+      brew cask install inkscape
+    EOS
+  end
+end
+
 class Metanorma < Formula
   include Language::Python::Virtualenv
 
@@ -13,6 +29,7 @@ class Metanorma < Formula
   sha256 "64c4401d68b9c5910661276be362098129a206053ef1b9c053b81169f223f366"
   # < formula-set-version.sh #
 
+  depends_on InkScapeRequirement
   depends_on "latexml"
   depends_on "node@12"
   depends_on "openjdk"
