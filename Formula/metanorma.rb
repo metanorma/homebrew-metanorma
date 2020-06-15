@@ -207,6 +207,14 @@ class Metanorma < Formula
     elsif OS.mac?
       s = "To finish metanorma installation process please run `metanorma setup`"
     end
+
+    s << <<~EOS
+      If metanorma used for Word output with SVG images inkscape >= 1.0 is required.
+      You can install it via one of:
+        Download from https://inkscape.org/release/inkscape-1.0/
+        brew cask install inkscape
+    EOS
+
     s
   end
 
