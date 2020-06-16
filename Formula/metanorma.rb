@@ -194,14 +194,14 @@ class Metanorma < Formula
       ldd_command_output = `ldd #{chrome_bin} | grep not`
 
       s = <<~EOS
-        This formula uses puppeteer node module as dependency.
-        Puppeteer in it's turn have own dependency list which
-        can be installed with host package manager apt-get/yum.
+        This formula uses the `puppeteer` node module as dependency.
+        Puppeteer in turn has its own list of dependencies which
+        can be installed with your package manager (apt-get, yum).
 
-        List of missed dependencies are:
+        List of unsatisfied dependencies:
           #{ldd_command_output}
 
-        Full list of dependencies can be found here:
+        The full list of dependencies are found here:
           https://github.com/puppeteer/puppeteer/blob/master/docs/troubleshooting.md#chrome-headless-doesnt-launch-on-unix
       EOS
     elsif OS.mac?
@@ -209,10 +209,9 @@ class Metanorma < Formula
     end
 
     s << <<~EOS
-      If metanorma used for Word output with SVG images inkscape >= 1.0 is required.
-      You can install it via one of:
-        Download from https://inkscape.org/release/inkscape-1.0/
-        brew cask install inkscape
+      inkscape >= 1.0 is required to generate Word output using SVG images.
+      Install it by running `brew cask install inkscape` or
+      directly download from https://inkscape.org/release/inkscape-1.0/
     EOS
 
     s
