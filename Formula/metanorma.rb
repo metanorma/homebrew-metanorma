@@ -208,7 +208,7 @@ class Metanorma < Formula
       s = "To finish metanorma installation process please run `metanorma setup`"
     end
 
-    s << <<~EOS
+    s += <<~EOS
       inkscape >= 1.0 is required to generate Word output using SVG images.
       Install it by running `brew cask install inkscape` or
       directly download from https://inkscape.org/release/inkscape-1.0/
