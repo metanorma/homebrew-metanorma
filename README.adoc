@@ -7,11 +7,14 @@ This tap contains formulae relating to https://www.metanorma.com[Metanorma].
 
 == Install metanorma
 
-At this moment we can only install via URL:
-
 [source,sh]
 ----
-brew install --HEAD https://raw.githubusercontent.com/metanorma/homebrew-metanorma/master/Formula/metanorma.rb
+# Without installing the metanorma tap
+brew install metanorma/metanorma/metanorma
+
+# Installing the metanorma tap
+brew tap metanorma/metanorma
+brew install metanorma
 ----
 
 == Acceptable Formulae
