@@ -8,16 +8,19 @@ class Metanorma < Formula
 
   desc "Toolchain for publishing metanorma documentation"
   homepage "https://www.metanorma.com"
+
   # > formula-set-version.sh #
   url "https://github.com/metanorma/metanorma-cli/archive/v1.3.3.1.tar.gz"
   sha256 "8f1df9bcef548e3edefa16507afca68379d461f5cff45fbab042fa106ecc6c09"
   # < formula-set-version.sh #
 
+  license "0BSD"
+
   depends_on "latexml"
   depends_on "node@12"
   depends_on "openjdk"
   depends_on "plantuml"
-  depends_on "python"
+  depends_on "python@3.8"
   depends_on "yq"
   uses_from_macos "libxml2"
   uses_from_macos "libxslt"
