@@ -177,10 +177,10 @@ class Metanorma < Formula
 
     bin.install Dir[libexec/"bin/metanorma"]
     bin.env_script_all_files(libexec/"bin",
-      :PATH       => "#{libexec/"idnits_files"}:#{libexec/"bin"}:#{libexec/"venv/bin"}:#{ENV["PATH"]}",
-      :GEM_HOME   => ENV["GEM_HOME"],
-      :NODE_PATH  => libexec/"lib/node_modules",
-      :PYTHONPATH => libexec/"venv/site-packages")
+      PATH:       "#{libexec/"idnits_files"}:#{libexec/"bin"}:#{libexec/"venv/bin"}:#{ENV["PATH"]}",
+      GEM_HOME:   ENV["GEM_HOME"],
+      NODE_PATH:  libexec/"lib/node_modules",
+      PYTHONPATH: libexec/"venv/site-packages")
   end
 
   def caveats
