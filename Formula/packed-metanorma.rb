@@ -4,7 +4,7 @@ require "language/node"
 require "language/python"
 
 # https://github.com/metanorma/packed-mn
-class PackedMetanorma < Formula
+class PackedMetanorma < Formula # rubocop:disable Metrics/ClassLength
   include Language::Python::Virtualenv
 
   desc "Toolchain for publishing metanorma documentation"
@@ -16,16 +16,13 @@ class PackedMetanorma < Formula
   # < formula-set-version.sh #
 
   license "0BSD"
+  revision 1
 
   depends_on "latexml"
   depends_on "openjdk"
   depends_on "plantuml"
   depends_on "python@3.8"
   depends_on "yq"
-  # uses_from_macos "libxml2"
-  # uses_from_macos "libxslt"
-  # uses_from_macos "ruby"
-  # uses_from_macos "zlib"
 
   if OS.mac?
     resource "packed-mn" do
@@ -160,7 +157,7 @@ class PackedMetanorma < Formula
     sha256 "b36a1c245f2d304965eb4e0a82848379241dc04b865afcc4aab16748587e1923"
   end
 
-  def install
+  def install # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     resource("packed-mn").stage do
       platform = OS.linux? ? :linux : :darwin
       bin.install "metanorma-#{platform}-x64"
@@ -181,40 +178,16 @@ class PackedMetanorma < Formula
     end
 
     bin.install Dir[libexec/"bin/metanorma"]
-    bin.env_script_all_files(libexec/"bin",
+    bin.env_script_all_files(
+      libexec/"bin",
       PATH:       "#{libexec/"idnits_files"}:#{libexec/"bin"}:#{libexec/"venv/bin"}:#{ENV["PATH"]}",
       GEM_HOME:   ENV["GEM_HOME"],
-      PYTHONPATH: libexec/"venv/site-packages")
+      PYTHONPATH: libexec/"venv/site-packages",
+    )
   end
 
   def caveats
     s = ""
-    if OS.linux?
-      local_chrome = Dir.glob(libexec/"lib/node_modules/puppeteer/.local-chromium/linux-*/chrome-linux/chrome")
-
-      chrome_bin = if local_chrome.empty?
-        "chrome"
-      else
-        local_chrome.first
-      end
-
-      ldd_command_output = `ldd #{chrome_bin} | grep not`
-
-      s = <<~EOS
-        This formula uses the `puppeteer` node module as dependency.
-        Puppeteer in turn has its own list of dependencies which
-        can be installed with your package manager (apt-get, yum).
-
-        List of unsatisfied dependencies:
-          #{ldd_command_output}
-
-        The full list of dependencies are found here:
-          https://github.com/puppeteer/puppeteer/blob/master/docs/troubleshooting.md#chrome-headless-doesnt-launch-on-unix
-      EOS
-    elsif OS.mac?
-      s = "To finish metanorma installation process please run `metanorma setup`"
-    end
-
     s += <<~EOS
       inkscape >= 1.0 is required to generate Word output using SVG images.
       Install it by running `brew cask install inkscape` or
@@ -224,7 +197,7 @@ class PackedMetanorma < Formula
     s
   end
 
-  test do
+  test do # rubocop:disable Metrics/BlockLength
     METANORMA_TEST_DOC = <<~'ADOC'
       = Document title
       Author

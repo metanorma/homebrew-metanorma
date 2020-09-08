@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require "language/node"
 require "language/python"
 
-class Metanorma < Formula
+# Metanorma formula
+class Metanorma < Formula # rubocop:disable Metrics/ClassLength
   include Language::Python::Virtualenv
 
   desc "Toolchain for publishing metanorma documentation"
@@ -145,7 +145,7 @@ class Metanorma < Formula
     sha256 "b36a1c245f2d304965eb4e0a82848379241dc04b865afcc4aab16748587e1923"
   end
 
-  def install
+  def install # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     ENV["GEM_HOME"] = libexec
 
     system "gem", "build", "metanorma-cli.gemspec"
@@ -165,10 +165,12 @@ class Metanorma < Formula
     end
 
     bin.install Dir[libexec/"bin/metanorma"]
-    bin.env_script_all_files(libexec/"bin",
+    bin.env_script_all_files(
+      libexec/"bin",
       PATH:       "#{libexec/"idnits_files"}:#{libexec/"bin"}:#{libexec/"venv/bin"}:#{ENV["PATH"]}",
       GEM_HOME:   ENV["GEM_HOME"],
-      PYTHONPATH: libexec/"venv/site-packages")
+      PYTHONPATH: libexec/"venv/site-packages",
+    )
   end
 
   def caveats
@@ -182,7 +184,7 @@ class Metanorma < Formula
     s
   end
 
-  test do
+  test do # rubocop:disable Metrics/BlockLength
     METANORMA_TEST_DOC = <<~'ADOC'
       = Document title
       Author
