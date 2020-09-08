@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "language/node"
 require "language/python"
 
 # https://github.com/metanorma/packed-mn
@@ -233,23 +232,23 @@ class PackedMetanorma < Formula # rubocop:disable Metrics/ClassLength
     ADOC
 
     (testpath/"test-iso.adoc").write(METANORMA_TEST_DOC)
-    system bin/"metanorma", "--type", "iso", testpath/"test-iso.adoc"
+    system bin/"packed-mn", "--type", "iso", testpath/"test-iso.adoc"
     assert_predicate testpath/"test-iso.xml", :exist?
     assert_predicate testpath/"test-iso.html", :exist?
 
     (testpath/"test-csd.adoc").write(METANORMA_TEST_DOC)
-    system bin/"metanorma", "--type", "csd", testpath/"test-csd.adoc"
+    system bin/"packed-mn", "--type", "csd", testpath/"test-csd.adoc"
     assert_predicate testpath/"test-csd.pdf", :exist?
     assert_predicate testpath/"test-csd.html", :exist?
 
     (testpath/"test-ietf.adoc").write(METANORMA_IETF_TEST_DOC)
-    system bin/"metanorma", testpath/"test-ietf.adoc"
+    system bin/"packed-mn", testpath/"test-ietf.adoc"
     assert_predicate testpath/"test-ietf.rxl", :exist?
     assert_predicate testpath/"test-ietf.xml", :exist?
     assert_predicate testpath/"test-ietf.rfc.xml", :exist?
 
     (testpath/"test-standoc.adoc").write(METANORMA_LATEXML_TEST_DOC)
-    system bin/"metanorma", "--type", "standoc", "--extensions", "xml", testpath/"test-standoc.adoc"
+    system bin/"packed-mn", "--type", "standoc", "--extensions", "xml", testpath/"test-standoc.adoc"
     assert_predicate testpath/"test-standoc.xml", :exist?
   end
 end
