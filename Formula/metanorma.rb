@@ -17,7 +17,6 @@ class Metanorma < Formula
   license "0BSD"
 
   depends_on "latexml"
-  depends_on "node@12"
   depends_on "openjdk"
   depends_on "plantuml"
   depends_on "python@3.8"
@@ -26,12 +25,6 @@ class Metanorma < Formula
   uses_from_macos "libxslt"
   uses_from_macos "ruby"
   uses_from_macos "zlib"
-
-  resource "puppeteer" do
-    # required by 'metanorma-csd' gem
-    url "https://registry.npmjs.org/puppeteer/-/puppeteer-3.0.2.tgz"
-    sha256 "4cf9214e16b723ebeeca2de9081a2344cf6910af645ea19b420ac00424355636"
-  end
 
   resource "idnits" do
     # required by 'metanorma-ietf' gem
@@ -158,10 +151,6 @@ class Metanorma < Formula
     system "gem", "build", "metanorma-cli.gemspec"
     system "gem", "install", "metanorma-cli-#{version}.gem"
 
-    resource("puppeteer").stage do
-      system "npm", "install", *Language::Node.std_npm_install_args(libexec)
-    end
-
     venv = virtualenv_create(libexec/"venv", "python3")
     %w[lxml idnits xml2rfc decorator id2xml pathlib2 python-magic python-magic-win64 certifi
        chardet google-i18n-address html5lib idna intervaltree kitchen pycountry
@@ -179,38 +168,11 @@ class Metanorma < Formula
     bin.env_script_all_files(libexec/"bin",
       PATH:       "#{libexec/"idnits_files"}:#{libexec/"bin"}:#{libexec/"venv/bin"}:#{ENV["PATH"]}",
       GEM_HOME:   ENV["GEM_HOME"],
-      NODE_PATH:  libexec/"lib/node_modules",
       PYTHONPATH: libexec/"venv/site-packages")
   end
 
   def caveats
     s = ""
-    if OS.linux?
-      local_chrome = Dir.glob(libexec/"lib/node_modules/puppeteer/.local-chromium/linux-*/chrome-linux/chrome")
-
-      chrome_bin = if local_chrome.empty?
-        "chrome"
-      else
-        local_chrome.first
-      end
-
-      ldd_command_output = `ldd #{chrome_bin} | grep not`
-
-      s = <<~EOS
-        This formula uses the `puppeteer` node module as dependency.
-        Puppeteer in turn has its own list of dependencies which
-        can be installed with your package manager (apt-get, yum).
-
-        List of unsatisfied dependencies:
-          #{ldd_command_output}
-
-        The full list of dependencies are found here:
-          https://github.com/puppeteer/puppeteer/blob/master/docs/troubleshooting.md#chrome-headless-doesnt-launch-on-unix
-      EOS
-    elsif OS.mac?
-      s = "To finish metanorma installation process please run `metanorma setup`"
-    end
-
     s += <<~EOS
       inkscape >= 1.0 is required to generate Word output using SVG images.
       Install it by running `brew cask install inkscape` or
