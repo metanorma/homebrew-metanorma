@@ -2,40 +2,29 @@
 
 require "language/python"
 
-# https://github.com/metanorma/packed-mn
-class PackedMetanorma < Formula # rubocop:disable Metrics/ClassLength
+# Metanorma formula
+class MetanormaDev < Formula # rubocop:disable Metrics/ClassLength
   include Language::Python::Virtualenv
 
   desc "Toolchain for publishing metanorma documentation"
   homepage "https://www.metanorma.com"
 
   # > formula-set-version.sh #
-  url "https://github.com/metanorma/packed-mn/archive/v1.3.7.1.tar.gz"
-  sha256 "37742874cd7f400800425e6e513e8de4791c55afa0b367e394e3c99a8a388024"
+  url "https://github.com/metanorma/metanorma-cli/archive/v1.3.5.tar.gz"
+  sha256 "68363c4a65906b3ac6506c7c03ac586219752c2727c0e938fac2bbdf55cff6bf"
   # < formula-set-version.sh #
 
   license "0BSD"
-  revision 1
 
   depends_on "latexml"
   depends_on "openjdk"
   depends_on "plantuml"
   depends_on "python@3.8"
   depends_on "yq"
-
-  if OS.mac?
-    resource "packed-mn" do
-      url "https://github.com/metanorma/packed-mn/releases/download/v1.3.7.1/metanorma-darwin-x64.tgz"
-      sha256 "c9035615e998b53296f80fa5c8ad3f5b4bb835755345821888b2dfaaca9530ae"
-    end
-  end
-
-  if OS.linux?
-    resource "packed-mn" do
-      url "https://github.com/metanorma/packed-mn/releases/download/v1.3.7.1/metanorma-linux-x64.tgz"
-      sha256 "38362fb50ce18d569fd9ade498e48f72dd30b605fa52894004ed1459b958d7a5"
-    end
-  end
+  uses_from_macos "libxml2"
+  uses_from_macos "libxslt"
+  uses_from_macos "ruby"
+  uses_from_macos "zlib"
 
   resource "idnits" do
     # required by 'metanorma-ietf' gem
@@ -157,11 +146,10 @@ class PackedMetanorma < Formula # rubocop:disable Metrics/ClassLength
   end
 
   def install # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-    resource("packed-mn").stage do
-      platform = OS.linux? ? :linux : :darwin
-      bin.install "metanorma-#{platform}-x64"
-      mv bin/"metanorma-#{platform}-x64", bin/"packed-metanorma"
-    end
+    ENV["GEM_HOME"] = libexec
+
+    system "gem", "build", "metanorma-cli.gemspec"
+    system "gem", "install", "metanorma-cli-#{version}.gem"
 
     venv = virtualenv_create(libexec/"venv", "python3")
     %w[lxml idnits xml2rfc decorator id2xml pathlib2 python-magic python-magic-win64 certifi
@@ -232,23 +220,23 @@ class PackedMetanorma < Formula # rubocop:disable Metrics/ClassLength
     ADOC
 
     (testpath/"test-iso.adoc").write(METANORMA_TEST_DOC)
-    system bin/"acked-metanorma", "--type", "iso", testpath/"test-iso.adoc"
+    system bin/"metanorma", "--type", "iso", testpath/"test-iso.adoc"
     assert_predicate testpath/"test-iso.xml", :exist?
     assert_predicate testpath/"test-iso.html", :exist?
 
     (testpath/"test-csd.adoc").write(METANORMA_TEST_DOC)
-    system bin/"acked-metanorma", "--type", "csd", testpath/"test-csd.adoc"
+    system bin/"metanorma", "--type", "csd", testpath/"test-csd.adoc"
     assert_predicate testpath/"test-csd.pdf", :exist?
     assert_predicate testpath/"test-csd.html", :exist?
 
     (testpath/"test-ietf.adoc").write(METANORMA_IETF_TEST_DOC)
-    system bin/"acked-metanorma", testpath/"test-ietf.adoc"
+    system bin/"metanorma", testpath/"test-ietf.adoc"
     assert_predicate testpath/"test-ietf.rxl", :exist?
     assert_predicate testpath/"test-ietf.xml", :exist?
     assert_predicate testpath/"test-ietf.rfc.xml", :exist?
 
     (testpath/"test-standoc.adoc").write(METANORMA_LATEXML_TEST_DOC)
-    system bin/"acked-metanorma", "--type", "standoc", "--extensions", "xml", testpath/"test-standoc.adoc"
+    system bin/"metanorma", "--type", "standoc", "--extensions", "xml", testpath/"test-standoc.adoc"
     assert_predicate testpath/"test-standoc.xml", :exist?
   end
 end

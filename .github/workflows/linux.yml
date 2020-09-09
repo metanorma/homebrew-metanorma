@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        formula: [ 'metanorma', 'packed-metanorma' ]
+        formula: [ 'metanorma', 'metanorma-dev' ]
     steps:
       - name: Update Homebrew
         run: |

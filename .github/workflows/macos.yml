@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        formula: [ 'metanorma', 'packed-metanorma' ]
+        formula: [ 'metanorma', 'metanorma-dev' ]
     steps:
       - name: Update Homebrew
         run: |
@@ -34,7 +34,7 @@ jobs:
       - name: Test
         run: |
           brew test ${{ matrix.formula }}
-          ${{ matrix.formula }} help
+          metanorma help
       - name: Uninstall
         run: |
           brew uninstall ${{ matrix.formula }}
