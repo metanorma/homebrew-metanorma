@@ -157,10 +157,10 @@ class Metanorma < Formula # rubocop:disable Metrics/ClassLength
   end
 
   def install # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+    platform = OS.linux? ? :linux : :darwin
+
     resource("packed-mn").stage do
-      platform = OS.linux? ? :linux : :darwin
       bin.install "metanorma-#{platform}-x64"
-      mv bin/"metanorma-#{platform}-x64", bin/"packed-metanorma"
     end
 
     venv = virtualenv_create(libexec/"venv", "python3")
@@ -176,12 +176,10 @@ class Metanorma < Formula # rubocop:disable Metrics/ClassLength
       end
     end
 
-    bin.install Dir[libexec/"bin/metanorma"]
-    bin.env_script_all_files(
-      libexec/"bin",
-      PATH:       "#{libexec/"idnits_files"}:#{libexec/"bin"}:#{libexec/"venv/bin"}:#{ENV["PATH"]}",
-      GEM_HOME:   ENV["GEM_HOME"],
+    (bin/"metanorma").write_env_script(
+      bin/"metanorma-#{platform}-x64",
       PYTHONPATH: libexec/"venv/site-packages",
+      PATH:       [libexec/"idnits_files", libexec/"bin", libexec/"venv/bin", ENV["PATH"]].join(":"),
     )
   end
 

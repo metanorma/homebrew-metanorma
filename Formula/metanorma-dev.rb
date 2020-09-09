@@ -15,6 +15,7 @@ class MetanormaDev < Formula # rubocop:disable Metrics/ClassLength
   # < formula-set-version.sh #
 
   license "0BSD"
+  revision 1
 
   depends_on "latexml"
   depends_on "openjdk"
@@ -164,12 +165,11 @@ class MetanormaDev < Formula # rubocop:disable Metrics/ClassLength
       end
     end
 
-    bin.install Dir[libexec/"bin/metanorma"]
-    bin.env_script_all_files(
-      libexec/"bin",
-      PATH:       "#{libexec/"idnits_files"}:#{libexec/"bin"}:#{libexec/"venv/bin"}:#{ENV["PATH"]}",
+    (bin/"metanorma").write_env_script(
+      libexec/"bin/metanorma",
       GEM_HOME:   ENV["GEM_HOME"],
       PYTHONPATH: libexec/"venv/site-packages",
+      PATH:       [libexec/"idnits_files", libexec/"bin", libexec/"venv/bin", ENV["PATH"]].join(":"),
     )
   end
 
