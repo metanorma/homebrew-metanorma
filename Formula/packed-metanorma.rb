@@ -160,7 +160,7 @@ class PackedMetanorma < Formula # rubocop:disable Metrics/ClassLength
     resource("packed-mn").stage do
       platform = OS.linux? ? :linux : :darwin
       bin.install "metanorma-#{platform}-x64"
-      mv bin/"metanorma-#{platform}-x64", bin/"packed-mn"
+      mv bin/"metanorma-#{platform}-x64", bin/"packed-metanorma"
     end
 
     venv = virtualenv_create(libexec/"venv", "python3")
@@ -232,23 +232,23 @@ class PackedMetanorma < Formula # rubocop:disable Metrics/ClassLength
     ADOC
 
     (testpath/"test-iso.adoc").write(METANORMA_TEST_DOC)
-    system bin/"packed-mn", "--type", "iso", testpath/"test-iso.adoc"
+    system bin/"acked-metanorma", "--type", "iso", testpath/"test-iso.adoc"
     assert_predicate testpath/"test-iso.xml", :exist?
     assert_predicate testpath/"test-iso.html", :exist?
 
     (testpath/"test-csd.adoc").write(METANORMA_TEST_DOC)
-    system bin/"packed-mn", "--type", "csd", testpath/"test-csd.adoc"
+    system bin/"acked-metanorma", "--type", "csd", testpath/"test-csd.adoc"
     assert_predicate testpath/"test-csd.pdf", :exist?
     assert_predicate testpath/"test-csd.html", :exist?
 
     (testpath/"test-ietf.adoc").write(METANORMA_IETF_TEST_DOC)
-    system bin/"packed-mn", testpath/"test-ietf.adoc"
+    system bin/"acked-metanorma", testpath/"test-ietf.adoc"
     assert_predicate testpath/"test-ietf.rxl", :exist?
     assert_predicate testpath/"test-ietf.xml", :exist?
     assert_predicate testpath/"test-ietf.rfc.xml", :exist?
 
     (testpath/"test-standoc.adoc").write(METANORMA_LATEXML_TEST_DOC)
-    system bin/"packed-mn", "--type", "standoc", "--extensions", "xml", testpath/"test-standoc.adoc"
+    system bin/"acked-metanorma", "--type", "standoc", "--extensions", "xml", testpath/"test-standoc.adoc"
     assert_predicate testpath/"test-standoc.xml", :exist?
   end
 end
