@@ -150,7 +150,7 @@ class MetanormaDev < Formula # rubocop:disable Metrics/ClassLength
     ENV["GEM_HOME"] = libexec
 
     system "gem", "build", "metanorma-cli.gemspec"
-    system "gem", "install", "metanorma-cli-#{version}.gem"
+    system "gem", "install", "-V", "metanorma-cli-#{version}.gem"
 
     venv = virtualenv_create(libexec/"venv", "python3")
     %w[lxml idnits xml2rfc decorator id2xml pathlib2 python-magic python-magic-win64 certifi
