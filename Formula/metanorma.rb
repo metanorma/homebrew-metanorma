@@ -222,7 +222,7 @@ class Metanorma < Formula # rubocop:disable Metrics/ClassLength
     METANORMA_IETF_TEST_DOC = <<~'ADOC'
       :doctype: rfc
       :mn-document-class: ietf
-      :mn-output-extensions: xml,rfc,txt,html,nits,rxl
+      :mn-output-extensions: xml,rfc,txt,html,rxl
       :docfile: document.adoc
 
       == Clause
@@ -234,10 +234,10 @@ class Metanorma < Formula # rubocop:disable Metrics/ClassLength
     assert_predicate testpath/"test-iso.xml", :exist?
     assert_predicate testpath/"test-iso.html", :exist?
 
-    (testpath/"test-csd.adoc").write(METANORMA_TEST_DOC)
-    system bin/"metanorma", "--type", "csd", testpath/"test-csd.adoc"
-    assert_predicate testpath/"test-csd.pdf", :exist?
-    assert_predicate testpath/"test-csd.html", :exist?
+    (testpath/"test-csa.adoc").write(METANORMA_TEST_DOC)
+    system bin/"metanorma", "--type", "csa", testpath/"test-csa.adoc"
+    assert_predicate testpath/"test-csa.pdf", :exist?
+    assert_predicate testpath/"test-csa.html", :exist?
 
     (testpath/"test-ietf.adoc").write(METANORMA_IETF_TEST_DOC)
     system bin/"metanorma", testpath/"test-ietf.adoc"
