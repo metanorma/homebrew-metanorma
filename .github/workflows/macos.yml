@@ -6,15 +6,24 @@ on:
   pull_request:
 
 jobs:
-  build-macos:
+  test-macos:
     name: Install macOS
     runs-on: macos-latest
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      fail-fast: false
+      matrix:
+        formula: [ 'metanorma' ]
+        experimental: [ false ]
+        include:
+          - formula: 'metanorma-dev'
+            experimental: true
     steps:
       - name: Update Homebrew
         run: |
           brew update-reset
       - name: Checkout tap
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
       - name: Setup tap
         run: |
           mkdir -p $(dirname $(brew --repository $GITHUB_REPOSITORY))
@@ -22,17 +31,17 @@ jobs:
       - name: Brew audit
         # Sometimes it fails because of GitHub API Error: API rate limit exceeded for
         run: |
-          brew audit --new-formula Formula/metanorma.rb
+          brew audit --new-formula Formula/${{ matrix.formula }}.rb
       - name: Brew install
         run: |
-          brew install --build-from-source --verbose Formula/metanorma.rb
+          brew install --build-from-source --verbose Formula/${{ matrix.formula }}.rb
       - name: Test
         run: |
-          brew test metanorma
+          brew test ${{ matrix.formula }}
           metanorma help
       - name: Uninstall
         run: |
-          brew uninstall metanorma
+          brew uninstall ${{ matrix.formula }}
       # - name: Build bottles
       #   env:
       #     HOMEBREW_BINTRAY_URL: https://dl.bintray.com/${{github.event.repository.owner.login}}/bottles-tap

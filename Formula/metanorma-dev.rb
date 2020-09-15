@@ -2,16 +2,16 @@
 
 require "language/python"
 
-# https://github.com/metanorma/packed-mn
-class Metanorma < Formula # rubocop:disable Metrics/ClassLength
+# Metanorma formula
+class MetanormaDev < Formula # rubocop:disable Metrics/ClassLength
   include Language::Python::Virtualenv
 
   desc "Toolchain for publishing metanorma documentation"
   homepage "https://www.metanorma.com"
 
   # > formula-set-version.sh #
-  url "https://github.com/metanorma/packed-mn/archive/v1.3.7.3.tar.gz"
-  sha256 "f281f19fc3631487a075244eb038f8cf1fa8b4d65e54293fc740886cf01a7b95"
+  url "https://github.com/metanorma/metanorma-cli/archive/v1.3.7.3.tar.gz"
+  sha256 "5d7d4fef997e525859bf3bf4ca7a958eb9037d1a2fdf21f7bce0b6479426ba1c"
   # < formula-set-version.sh #
 
   license "0BSD"
@@ -22,20 +22,10 @@ class Metanorma < Formula # rubocop:disable Metrics/ClassLength
   depends_on "plantuml"
   depends_on "python@3.8"
   depends_on "yq"
-
-  if OS.mac?
-    resource "packed-mn" do
-      url "https://github.com/metanorma/packed-mn/releases/download/v1.3.7.3/metanorma-darwin-x64.tgz"
-      sha256 "d83b08b1472a01627381ea7b7321d9225b7eafec73474cfce645e2c677b377b8"
-    end
-  end
-
-  if OS.linux?
-    resource "packed-mn" do
-      url "https://github.com/metanorma/packed-mn/releases/download/v1.3.7.3/metanorma-linux-x64.tgz"
-      sha256 "c3cfb68127a922c1b6e315f9441f16898a979b17794e3baaef1fd64da157a5be"
-    end
-  end
+  uses_from_macos "libxml2"
+  uses_from_macos "libxslt"
+  uses_from_macos "ruby"
+  uses_from_macos "zlib"
 
   resource "idnits" do
     # required by 'metanorma-ietf' gem
@@ -157,11 +147,10 @@ class Metanorma < Formula # rubocop:disable Metrics/ClassLength
   end
 
   def install # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-    platform = OS.linux? ? :linux : :darwin
+    ENV["GEM_HOME"] = libexec
 
-    resource("packed-mn").stage do
-      bin.install "metanorma-#{platform}-x64"
-    end
+    system "gem", "build", "metanorma-cli.gemspec"
+    system "gem", "install", "-V", "metanorma-cli-#{version}.gem"
 
     venv = virtualenv_create(libexec/"venv", "python3")
     %w[lxml idnits xml2rfc decorator id2xml pathlib2 python-magic python-magic-win64 certifi
@@ -176,10 +165,12 @@ class Metanorma < Formula # rubocop:disable Metrics/ClassLength
       end
     end
 
-    (bin/"metanorma").write_env_script(
-      bin/"metanorma-#{platform}-x64",
-      PYTHONPATH: libexec/"venv/site-packages",
+    bin.install Dir[libexec/"bin/metanorma"]
+    bin.env_script_all_files(
+      libexec/"bin",
       PATH:       [libexec/"idnits_files", libexec/"bin", libexec/"venv/bin", ENV["PATH"]].join(":"),
+      GEM_HOME:   ENV["GEM_HOME"],
+      PYTHONPATH: libexec/"venv/site-packages",
     )
   end
 
@@ -243,6 +234,7 @@ class Metanorma < Formula # rubocop:disable Metrics/ClassLength
     system bin/"metanorma", testpath/"test-ietf.adoc"
     assert_predicate testpath/"test-ietf.rxl", :exist?
     assert_predicate testpath/"test-ietf.xml", :exist?
+    assert_predicate testpath/"test-ietf.rfc.xml", :exist?
 
     (testpath/"test-standoc.adoc").write(METANORMA_LATEXML_TEST_DOC)
     system bin/"metanorma", "--type", "standoc", "--extensions", "xml", testpath/"test-standoc.adoc"

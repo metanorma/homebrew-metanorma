@@ -10,13 +10,22 @@ jobs:
     name: Install on Linux
     runs-on: ubuntu-latest
     container: homebrew/brew
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      fail-fast: false
+      matrix:
+        formula: [ 'metanorma' ]
+        experimental: [ false ]
+        include:
+          - formula: 'metanorma-dev'
+            experimental: true
     steps:
       - name: Update Homebrew
         run: |
           brew update-reset
           brew cleanup
       - name: Checkout tap
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
       - name: Setup tap
         run: |
           mkdir -p $(dirname $(brew --repository $GITHUB_REPOSITORY))
@@ -25,20 +34,17 @@ jobs:
       - name: Brew audit
         # Sometimes it fails because of GitHub API Error: API rate limit exceeded for
         run: |
-          cat -n Formula/metanorma.rb
-          brew audit --new-formula Formula/metanorma.rb
+          brew audit --new-formula Formula/${{ matrix.formula }}.rb
       - name: Brew install
         run: |
-          brew install --build-from-source --verbose Formula/metanorma.rb
-          sudo apt-get update
-          sudo apt-get install -y gconf-service libasound2 libatk1.0-0 libatk-bridge2.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget
+          brew install --build-from-source --verbose Formula/${{ matrix.formula }}.rb
       - name: Test
         run: |
-          metanorma help
-          brew test metanorma
+          brew test ${{ matrix.formula }}
+          ${{ matrix.formula }} help
       - name: Uninstall
         run: |
-          brew uninstall metanorma
+          brew uninstall ${{ matrix.formula }}
       # - name: Build bottles
       #   env:
       #     HOMEBREW_BINTRAY_URL: https://dl.bintray.com/${{github.event.repository.owner.login}}/bottles-tap
