@@ -184,14 +184,11 @@ class Metanorma < Formula # rubocop:disable Metrics/ClassLength
   end
 
   def caveats
-    s = ""
-    s += <<~EOS
+    <<~EOS
       inkscape >= 1.0 is required to generate Word output using SVG images.
       Install it by running `brew cask install inkscape` or
       directly download from https://inkscape.org/release/inkscape-1.0/
     EOS
-
-    s
   end
 
   test do # rubocop:disable Metrics/BlockLength

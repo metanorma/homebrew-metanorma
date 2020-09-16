@@ -30,6 +30,7 @@ jobs:
           ln -s $PWD $(brew --repository $GITHUB_REPOSITORY)
       - name: Brew audit
         # Sometimes it fails because of GitHub API Error: API rate limit exceeded for
+        continue-on-error: true
         run: |
           brew audit --new-formula Formula/${{ matrix.formula }}.rb
       - name: Brew install
