@@ -227,12 +227,6 @@ class MetanormaDev < Formula # rubocop:disable Metrics/ClassLength
     assert_predicate testpath/"test-csa.pdf", :exist?
     assert_predicate testpath/"test-csa.html", :exist?
 
-    (testpath/"test-ietf.adoc").write(METANORMA_IETF_TEST_DOC)
-    system bin/"metanorma", testpath/"test-ietf.adoc"
-    assert_predicate testpath/"test-ietf.rxl", :exist?
-    assert_predicate testpath/"test-ietf.xml", :exist?
-    assert_predicate testpath/"test-ietf.rfc.xml", :exist?
-
     (testpath/"test-standoc.adoc").write(METANORMA_LATEXML_TEST_DOC)
     system bin/"metanorma", "--type", "standoc", "--extensions", "xml", testpath/"test-standoc.adoc"
     assert_predicate testpath/"test-standoc.xml", :exist?
