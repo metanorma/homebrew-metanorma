@@ -31,6 +31,9 @@ jobs:
           mkdir -p $(dirname $(brew --repository $GITHUB_REPOSITORY))
           ln -s $PWD $(brew --repository $GITHUB_REPOSITORY)
           brew tap linuxbrew/xorg
+      - name: Workaraund perl installation
+        # https://github.com/agracio/electron-edge-js/issues/16#issuecomment-385620483
+        run: ln -s /usr/include/locale.h /usr/include/xlocale.h
       - name: Brew audit
         # Sometimes it fails because of GitHub API Error: API rate limit exceeded for
         run: |
