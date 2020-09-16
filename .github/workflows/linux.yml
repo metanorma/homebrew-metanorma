@@ -41,7 +41,7 @@ jobs:
           brew audit --new-formula Formula/${{ matrix.formula }}.rb
       - name: Brew install
         run: |
-          brew install --build-from-source --verbose Formula/${{ matrix.formula }}.rb
+          brew install --build-from-source --verbose --include-test Formula/${{ matrix.formula }}.rb
       - name: Test
         run: |
           brew test ${{ matrix.formula }}
