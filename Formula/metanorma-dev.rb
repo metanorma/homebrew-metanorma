@@ -9,10 +9,10 @@ class MetanormaDev < Formula # rubocop:disable Metrics/ClassLength
   desc "Toolchain for publishing metanorma documentation"
   homepage "https://www.metanorma.com"
 
-  # > formula-set-version.sh #
+  # > formula-set-version.sh metanorma-cli #
   url "https://github.com/metanorma/metanorma-cli/archive/v1.3.7.3.tar.gz"
   sha256 "5d7d4fef997e525859bf3bf4ca7a958eb9037d1a2fdf21f7bce0b6479426ba1c"
-  # < formula-set-version.sh #
+  # < formula-set-version.sh metanorma-cli #
 
   license "0BSD"
   revision 1

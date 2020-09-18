@@ -26,7 +26,7 @@ jobs:
         ./formula-set-version.sh ${METANORMA_CLI_VERSION}
     - name: Push commit and tag
       run: |
-        git add Formula/metanorma.rb
+        git add Formula/metanorma.rb Formula/metanorma-dev.rb
         git commit -m "Bump version to ${METANORMA_CLI_VERSION}"
         git tag v${METANORMA_CLI_VERSION}
         git push github HEAD:${GITHUB_REF} --tags
