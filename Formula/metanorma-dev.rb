@@ -17,7 +17,6 @@ class MetanormaDev < Formula # rubocop:disable Metrics/ClassLength
   license "0BSD"
   revision 1
 
-  depends_on "latexml"
   depends_on "openjdk"
   depends_on "plantuml"
   depends_on "python@3.8"
