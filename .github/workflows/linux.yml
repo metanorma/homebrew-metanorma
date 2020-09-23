@@ -44,7 +44,7 @@ jobs:
           brew install --build-from-source --verbose --include-test Formula/${{ matrix.formula }}.rb
       - name: Test
         run: |
-          brew install openjdk
+          brew reinstall openjdk
           brew test ${{ matrix.formula }}
           ${{ matrix.formula }} help
       - name: Uninstall
