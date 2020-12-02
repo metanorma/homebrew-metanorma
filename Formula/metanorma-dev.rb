@@ -10,8 +10,8 @@ class MetanormaDev < Formula # rubocop:disable Metrics/ClassLength
   homepage "https://www.metanorma.com"
 
   # > formula-set-version.sh metanorma-cli #
-  url "https://github.com/metanorma/metanorma-cli/archive/v1.3.8.1pre.tar.gz"
-  sha256 "1376993d6c06e3791c044b39616459c35523d26b0945e0225a3fb00f86066715"
+  url "https://github.com/metanorma/metanorma-cli/archive/v1.3.9pre.tar.gz"
+  sha256 "063cca2b34ee04b59ed3b372c74309f7e1554c1a0959b853763a1bbcc794c69f"
   # < formula-set-version.sh metanorma-cli #
 
   license "0BSD"
