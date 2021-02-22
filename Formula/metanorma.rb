@@ -10,8 +10,8 @@ class Metanorma < Formula # rubocop:disable Metrics/ClassLength
   homepage "https://www.metanorma.com"
 
   # > formula-set-version.sh packed-mn #
-  url "https://github.com/metanorma/packed-mn/archive/v1.4.5pre.tar.gz"
-  sha256 "8eaef9980bb94bdb2cd180cdd71ebbc5a91d8d880182c8c46e8937de761a1154"
+  url "https://github.com/metanorma/packed-mn/archive/v1.4.5.tar.gz"
+  sha256 "89d2ca8b9e455ca04a54104d075e37accbfc44dc91acbd817ea7b88888935573"
   # < formula-set-version.sh packed-mn #
 
   license "0BSD"
@@ -25,8 +25,8 @@ class Metanorma < Formula # rubocop:disable Metrics/ClassLength
   if OS.mac?
     resource "packed-mn" do
       # > formula-set-version.sh packed-mn-darwin #
-      url "https://github.com/metanorma/packed-mn/releases/download/v1.4.5pre/metanorma-darwin-x64.tgz"
-      sha256 "ec50cfd2a5c621be93633259779e03e21fa72ade9584540dd31db102771e6651"
+      url "https://github.com/metanorma/packed-mn/releases/download/v1.4.5/metanorma-darwin-x64.tgz"
+      sha256 "4233af479e280080a0775f12285cc363cf42e5b52c673ea79465e6a32bbf38e1"
       # < formula-set-version.sh packed-mn-darwin #
     end
   end
@@ -34,7 +34,7 @@ class Metanorma < Formula # rubocop:disable Metrics/ClassLength
   if OS.linux?
     resource "packed-mn" do
       # > formula-set-version.sh packed-mn-linux #
-      url "https://github.com/metanorma/packed-mn/releases/download/v1.4.5pre/metanorma-linux-x64.tgz"
+      url "https://github.com/metanorma/packed-mn/releases/download/v1.4.5/metanorma-linux-x64.tgz"
       sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
       # < formula-set-version.sh packed-mn-linux #
     end
