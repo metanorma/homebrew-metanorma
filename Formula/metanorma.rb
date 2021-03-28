@@ -21,6 +21,7 @@ class Metanorma < Formula
   depends_on "plantuml"
   depends_on "python@3.8"
   depends_on "yq"
+  uses_from_macos "shared-mime-info"
 
   if OS.mac?
     resource "packed-mn" do

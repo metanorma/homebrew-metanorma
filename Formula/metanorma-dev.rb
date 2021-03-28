@@ -24,6 +24,7 @@ class MetanormaDev < Formula # rubocop:disable Metrics/ClassLength
   uses_from_macos "libxml2"
   uses_from_macos "libxslt"
   uses_from_macos "ruby"
+  uses_from_macos "shared-mime-info"
   uses_from_macos "zlib"
 
   resource "idnits" do
