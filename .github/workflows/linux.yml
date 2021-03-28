@@ -20,46 +20,35 @@ jobs:
           - formula: 'metanorma-dev'
             experimental: true
     steps:
-      - name: Update Homebrew
-        run: |
-          brew update-reset
-          brew cleanup
-      - name: Checkout tap
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.metanorma-ietf-workgroup-cache.json
+          key: metanorma-ietf-workgroup-cache
+          restore-keys: metanorma-ietf-workgroup-cache
+
+      - run: brew update-reset
+
       - name: Setup tap
         run: |
           mkdir -p $(dirname $(brew --repository $GITHUB_REPOSITORY))
           ln -s $PWD $(brew --repository $GITHUB_REPOSITORY)
           brew tap linuxbrew/xorg
+
       - name: Workaraund perl installation
         # https://github.com/agracio/electron-edge-js/issues/16#issuecomment-385620483
         run: ln -s /usr/include/locale.h /usr/include/xlocale.h
-      - name: Brew audit
-        # Sometimes it fails because of GitHub API Error: API rate limit exceeded for
+
+      - run: brew audit --strict --formula Formula/${{ matrix.formula }}.rb
         continue-on-error: true
-        run: |
-          brew audit --new-formula Formula/${{ matrix.formula }}.rb
-      - name: Brew install
-        run: |
-          brew install --build-from-source --verbose --include-test Formula/${{ matrix.formula }}.rb
+
+      - run: brew install --build-from-source --verbose --include-test Formula/${{ matrix.formula }}.rb
+
       - name: Test
         run: |
           brew reinstall openjdk
           brew test ${{ matrix.formula }}
           ${{ matrix.formula }} help
-      - name: Uninstall
-        run: |
-          brew uninstall ${{ matrix.formula }}
-      # - name: Build bottles
-      #   env:
-      #     HOMEBREW_BINTRAY_URL: https://dl.bintray.com/${{github.event.repository.owner.login}}/bottles-tap
-      #   run: |
-      #     mkdir ~/bottles
-      #     cd ~/bottles
-      #     brew test-bot --root-url=$HOMEBREW_BINTRAY_URL
-      #     mv ~/bottles $GITHUB_WORKSPACE
-      # - name: Cache bottles
-      #   uses: actions/upload-artifact@v1
-      #   with:
-      #     name: bottles
-      #     path: bottles
+      
+      - run: brew uninstall ${{ matrix.formula }}

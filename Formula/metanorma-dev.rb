@@ -233,7 +233,8 @@ class MetanormaDev < Formula
     assert_predicate testpath / "test-ietf.html", :exist?
 
     (testpath / "test-standoc.adoc").write(metanorma_latexml_test_doc)
-    system bin / "metanorma", "--type", "standoc", "--extensions", "xml", testpath / "test-standoc.adoc"
+    system bin / "metanorma", "--type", "standoc", "--extensions", "xml",
+      testpath / "test-standoc.adoc"
     assert_predicate testpath / "test-standoc.xml", :exist?
   end
 end
