@@ -22,6 +22,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      # https://github.com/actions/checkout/issues/6
+      - if: ${{ github.event_name == 'pull_request' }}
+        run: git switch -c "pull-request"
+
       - uses: actions/cache@v2
         with:
           path: ~/.metanorma-ietf-workgroup-cache.json
