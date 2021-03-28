@@ -17,6 +17,7 @@ class Metanorma < Formula
   license "0BSD"
   revision 1
 
+  depends_on "git"
   depends_on "openjdk"
   depends_on "plantuml"
   depends_on "python@3.8"
