@@ -20,8 +20,8 @@ class Metanorma < Formula
   depends_on "openjdk"
   depends_on "plantuml"
   depends_on "python@3.8"
+  depends_on "shared-mime-info" if OS.mac?
   depends_on "yq"
-  uses_from_macos "shared-mime-info"
 
   if OS.mac?
     resource "packed-mn" do
@@ -230,23 +230,23 @@ class Metanorma < Formula
       Clause
     ADOC
 
-    (testpath/"test-iso.adoc").write(test_doc)
-    system bin/"metanorma", "--type", "iso", testpath/"test-iso.adoc"
-    assert_predicate testpath/"test-iso.xml", :exist?
-    assert_predicate testpath/"test-iso.html", :exist?
+    (testpath / "test-iso.adoc").write(test_doc)
+    system bin / "metanorma", "--type", "iso", testpath / "test-iso.adoc", "--agree-to-terms"
+    assert_predicate testpath / "test-iso.xml", :exist?
+    assert_predicate testpath / "test-iso.html", :exist?
 
-    (testpath/"test-csa.adoc").write(test_doc)
-    system bin/"metanorma", "--type", "csa", testpath/"test-csa.adoc"
-    assert_predicate testpath/"test-csa.pdf", :exist?
-    assert_predicate testpath/"test-csa.html", :exist?
+    (testpath / "test-csa.adoc").write(test_doc)
+    system bin / "metanorma", "--type", "csa", testpath / "test-csa.adoc", "--agree-to-terms"
+    assert_predicate testpath / "test-csa.pdf", :exist?
+    assert_predicate testpath / "test-csa.html", :exist?
 
-    (testpath/"test-ietf.adoc").write(ietf_test_doc)
-    system bin/"metanorma", testpath/"test-ietf.adoc"
-    assert_predicate testpath/"test-ietf.pdf", :exist?
-    assert_predicate testpath/"test-ietf.html", :exist?
+    (testpath / "test-ietf.adoc").write(ietf_test_doc)
+    system bin / "metanorma", testpath / "test-ietf.adoc", "--agree-to-terms"
+    assert_predicate testpath / "test-ietf.pdf", :exist?
+    assert_predicate testpath / "test-ietf.html", :exist?
 
-    (testpath/"test-standoc.adoc").write(latexml_test_doc)
-    system bin/"metanorma", "--type", "standoc", "--extensions", "xml", testpath/"test-standoc.adoc"
-    assert_predicate testpath/"test-standoc.xml", :exist?
+    (testpath / "test-standoc.adoc").write(latexml_test_doc)
+    system bin / "metanorma", "--type", "standoc", "--extensions", "xml", testpath / "test-standoc.adoc", "--agree-to-terms"
+    assert_predicate testpath / "test-standoc.xml", :exist?
   end
 end
