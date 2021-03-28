@@ -3,7 +3,7 @@
 require "language/python"
 
 # https://github.com/metanorma/packed-mn
-class Metanorma < Formula # rubocop:disable Metrics/ClassLength
+class Metanorma < Formula
   include Language::Python::Virtualenv
 
   desc "Toolchain for publishing metanorma documentation"
@@ -159,7 +159,7 @@ class Metanorma < Formula # rubocop:disable Metrics/ClassLength
     sha256 "b36a1c245f2d304965eb4e0a82848379241dc04b865afcc4aab16748587e1923"
   end
 
-  def install # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+  def install
     platform = OS.linux? ? :linux : :darwin
 
     resource("packed-mn").stage do
@@ -194,8 +194,8 @@ class Metanorma < Formula # rubocop:disable Metrics/ClassLength
     EOS
   end
 
-  test do # rubocop:disable Metrics/BlockLength
-    METANORMA_TEST_DOC = <<~'ADOC'
+  test do
+    test_doc = <<~'ADOC'
       = Document title
       Author
       :docfile: test.adoc
@@ -204,7 +204,7 @@ class Metanorma < Formula # rubocop:disable Metrics/ClassLength
       :no-isobib:
     ADOC
 
-    METANORMA_LATEXML_TEST_DOC = <<~'ADOC'
+    latexml_test_doc = <<~'ADOC'
       = File
       :stem
 
@@ -219,7 +219,7 @@ class Metanorma < Formula # rubocop:disable Metrics/ClassLength
       ++++
     ADOC
 
-    METANORMA_IETF_TEST_DOC = <<~'ADOC'
+    ietf_test_doc = <<~'ADOC'
       :doctype: rfc
       :mn-document-class: ietf
       :mn-output-extensions: xml,rfc,txt,html,rxl
@@ -229,17 +229,22 @@ class Metanorma < Formula # rubocop:disable Metrics/ClassLength
       Clause
     ADOC
 
-    (testpath/"test-iso.adoc").write(METANORMA_TEST_DOC)
+    (testpath/"test-iso.adoc").write(test_doc)
     system bin/"metanorma", "--type", "iso", testpath/"test-iso.adoc"
     assert_predicate testpath/"test-iso.xml", :exist?
     assert_predicate testpath/"test-iso.html", :exist?
 
-    (testpath/"test-csa.adoc").write(METANORMA_TEST_DOC)
+    (testpath/"test-csa.adoc").write(test_doc)
     system bin/"metanorma", "--type", "csa", testpath/"test-csa.adoc"
     assert_predicate testpath/"test-csa.pdf", :exist?
     assert_predicate testpath/"test-csa.html", :exist?
 
-    (testpath/"test-standoc.adoc").write(METANORMA_LATEXML_TEST_DOC)
+    (testpath/"test-ietf.adoc").write(ietf_test_doc)
+    system bin/"metanorma", testpath/"test-ietf.adoc"
+    assert_predicate testpath/"test-ietf.pdf", :exist?
+    assert_predicate testpath/"test-ietf.html", :exist?
+
+    (testpath/"test-standoc.adoc").write(latexml_test_doc)
     system bin/"metanorma", "--type", "standoc", "--extensions", "xml", testpath/"test-standoc.adoc"
     assert_predicate testpath/"test-standoc.xml", :exist?
   end
