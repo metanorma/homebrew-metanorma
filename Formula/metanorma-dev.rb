@@ -221,18 +221,18 @@ class MetanormaDev < Formula
     ADOC
 
     (testpath / "test-iso.adoc").write(metanorma_test_doc)
-    system bin / "metanorma", "--type", "iso", testpath / "test-iso.adoc"
+    system bin / "metanorma", "--type", "iso", testpath / "test-iso.adoc",
            "--agree-to-terms"
     assert_predicate testpath / "test-iso.xml", :exist?
     assert_predicate testpath / "test-iso.html", :exist?
 
     (testpath / "test-csa.adoc").write(metanorma_test_doc)
-    system bin / "metanorma", "--type", "csa", testpath / "test-csa.adoc"
+    system bin / "metanorma", "--type", "csa", testpath / "test-csa.adoc",
            "--agree-to-terms"
     assert_predicate testpath / "test-csa.html", :exist?
 
     (testpath / "test-ietf.adoc").write(ietf_test_doc)
-    system bin / "metanorma", testpath / "test-ietf.adoc", "--agree-to-terms"
+    system bin / "metanorma", testpath / "test-ietf.adoc", "--agree-to-terms",
     assert_predicate testpath / "test-ietf.html", :exist?
 
     (testpath / "test-standoc.adoc").write(metanorma_latexml_test_doc)
