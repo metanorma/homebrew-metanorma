@@ -21,7 +21,6 @@ class Metanorma < Formula
   depends_on "openjdk"
   depends_on "plantuml"
   depends_on "python@3.8"
-  depends_on "yq"
 
   if OS.mac?
     resource "packed-mn" do
