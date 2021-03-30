@@ -20,7 +20,6 @@ class MetanormaDev < Formula
   depends_on "openjdk"
   depends_on "plantuml"
   depends_on "python@3.8"
-  depends_on "shared-mime-info" if OS.mac?
   depends_on "yq"
   uses_from_macos "libxml2"
   uses_from_macos "libxslt"
@@ -234,7 +233,7 @@ class MetanormaDev < Formula
 
     (testpath / "test-standoc.adoc").write(metanorma_latexml_test_doc)
     system bin / "metanorma", "--type", "standoc", "--extensions", "xml",
-      testpath / "test-standoc.adoc"
+           testpath / "test-standoc.adoc"
     assert_predicate testpath / "test-standoc.xml", :exist?
   end
 end

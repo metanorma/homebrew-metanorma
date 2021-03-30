@@ -21,7 +21,6 @@ class Metanorma < Formula
   depends_on "openjdk"
   depends_on "plantuml"
   depends_on "python@3.8"
-  depends_on "shared-mime-info" if OS.mac?
   depends_on "yq"
 
   if OS.mac?
@@ -233,13 +232,13 @@ class Metanorma < Formula
 
     (testpath / "test-iso.adoc").write(test_doc)
     system bin / "metanorma", "--type", "iso", testpath / "test-iso.adoc",
-      "--agree-to-terms"
+           "--agree-to-terms"
     assert_predicate testpath / "test-iso.xml", :exist?
     assert_predicate testpath / "test-iso.html", :exist?
 
     (testpath / "test-csa.adoc").write(test_doc)
     system bin / "metanorma", "--type", "csa", testpath / "test-csa.adoc",
-      "--agree-to-terms"
+           "--agree-to-terms"
     assert_predicate testpath / "test-csa.pdf", :exist?
     assert_predicate testpath / "test-csa.html", :exist?
 
@@ -250,7 +249,7 @@ class Metanorma < Formula
 
     (testpath / "test-standoc.adoc").write(latexml_test_doc)
     system bin / "metanorma", "--type", "standoc", "--extensions", "xml",
-      testpath / "test-standoc.adoc", "--agree-to-terms"
+           testpath / "test-standoc.adoc", "--agree-to-terms"
     assert_predicate testpath / "test-standoc.xml", :exist?
   end
 end
