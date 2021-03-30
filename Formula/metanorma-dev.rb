@@ -222,12 +222,13 @@ class MetanormaDev < Formula
 
     (testpath / "test-iso.adoc").write(metanorma_test_doc)
     system bin / "metanorma", "--type", "iso", testpath / "test-iso.adoc"
+           "--agree-to-terms"
     assert_predicate testpath / "test-iso.xml", :exist?
     assert_predicate testpath / "test-iso.html", :exist?
 
     (testpath / "test-csa.adoc").write(metanorma_test_doc)
     system bin / "metanorma", "--type", "csa", testpath / "test-csa.adoc"
-    assert_predicate testpath / "test-csa.pdf", :exist?
+           "--agree-to-terms"
     assert_predicate testpath / "test-csa.html", :exist?
 
     (testpath / "test-ietf.adoc").write(ietf_test_doc)
@@ -236,7 +237,7 @@ class MetanormaDev < Formula
 
     (testpath / "test-standoc.adoc").write(metanorma_latexml_test_doc)
     system bin / "metanorma", "--type", "standoc", "--extensions", "xml",
-           testpath / "test-standoc.adoc"
+           testpath / "test-standoc.adoc", "--agree-to-terms"
     assert_predicate testpath / "test-standoc.xml", :exist?
   end
 end
