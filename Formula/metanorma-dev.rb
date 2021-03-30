@@ -3,7 +3,7 @@
 require "language/python"
 
 # Metanorma formula
-class MetanormaDev < Formula # rubocop:disable Metrics/ClassLength
+class MetanormaDev < Formula
   include Language::Python::Virtualenv
 
   desc "Toolchain for publishing metanorma documentation"
@@ -20,7 +20,6 @@ class MetanormaDev < Formula # rubocop:disable Metrics/ClassLength
   depends_on "openjdk"
   depends_on "plantuml"
   depends_on "python@3.8"
-  depends_on "yq"
   uses_from_macos "libxml2"
   uses_from_macos "libxslt"
   uses_from_macos "ruby"
@@ -145,7 +144,7 @@ class MetanormaDev < Formula # rubocop:disable Metrics/ClassLength
     sha256 "b36a1c245f2d304965eb4e0a82848379241dc04b865afcc4aab16748587e1923"
   end
 
-  def install # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+  def install
     ENV["GEM_HOME"] = libexec
 
     system "gem", "build", "metanorma-cli.gemspec"
@@ -181,8 +180,8 @@ class MetanormaDev < Formula # rubocop:disable Metrics/ClassLength
     EOS
   end
 
-  test do # rubocop:disable Metrics/BlockLength
-    METANORMA_TEST_DOC = <<~'ADOC'
+  test do
+    metanorma_test_doc = <<~'ADOC'
       = Document title
       Author
       :docfile: test.adoc
@@ -191,7 +190,7 @@ class MetanormaDev < Formula # rubocop:disable Metrics/ClassLength
       :no-isobib:
     ADOC
 
-    METANORMA_LATEXML_TEST_DOC = <<~'ADOC'
+    metanorma_latexml_test_doc = <<~'ADOC'
       = File
       :stem
 
@@ -206,7 +205,7 @@ class MetanormaDev < Formula # rubocop:disable Metrics/ClassLength
       ++++
     ADOC
 
-    METANORMA_IETF_TEST_DOC = <<~'ADOC'
+    ietf_test_doc = <<~'ADOC'
       :doctype: rfc
       :mn-document-class: ietf
       :mn-output-extensions: xml,rfc,txt,html,rxl
@@ -216,18 +215,24 @@ class MetanormaDev < Formula # rubocop:disable Metrics/ClassLength
       Clause
     ADOC
 
-    (testpath/"test-iso.adoc").write(METANORMA_TEST_DOC)
-    system bin/"metanorma", "--type", "iso", testpath/"test-iso.adoc"
-    assert_predicate testpath/"test-iso.xml", :exist?
-    assert_predicate testpath/"test-iso.html", :exist?
+    (testpath / "test-iso.adoc").write(metanorma_test_doc)
+    system bin / "metanorma", "--type", "iso", testpath / "test-iso.adoc"
+    assert_predicate testpath / "test-iso.xml", :exist?
+    assert_predicate testpath / "test-iso.html", :exist?
 
-    (testpath/"test-csa.adoc").write(METANORMA_TEST_DOC)
-    system bin/"metanorma", "--type", "csa", testpath/"test-csa.adoc"
-    assert_predicate testpath/"test-csa.pdf", :exist?
-    assert_predicate testpath/"test-csa.html", :exist?
+    (testpath / "test-csa.adoc").write(metanorma_test_doc)
+    system bin / "metanorma", "--type", "csa", testpath / "test-csa.adoc"
+    assert_predicate testpath / "test-csa.pdf", :exist?
+    assert_predicate testpath / "test-csa.html", :exist?
 
-    (testpath/"test-standoc.adoc").write(METANORMA_LATEXML_TEST_DOC)
-    system bin/"metanorma", "--type", "standoc", "--extensions", "xml", testpath/"test-standoc.adoc"
-    assert_predicate testpath/"test-standoc.xml", :exist?
+    (testpath / "test-ietf.adoc").write(ietf_test_doc)
+    system bin / "metanorma", testpath / "test-ietf.adoc", "--agree-to-terms"
+    assert_predicate testpath / "test-ietf.pdf", :exist?
+    assert_predicate testpath / "test-ietf.html", :exist?
+
+    (testpath / "test-standoc.adoc").write(metanorma_latexml_test_doc)
+    system bin / "metanorma", "--type", "standoc", "--extensions", "xml",
+           testpath / "test-standoc.adoc"
+    assert_predicate testpath / "test-standoc.xml", :exist?
   end
 end

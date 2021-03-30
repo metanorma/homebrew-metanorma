@@ -19,40 +19,30 @@ jobs:
           - formula: 'metanorma-dev'
             experimental: true
     steps:
-      - name: Update Homebrew
-        run: |
-          brew update-reset
-      - name: Checkout tap
-        uses: actions/checkout@v2
-      - name: Setup tap
+      - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.metanorma-ietf-workgroup-cache.json
+          key: metanorma-ietf-workgroup-cache
+          restore-keys: metanorma-ietf-workgroup-cache
+
+      - run: brew update-reset
+
+      - name: setup tap
         run: |
           mkdir -p $(dirname $(brew --repository $GITHUB_REPOSITORY))
           ln -s $PWD $(brew --repository $GITHUB_REPOSITORY)
-      - name: Brew audit
+
+      - run: brew audit --strict --formula Formula/${{ matrix.formula }}.rb
         # Sometimes it fails because of GitHub API Error: API rate limit exceeded for
         continue-on-error: true
-        run: |
-          brew audit --new-formula Formula/${{ matrix.formula }}.rb
-      - name: Brew install
-        run: |
-          brew install --build-from-source --verbose Formula/${{ matrix.formula }}.rb
-      - name: Test
-        run: |
-          brew test ${{ matrix.formula }}
-          metanorma help
-      - name: Uninstall
-        run: |
-          brew uninstall ${{ matrix.formula }}
-      # - name: Build bottles
-      #   env:
-      #     HOMEBREW_BINTRAY_URL: https://dl.bintray.com/${{github.event.repository.owner.login}}/bottles-tap
-      #   run: |
-      #     mkdir ~/bottles
-      #     cd ~/bottles
-      #     brew test-bot --root-url=$HOMEBREW_BINTRAY_URL
-      #     mv ~/bottles $GITHUB_WORKSPACE
-      # - name: Cache bottles
-      #   uses: actions/upload-artifact@v1
-      #   with:
-      #     name: bottles
-      #     path: bottles
+
+      - run: brew install --build-from-source --verbose Formula/${{ matrix.formula }}.rb
+
+      - run: metanorma help
+
+      - run: brew test ${{ matrix.formula }}
+        continue-on-error: true # https://github.com/metanorma/homebrew-metanorma/issues/64
+
+      - run: brew uninstall ${{ matrix.formula }}
