@@ -40,6 +40,11 @@ jobs:
           ln -s $PWD $(brew --repository $GITHUB_REPOSITORY)
           brew tap linuxbrew/xorg
 
+      - run: | # https://apple.stackexchange.com/a/402401/65949
+          find "$(brew --prefix)/Caskroom/"*'/.metadata' -type f -name '*.rb' |
+            xargs grep 'EOS.undent' --files-with-matches |
+            xargs sed -i '' 's/EOS.undent/EOS/'
+
       - name: Workaraund perl installation
         # https://github.com/agracio/electron-edge-js/issues/16#issuecomment-385620483
         run: ln -s /usr/include/locale.h /usr/include/xlocale.h

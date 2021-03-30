@@ -34,6 +34,11 @@ jobs:
           mkdir -p $(dirname $(brew --repository $GITHUB_REPOSITORY))
           ln -s $PWD $(brew --repository $GITHUB_REPOSITORY)
 
+      - run: | # https://apple.stackexchange.com/a/402401/65949
+          find "$(brew --prefix)/Caskroom/"*'/.metadata' -type f -name '*.rb' |
+            xargs grep 'EOS.undent' --files-with-matches |
+            xargs sed -i '' 's/EOS.undent/EOS/'
+
       - run: brew audit --strict --formula Formula/${{ matrix.formula }}.rb
         # Sometimes it fails because of GitHub API Error: API rate limit exceeded for
         continue-on-error: true
