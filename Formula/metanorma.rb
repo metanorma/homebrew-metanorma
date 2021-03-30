@@ -182,7 +182,7 @@ class Metanorma < Formula
     (bin/"metanorma").write_env_script(
       bin/"metanorma-#{platform}-x64",
       PYTHONPATH: libexec/"venv/site-packages",
-      PATH:       [libexec/"idnits_files", libexec/"bin", libexec/"venv/bin", ENV["PATH"]].join(":"),
+      PATH:       [libexec/"idnits_files", libexec/"bin", libexec/"venv/bin", "$PATH"].join(":"),
     )
   end
 
@@ -220,10 +220,15 @@ class Metanorma < Formula
     ADOC
 
     ietf_test_doc = <<~'ADOC'
-      :doctype: rfc
-      :mn-document-class: ietf
-      :mn-output-extensions: xml,rfc,txt,html,rxl
+      :sort-refs: true
+      :revdate: 2018-04-15T00:00:00Z
+      :fullname: Test Test
+      :initials: T.
+      :surname: Test
+      :email: test@test.org
       :docfile: document.adoc
+      :mn-document-class: ietf
+      :mn-output-extensions: rfc,xml,txt,html,rxl
 
       == Clause
       Clause
@@ -243,7 +248,6 @@ class Metanorma < Formula
 
     (testpath / "test-ietf.adoc").write(ietf_test_doc)
     system bin / "metanorma", testpath / "test-ietf.adoc", "--agree-to-terms"
-    assert_predicate testpath / "test-ietf.pdf", :exist?
     assert_predicate testpath / "test-ietf.html", :exist?
 
     (testpath / "test-standoc.adoc").write(latexml_test_doc)
