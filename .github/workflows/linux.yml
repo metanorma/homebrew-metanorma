@@ -49,10 +49,8 @@ jobs:
 
       - run: brew install --build-from-source --verbose --include-test Formula/${{ matrix.formula }}.rb
 
-      - name: Test
-        run: |
-          brew reinstall openjdk
-          brew test ${{ matrix.formula }}
-          ${{ matrix.formula }} help
-      
+      - run: metanorma help
+
+      - run: brew test ${{ matrix.formula }}
+
       - run: brew uninstall ${{ matrix.formula }}
