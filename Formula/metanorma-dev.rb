@@ -232,7 +232,7 @@ class MetanormaDev < Formula
     assert_predicate testpath / "test-csa.html", :exist?
 
     (testpath / "test-ietf.adoc").write(ietf_test_doc)
-    system bin / "metanorma", testpath / "test-ietf.adoc", "--agree-to-terms",
+    system bin / "metanorma", testpath / "test-ietf.adoc", "--agree-to-terms"
     assert_predicate testpath / "test-ietf.html", :exist?
 
     (testpath / "test-standoc.adoc").write(metanorma_latexml_test_doc)
