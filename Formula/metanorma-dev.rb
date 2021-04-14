@@ -18,7 +18,6 @@ class MetanormaDev < Formula
   revision 1
 
   depends_on "openjdk"
-  depends_on "plantuml"
   depends_on "python@3.8"
   uses_from_macos "libxml2"
   uses_from_macos "libxslt"

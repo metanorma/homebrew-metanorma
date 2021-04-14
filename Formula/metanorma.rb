@@ -19,7 +19,6 @@ class Metanorma < Formula
 
   depends_on "git"
   depends_on "openjdk"
-  depends_on "plantuml"
   depends_on "python@3.8"
 
   if OS.mac?
