@@ -18,6 +18,7 @@ class Metanorma < Formula
   revision 1
 
   depends_on "git"
+  depends_on "libxml2" if OS.linux?
   depends_on "openjdk"
   depends_on "python@3.8"
 
