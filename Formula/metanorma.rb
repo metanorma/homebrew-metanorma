@@ -181,6 +181,7 @@ class Metanorma < Formula
     (bin/"metanorma").write_env_script(
       bin/"metanorma-#{platform}-x64",
       PYTHONPATH: libexec/"venv/site-packages",
+      JAVA_HOME:  Language::Java.java_home("1.8+"),
       PATH:       [libexec/"idnits_files", libexec/"bin", libexec/"venv/bin", "$PATH"].join(":"),
     )
   end

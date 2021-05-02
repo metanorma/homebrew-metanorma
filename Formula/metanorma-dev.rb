@@ -167,6 +167,7 @@ class MetanormaDev < Formula
       libexec/"bin",
       PATH:       [libexec/"idnits_files", libexec/"bin", libexec/"venv/bin", "$PATH"].join(":"),
       GEM_HOME:   ENV["GEM_HOME"],
+      JAVA_HOME:  Language::Java.java_home("1.8+"),
       PYTHONPATH: libexec/"venv/site-packages",
     )
   end
