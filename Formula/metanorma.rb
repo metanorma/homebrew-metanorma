@@ -20,7 +20,7 @@ class Metanorma < Formula
   depends_on "git"
   depends_on "libxml2" if OS.linux?
   depends_on "openjdk"
-  depends_on "python@3.8"
+  depends_on "python@3.9"
 
   if OS.mac?
     resource "packed-mn" do
