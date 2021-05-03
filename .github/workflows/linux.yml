@@ -47,7 +47,7 @@ jobs:
       - run: brew audit --strict --formula Formula/${{ matrix.formula }}.rb
         continue-on-error: true
 
-      - run: brew install --build-from-source --verbose --include-test Formula/${{ matrix.formula }}.rb
+      - run: brew install --build-from-source --verbose --include-test --formula Formula/${{ matrix.formula }}.rb
 
       - run: metanorma help
 
