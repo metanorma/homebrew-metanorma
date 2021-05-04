@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "language/python"
-
 # Metanorma formula
 class MetanormaDev < Formula
   include Language::Python::Virtualenv
@@ -17,8 +15,12 @@ class MetanormaDev < Formula
   license "0BSD"
   revision 1
 
+  depends_on "libxml2" if OS.linux?
+  depends_on "libxslt" if OS.linux?
+
   depends_on "openjdk"
-  depends_on "python@3.8"
+  depends_on "python@3.9"
+
   uses_from_macos "libxml2"
   uses_from_macos "libxslt"
   uses_from_macos "ruby"
@@ -148,6 +150,9 @@ class MetanormaDev < Formula
 
     system "gem", "build", "metanorma-cli.gemspec"
     system "gem", "install", "-V", "metanorma-cli-#{version}.gem"
+
+    ENV.prepend_path "PATH", Formula["libxslt"].opt_bin.to_s if OS.linux?
+    ENV.prepend_path "PATH", Formula["libxml2"].opt_bin.to_s if OS.linux?
 
     venv = virtualenv_create(libexec/"venv", "python3")
     %w[lxml idnits xml2rfc decorator id2xml pathlib2 python-magic python-magic-win64 certifi

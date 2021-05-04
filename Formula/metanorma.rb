@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require "language/python"
-
-# https://github.com/metanorma/packed-mn
 class Metanorma < Formula
   include Language::Python::Virtualenv
 
@@ -18,8 +15,9 @@ class Metanorma < Formula
   revision 1
 
   depends_on "git"
+  depends_on "libxslt" if OS.linux?
   depends_on "openjdk"
-  depends_on "python@3.8"
+  depends_on "python@3.9"
 
   if OS.mac?
     resource "packed-mn" do
@@ -164,6 +162,9 @@ class Metanorma < Formula
     resource("packed-mn").stage do
       bin.install "metanorma-#{platform}-x64"
     end
+
+    ENV.prepend_path "PATH", Formula["libxslt"].opt_bin.to_s if OS.linux?
+    ENV.prepend_path "PATH", Formula["libxml2"].opt_bin.to_s if OS.linux?
 
     venv = virtualenv_create(libexec/"venv", "python3")
     %w[lxml idnits xml2rfc decorator id2xml pathlib2 python-magic python-magic-win64 certifi
