@@ -8,16 +8,18 @@ on:
 jobs:
   test-macos:
     name: Install macOS
-    runs-on: macos-latest
-    continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
       matrix:
-        formula: [ 'metanorma' ]
+        os: [ macos-11, macos-10.15 ]
+        formula: [ metanorma ]
         experimental: [ false ]
         include:
-          - formula: 'metanorma-dev'
+          - formula: metanorma-dev
+            os: macos-10.15
             experimental: true
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.experimental }}
     steps:
       - uses: actions/checkout@v2
 
