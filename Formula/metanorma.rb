@@ -15,6 +15,7 @@ class Metanorma < Formula
   revision 1
 
   depends_on "git"
+  depends_on "graphviz"
   depends_on "libxslt" if OS.linux?
   depends_on "openjdk"
   depends_on "python@3.9"
