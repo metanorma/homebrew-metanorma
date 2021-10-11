@@ -19,6 +19,7 @@ class MetanormaDev < Formula
   depends_on "libxml2" if OS.linux?
   depends_on "libxslt" if OS.linux?
   depends_on "openjdk"
+  depends_on "plantuml"
   depends_on "python@3.9"
 
   uses_from_macos "libxml2"
