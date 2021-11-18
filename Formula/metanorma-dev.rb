@@ -27,18 +27,6 @@ class MetanormaDev < Formula
   uses_from_macos "ruby"
   uses_from_macos "zlib"
 
-  resource "idnits" do
-    # required by 'metanorma-ietf' gem
-    url "https://files.pythonhosted.org/packages/7b/a6/ec79a56c11c9e1d75224196e62c4b130370317f7194dbe4b49f794a656c0/idnits-3.0.0.tar.gz"
-    sha256 "ad1027cf2ac04139ca1116eb64f8bb7c0485f050e71f844b11e035a9e0d6ad68"
-  end
-
-  resource "idnits_files" do
-    # required by 'metanorma-ietf' gem
-    url "https://tools.ietf.org/tools/idnits/idnits-2.16.02.tgz"
-    sha256 "e9a501fc1f3a4584dda854067398eaebba29f128fb09f80048a760e950c35c49"
-  end
-
   resource "xml2rfc" do
     # required by 'metanorma-ietf' gem
     url "https://files.pythonhosted.org/packages/5a/7a/05d3f54ed020133300b79e211b97238ab5023601432ef0ad5f626fda0ace/xml2rfc-2.42.0.tar.gz"
@@ -156,22 +144,16 @@ class MetanormaDev < Formula
     ENV.prepend_path "PATH", Formula["libxml2"].opt_bin.to_s if OS.linux?
 
     venv = virtualenv_create(libexec/"venv", "python3")
-    %w[lxml idnits xml2rfc decorator id2xml pathlib2 python-magic python-magic-win64 certifi
+    %w[lxml xml2rfc decorator id2xml pathlib2 python-magic python-magic-win64 certifi
        chardet google-i18n-address html5lib idna intervaltree kitchen pycountry
        pyflakes requests six sortedcontainers urllib3 webencodings].each do |r|
       venv.pip_install resource(r)
     end
 
-    resource("idnits_files").stage do
-      %w[control idnits].each do |f|
-        (libexec/"idnits_files").install f
-      end
-    end
-
     bin.install Dir[libexec/"bin/metanorma"]
     bin.env_script_all_files(
       libexec/"bin",
-      PATH:       [libexec/"idnits_files", libexec/"bin", libexec/"venv/bin", "$PATH"].join(":"),
+      PATH:       [libexec/"bin", libexec/"venv/bin", "$PATH"].join(":"),
       GEM_HOME:   ENV["GEM_HOME"],
       JAVA_HOME:  Language::Java.java_home("1.8+"),
       PYTHONPATH: libexec/"venv/site-packages",
