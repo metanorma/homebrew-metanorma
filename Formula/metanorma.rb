@@ -34,11 +34,10 @@ class Metanorma < Formula
     resource "packed-mn" do
       # > formula-set-version.sh packed-mn-linux #
       url "https://github.com/metanorma/packed-mn/releases/download/v1.5.4/metanorma-linux-x64.tgz"
-      sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+      sha256 "738cbdb20fa09b6949b4f65b8db442a6f06af65e1cc336c7c9048252822cbcac"
       # < formula-set-version.sh packed-mn-linux #
     end
   end
-
 
   resource "xml2rfc" do
     # required by 'metanorma-ietf' gem
