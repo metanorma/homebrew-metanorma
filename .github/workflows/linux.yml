@@ -9,7 +9,9 @@ jobs:
   build-linux:
     name: Install on Linux
     runs-on: ubuntu-latest
-    container: homebrew/brew
+    container:
+      image: homebrew/brew:latest
+      options: --user root
     continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
@@ -20,11 +22,13 @@ jobs:
           - formula: 'metanorma-dev'
             experimental: true
     steps:
+      # https://github.com/actions/checkout/issues/124#issuecomment-606277160
       - uses: actions/checkout@v2
-
-      # https://github.com/actions/checkout/issues/6
-      - if: ${{ github.event_name == 'pull_request' }}
-        run: git switch -c "pull-request"
+        if: github.event_name == 'pull_request'
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - uses: actions/checkout@v2
+        if: github.event_name == 'push'
 
       - uses: actions/cache@v2
         with:
@@ -34,15 +38,9 @@ jobs:
 
       - run: brew update-reset
 
-      - name: Setup tap
-        run: |
-          mkdir -p $(dirname $(brew --repository $GITHUB_REPOSITORY))
-          ln -s $PWD $(brew --repository $GITHUB_REPOSITORY)
-          brew tap linuxbrew/xorg
-
-      - name: Workaraund perl installation
-        # https://github.com/agracio/electron-edge-js/issues/16#issuecomment-385620483
-        run: ln -s /usr/include/locale.h /usr/include/xlocale.h
+      - run: |
+          sudo apt-get update -y
+          sudo apt-get install -y libpng16-16 libfreetype6 libfontconfig
 
       - run: brew audit --strict --formula Formula/${{ matrix.formula }}.rb
         continue-on-error: true
