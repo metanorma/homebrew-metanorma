@@ -24,8 +24,8 @@ class Metanorma < Formula
   if OS.mac?
     resource "packed-mn" do
       # > formula-set-version.sh packed-mn-darwin #
-      url "https://github.com/metanorma/packed-mn/releases/download/v1.5.8/metanorma-darwin-x64.tgz"
-      sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+      url "https://github.com/metanorma/packed-mn/releases/download/v1.5.8/metanorma-darwin-x86_64.tgz"
+      sha256 "61add2009e5a6d87fa513d46ac4a94e6f3254714fd241a8c9cf6ea5bc75a4bef"
       # < formula-set-version.sh packed-mn-darwin #
     end
   end
@@ -33,8 +33,8 @@ class Metanorma < Formula
   if OS.linux?
     resource "packed-mn" do
       # > formula-set-version.sh packed-mn-linux #
-      url "https://github.com/metanorma/packed-mn/releases/download/v1.5.8/metanorma-linux-x64.tgz"
-      sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+      url "https://github.com/metanorma/packed-mn/releases/download/v1.5.8/metanorma-linux-x86_64.tgz"
+      sha256 "2b60f405a315f9f84cb6a5fbb8a361cdbe194d400dc7966feaffec8ce069b382"
       # < formula-set-version.sh packed-mn-linux #
     end
   end
@@ -150,7 +150,7 @@ class Metanorma < Formula
     platform = OS.linux? ? :linux : :darwin
 
     resource("packed-mn").stage do
-      bin.install "metanorma-#{platform}-x64"
+      bin.install "metanorma-#{platform}-x86_64"
     end
 
     ENV.prepend_path "PATH", Formula["libxslt"].opt_bin.to_s if OS.linux?
@@ -164,7 +164,7 @@ class Metanorma < Formula
     end
 
     (bin/"metanorma").write_env_script(
-      bin/"metanorma-#{platform}-x64",
+      bin/"metanorma-#{platform}-x86_64",
       PYTHONPATH: libexec/"venv/site-packages",
       JAVA_HOME:  Language::Java.java_home("1.8+"),
       PATH:       [libexec/"bin", libexec/"venv/bin", "$PATH"].join(":"),

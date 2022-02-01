@@ -9,13 +9,12 @@ jobs:
     runs-on: ubuntu-18.04
     if: startsWith(github.event.client_payload.ref, 'refs/tags/v')
     steps:
-    - uses: actions/checkout@v1
-    - name: Add writable remote
-      run: |
+    - uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+    - run: |
         git config --global user.name "metanorma-ci"
         git config --global user.email "metanorma-ci@users.noreply.github.com"
-        git remote add github "https://metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
-        git pull github ${GITHUB_REF} --ff-only
     - name: Parse metanorma-cli version
       env:
         METANORMA_CLI_TAG: ${{ github.event.client_payload.ref }}
@@ -29,4 +28,4 @@ jobs:
         git add Formula/metanorma.rb Formula/metanorma-dev.rb
         git commit -m "Bump version to ${METANORMA_CLI_VERSION}"
         git tag v${METANORMA_CLI_VERSION}
-        git push github HEAD:${GITHUB_REF} --tags
+        git push origin HEAD:${GITHUB_REF} --tags
