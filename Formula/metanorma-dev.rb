@@ -21,10 +21,10 @@ class MetanormaDev < Formula
   depends_on "openjdk"
   depends_on "plantuml"
   depends_on "python@3.9"
+  depends_on "ruby@3"
 
   uses_from_macos "libxml2"
   uses_from_macos "libxslt"
-  uses_from_macos "ruby"
   uses_from_macos "zlib"
 
   resource "xml2rfc" do
