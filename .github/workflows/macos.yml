@@ -12,10 +12,11 @@ jobs:
       fail-fast: false
       matrix:
         os: [ macos-11, macos-10.15 ]
-        formula: [ metanorma ]
+        formula: [ metanorma, xml2rfc ]
         experimental: [ false ]
         include:
           - formula: metanorma-dev
+            executable: metanorma
             os: macos-10.15
             experimental: true
     runs-on: ${{ matrix.os }}
@@ -41,10 +42,9 @@ jobs:
         continue-on-error: true
 
       - run: |
-          brew unlink git@2.35.1
           brew install --build-from-source --verbose --formula Formula/${{ matrix.formula }}.rb
 
-      - run: metanorma help
+      - run: which ${{ matrix.executable || matrix.formula }}
 
       - run: brew test ${{ matrix.formula }}
         continue-on-error: true # https://github.com/metanorma/homebrew-metanorma/issues/64

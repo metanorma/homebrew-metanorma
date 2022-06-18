@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        formula: [ 'metanorma' ]
+        formula: [ metanorma, xml2rfc ]
         experimental: [ false ]
         include:
           - formula: 'metanorma-dev'
@@ -42,13 +42,9 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y libpng16-16 libfreetype6 libfontconfig
 
-      - run: |
-          bundle update --bundler
-          brew audit --strict --formula Formula/${{ matrix.formula }}.rb
-
       - run: brew install --build-from-source --verbose --include-test --formula Formula/${{ matrix.formula }}.rb
 
-      - run: metanorma help
+      - run: where ${{ matrix.formula }}
 
       - run: brew test ${{ matrix.formula }}
 
