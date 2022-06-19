@@ -10,6 +10,9 @@ jobs:
     name: Install on Linux
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.experimental }}
+    concurrency:
+      group: '${{ github.workflow }}-${{ matrix.formula }}-${{ github.head_ref || github.ref_name }}'
+      cancel-in-progress: true
     strategy:
       fail-fast: false
       matrix:
