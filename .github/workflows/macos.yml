@@ -21,6 +21,9 @@ jobs:
             experimental: true
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
+    concurrency:
+      group: '${{ github.workflow }}-${{ matrix.os }}-${{ matrix.formula }}-${{ github.head_ref || github.ref_name }}'
+      cancel-in-progress: true
     steps:
       - uses: actions/checkout@v2
 
