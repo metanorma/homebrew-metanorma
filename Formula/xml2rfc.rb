@@ -123,7 +123,7 @@ class Xml2rfc < Formula
   end
 
   test do
-    assert_match "usage: xml2rfc [OPTIONS] SOURCE [OPTIONS]...", shell_output("xml2rdf --help")
-    assert_match "xml2rfc 3.7.0", shell_output("xml2rfc --version")
+    assert_match /Usage: xml2rfc/, shell_output("xml2rfc --help")
+    assert_match /xml2rfc \d+.\d+.\d+/, shell_output("xml2rfc --version")
   end
 end
