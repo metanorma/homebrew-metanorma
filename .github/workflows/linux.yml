@@ -9,26 +9,17 @@ jobs:
   build-linux:
     name: Install on Linux
     runs-on: ubuntu-latest
-    container:
-      image: homebrew/brew:latest
-      options: --user root
     continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
       matrix:
-        formula: [ 'metanorma' ]
+        formula: [ metanorma, xml2rfc ]
         experimental: [ false ]
         include:
           - formula: 'metanorma-dev'
             experimental: true
     steps:
-      # https://github.com/actions/checkout/issues/124#issuecomment-606277160
-      - uses: actions/checkout@v2
-        if: github.event_name == 'pull_request'
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-      - uses: actions/checkout@v2
-        if: github.event_name == 'push'
+      - uses: actions/checkout@v3
 
       - uses: actions/cache@v2
         with:
@@ -36,19 +27,23 @@ jobs:
           key: metanorma-ietf-workgroup-cache
           restore-keys: metanorma-ietf-workgroup-cache
 
+      # https://docs.brew.sh/Homebrew-on-Linux
+      - run: |
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          test -d ~/.linuxbrew && eval "$(~/.linuxbrew/bin/brew shellenv)"
+          test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          test -r ~/.bash_profile && echo "eval \"\$($(brew --prefix)/bin/brew shellenv)\"" >> ~/.bash_profile
+          echo "eval \"\$($(brew --prefix)/bin/brew shellenv)\"" >> ~/.profile
+
       - run: brew update-reset
 
       - run: |
           sudo apt-get update -y
           sudo apt-get install -y libpng16-16 libfreetype6 libfontconfig
 
-      - run: |
-          bundle update --bundler
-          brew audit --strict --formula Formula/${{ matrix.formula }}.rb
-
       - run: brew install --build-from-source --verbose --include-test --formula Formula/${{ matrix.formula }}.rb
 
-      - run: metanorma help
+      - run: which ${{ matrix.formula }}
 
       - run: brew test ${{ matrix.formula }}
 
