@@ -34,7 +34,7 @@ class Metanorma < Formula
     resource "packed-mn" do
       # > formula-set-version.sh packed-mn-linux #
       url "https://github.com/metanorma/packed-mn/releases/download/v1.5.19/metanorma-linux-x86_64.tgz"
-      sha256 "Not"
+      sha256 "bce167ec0c1aef58890da2359058905ed21f8aaf04515f3fc2f0f4305eccb448"
       # < formula-set-version.sh packed-mn-linux #
     end
   end
