@@ -7,8 +7,8 @@ class Metanorma < Formula
   homepage "https://www.metanorma.com"
 
   # > formula-set-version.sh packed-mn #
-  url "https://github.com/metanorma/packed-mn/archive/v1.6.3.pre.tar.gz"
-  sha256 "a5479bfdfd057667a2daaec354b64cbb0a96f797fa51cf0d7519bebc979ced29"
+  url "https://github.com/metanorma/packed-mn/archive/v1.6.3.tar.gz"
+  sha256 "2920a3f50d64b166f6594bf9470f45358b7d47d4b3ab725ffa081d597fb898af"
   # < formula-set-version.sh packed-mn #
 
   license "0BSD"
@@ -24,8 +24,8 @@ class Metanorma < Formula
   if OS.mac?
     resource "packed-mn" do
       # > formula-set-version.sh packed-mn-darwin #
-      url "https://github.com/metanorma/packed-mn/releases/download/v1.6.3.pre/metanorma-darwin-x86_64.tgz"
-      sha256 "201817d684670670f4d9a195e172045913b8bc8d697c9bc044cdf474643f410a"
+      url "https://github.com/metanorma/packed-mn/releases/download/v1.6.3/metanorma-darwin-x86_64.tgz"
+      sha256 "eae71931df0b0ebb768aec12d158f6036c1d720a43d1136709c9628b0c90f778"
       # < formula-set-version.sh packed-mn-darwin #
     end
   end
@@ -33,8 +33,8 @@ class Metanorma < Formula
   if OS.linux?
     resource "packed-mn" do
       # > formula-set-version.sh packed-mn-linux #
-      url "https://github.com/metanorma/packed-mn/releases/download/v1.6.3.pre/metanorma-linux-x86_64.tgz"
-      sha256 "de7d92e0e164ee977b9bc9f9602fb683d25a316088512f2e85c0dc9a2375b651"
+      url "https://github.com/metanorma/packed-mn/releases/download/v1.6.3/metanorma-linux-x86_64.tgz"
+      sha256 "7027445e34ac6aa81c411421c17ee5bd224d273a50fb29ceaa48847a1dbaf08d"
       # < formula-set-version.sh packed-mn-linux #
     end
   end
