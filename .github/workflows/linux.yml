@@ -19,7 +19,8 @@ jobs:
         formula: [ metanorma, xml2rfc ]
         experimental: [ false ]
         include:
-          - formula: 'metanorma-dev'
+          - formula: metanorma-dev
+            executable: metanorma
             experimental: true
     steps:
       - uses: actions/checkout@v3
@@ -46,7 +47,7 @@ jobs:
 
       - run: brew install --build-from-source --verbose --include-test --formula Formula/${{ matrix.formula }}.rb
 
-      - run: which ${{ matrix.formula }}
+      - run: which ${{ matrix.executable || matrix.formula }}
 
       - run: brew test ${{ matrix.formula }}
 
