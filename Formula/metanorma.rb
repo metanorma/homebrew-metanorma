@@ -15,6 +15,7 @@ class Metanorma < Formula
   revision 1
 
   depends_on "git"
+  depends_on "gflags"
   depends_on "graphviz"
   depends_on "libxslt" if OS.linux?
   depends_on "metanorma/metanorma/xml2rfc" # required by 'metanorma-ietf' gem
@@ -24,8 +25,8 @@ class Metanorma < Formula
   if OS.mac?
     resource "packed-mn" do
       # > formula-set-version.sh packed-mn-darwin #
-      url "https://github.com/metanorma/packed-mn/releases/download/v1.6.12/metanorma-darwin-x86_64.tgz"
-      sha256 "Not"
+      url "https://github.com/metanorma/packed-mn/releases/download/v1.6.11/metanorma-darwin-x86_64.tgz"
+      sha256 "13888e96aa205393ab80e27a3f16249526048d181545b1a9216a83c6c8a03594"
       # < formula-set-version.sh packed-mn-darwin #
     end
   end
