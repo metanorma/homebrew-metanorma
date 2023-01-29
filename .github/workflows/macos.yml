@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ macos-11, macos-10.15 ]
+        os: [ macos-12, macos-11, macos-10.15 ]
         formula: [ metanorma, xml2rfc ]
         experimental: [ false ]
         include:
@@ -25,9 +25,9 @@ jobs:
       group: '${{ github.workflow }}-${{ matrix.os }}-${{ matrix.formula }}-${{ github.head_ref || github.ref_name }}'
       cancel-in-progress: true
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: ~/.metanorma-ietf-workgroup-cache.json
           key: metanorma-ietf-workgroup-cache
