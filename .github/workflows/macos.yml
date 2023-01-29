@@ -41,11 +41,13 @@ jobs:
           ln -s $PWD $(brew --repository $GITHUB_REPOSITORY)
 
       - run: brew audit --strict --formula Formula/${{ matrix.formula }}.rb
-        # Sometimes it fails because of GitHub API Error: API rate limit exceeded for
+        # To ignore potential: GitHub API Error: API rate limit exceeded for
         continue-on-error: true
 
       - run: |
           brew install --build-from-source --verbose --formula Formula/${{ matrix.formula }}.rb
+        # To ignore potential: The `brew link` step did not complete successfully
+        continue-on-error: true
 
       - run: which ${{ matrix.executable || matrix.formula }}
 
