@@ -25,8 +25,8 @@ class Metanorma < Formula
   if OS.mac?
     resource "packed-mn" do
       # > formula-set-version.sh packed-mn-darwin #
-      url "https://github.com/metanorma/packed-mn/releases/download/v1.6.11/metanorma-darwin-x86_64.tgz"
-      sha256 "13888e96aa205393ab80e27a3f16249526048d181545b1a9216a83c6c8a03594"
+      url "https://github.com/metanorma/packed-mn/releases/download/v1.6.12/metanorma-darwin-x86_64.tgz"
+      sha256 "0356d442e9d5e498bb6817314920aa4da2e6fa0324a544d074eead730a351f9f"
       # < formula-set-version.sh packed-mn-darwin #
     end
   end
