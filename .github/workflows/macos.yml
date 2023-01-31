@@ -59,7 +59,7 @@ jobs:
 
       - run: which ${{ matrix.executable || matrix.formula }}
 
-      - run: brew test ${{ matrix.formula }}
+      - run: brew test --verbose ${{ matrix.formula }}
         continue-on-error: true # https://github.com/metanorma/homebrew-metanorma/issues/64
 
       - run: brew uninstall ${{ matrix.formula }}
