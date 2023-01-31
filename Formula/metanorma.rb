@@ -8,7 +8,7 @@ class Metanorma < Formula
 
   # > formula-set-version.sh packed-mn #
   url "https://github.com/metanorma/packed-mn/archive/v1.6.12.tar.gz"
-  sha256 "44d22b0399268c241ebd8e3b52f3460837e834eb6e7c01e1d9a3ccb56db4d451"
+  sha256 "d40a47188ac2302347326b3b712e301ad9fb057c9e66ef7aeabd0cf09558ad5a"
   # < formula-set-version.sh packed-mn #
 
   license "0BSD"
