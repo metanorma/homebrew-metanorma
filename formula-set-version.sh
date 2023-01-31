@@ -32,3 +32,11 @@ PACKED_MN_LINUX_SHA256=$(curl -sL ${PACKED_MN_LINUX_SHA256_URL} | cut -d ' ' -f1
 REPLACE_MARKER_BEGIN="# > formula-set-version.sh packed-mn-linux #"
 REPLACE_MARKER_END="# < formula-set-version.sh packed-mn-linux #"
 ${SED} -i "/${REPLACE_MARKER_BEGIN}/,/${REPLACE_MARKER_END}/c\      ${REPLACE_MARKER_BEGIN}\n      url \"${PACKED_MN_LINUX_URL}\"\n      sha256 \"${PACKED_MN_LINUX_SHA256}\"\n      ${REPLACE_MARKER_END}" Formula/metanorma.rb
+
+if [ "${PACKED_MN_LINUX_SHA256}" = "Not" ]; then
+	echo "Skip test bump because Linux packed-mn binary is not compiled yet"
+	exit 1
+elif [ "${PACKED_MN_DARWIN_SHA256}" = "Not" ]; then
+	echo "Skip test bump because Darwin packed-mn binary is not compiled yet"
+	exit 2
+fi
