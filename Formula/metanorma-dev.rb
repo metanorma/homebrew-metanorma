@@ -8,8 +8,8 @@ class MetanormaDev < Formula
   homepage "https://www.metanorma.com"
 
   # > formula-set-version.sh metanorma-cli #
-  url "https://github.com/metanorma/metanorma-cli/archive/v1.7.3pre.tar.gz"
-  sha256 "c122c59c6ab86a7be8a5b26b923da287c0ce90dc78c5421fe1a0c0b475acecee"
+  url "https://github.com/metanorma/metanorma-cli/archive/v1.7.3.tar.gz"
+  sha256 "86c32109a88ff408cafdde65b19cac52589a87c1cf4089f7a1693c6af205574f"
   # < formula-set-version.sh metanorma-cli #
 
   license "0BSD"
