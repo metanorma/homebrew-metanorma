@@ -14,6 +14,16 @@ jobs:
         os: [ macos-14, macos-12 ]
         formula: [ metanorma, xml2rfc ]
         experimental: [ false ]
+        include:
+          - formula: metanorma-dev
+            os: macos-12
+            experimental: true
+            executable: metanorma
+          - formula: metanorma-dev
+            os: macos-14
+            experimental: true
+            executable: metanorma
+
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
     concurrency:
@@ -47,6 +57,6 @@ jobs:
       - run: which ${{ matrix.executable || matrix.formula }}
 
       - run: brew test --verbose ${{ matrix.formula }}
-        continue-on-error: true # https://github.com/metanorma/homebrew-metanorma/issues/64
+        continue-on-error: true # Because ietf test fails anyway
 
       - run: brew uninstall ${{ matrix.formula }}
