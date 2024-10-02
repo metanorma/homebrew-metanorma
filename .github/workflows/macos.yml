@@ -35,13 +35,13 @@ jobs:
           mkdir -p $(dirname $(brew --repository $GITHUB_REPOSITORY))
           ln -s $PWD $(brew --repository $GITHUB_REPOSITORY)
 
-      - run: brew audit --strict --formula Formula/${{ matrix.formula }}.rb
-        # To ignore potential: GitHub API Error: API rate limit exceeded for
-        continue-on-error: true
-
       - run: |
           brew install --build-from-source --verbose --formula Formula/${{ matrix.formula }}.rb
         # To ignore potential: The `brew link` step did not complete successfully
+        continue-on-error: true
+
+      - run: brew audit --strict --formula ${{ matrix.formula }}
+        # To ignore potential: GitHub API Error: API rate limit exceeded for
         continue-on-error: true
 
       - run: which ${{ matrix.executable || matrix.formula }}
