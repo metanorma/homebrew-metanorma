@@ -19,12 +19,19 @@ REPLACE_MARKER_BEGIN="# > formula-set-version.sh packed-mn #"
 REPLACE_MARKER_END="# < formula-set-version.sh packed-mn #"
 ${SED} -i "/${REPLACE_MARKER_BEGIN}/,/${REPLACE_MARKER_END}/c\  ${REPLACE_MARKER_BEGIN}\n  url \"${PACKED_MN_URL}\"\n  sha256 \"${PACKED_MN_SHA256}\"\n  ${REPLACE_MARKER_END}" Formula/metanorma.rb
 
-PACKED_MN_DARWIN_URL="https://github.com/metanorma/packed-mn/releases/download/v${MN_CLI_GEM_VERSION}/metanorma-darwin-x86_64.tgz"
-PACKED_MN_DARWIN_SHA256_URL="${PACKED_MN_DARWIN_URL}.sha256.txt"
-PACKED_MN_DARWIN_SHA256=$(curl -sL ${PACKED_MN_DARWIN_SHA256_URL} | cut -d ' ' -f1)
-REPLACE_MARKER_BEGIN="# > formula-set-version.sh packed-mn-darwin #"
-REPLACE_MARKER_END="# < formula-set-version.sh packed-mn-darwin #"
-${SED} -i "/${REPLACE_MARKER_BEGIN}/,/${REPLACE_MARKER_END}/c\      ${REPLACE_MARKER_BEGIN}\n      url \"${PACKED_MN_DARWIN_URL}\"\n      sha256 \"${PACKED_MN_DARWIN_SHA256}\"\n      ${REPLACE_MARKER_END}" Formula/metanorma.rb
+PACKED_MN_DARWIN_X86_64_URL="https://github.com/metanorma/packed-mn/releases/download/v${MN_CLI_GEM_VERSION}/metanorma-darwin-x86_64.tgz"
+PACKED_MN_DARWIN_X86_64_SHA256_URL="${PACKED_MN_DARWIN_X86_64_URL}.sha256.txt"
+PACKED_MN_DARWIN_X86_64_SHA256=$(curl -sL ${PACKED_MN_DARWIN_X86_64_SHA256_URL} | cut -d ' ' -f1)
+REPLACE_MARKER_X86_64_BEGIN="# > formula-set-version.sh packed-mn-darwin-x86_64 #"
+REPLACE_MARKER_X86_64_END="# < formula-set-version.sh packed-mn-darwin-x86_64 #"
+${SED} -i "/${REPLACE_MARKER_X86_64_BEGIN}/,/${REPLACE_MARKER_X86_64_END}/c\      ${REPLACE_MARKER_X86_64_BEGIN}\n      url \"${PACKED_MN_DARWIN_X86_64_URL}\"\n      sha256 \"${PACKED_MN_DARWIN_X86_64_SHA256}\"\n      ${REPLACE_MARKER_X86_64_END}" Formula/metanorma.rb
+
+PACKED_MN_DARWIN_ARM64_URL="https://github.com/metanorma/packed-mn/releases/download/v${MN_CLI_GEM_VERSION}/metanorma-darwin-arm64.tgz"
+PACKED_MN_DARWIN_ARM64_SHA256_URL="${PACKED_MN_DARWIN_ARM64_URL}.sha256.txt"
+PACKED_MN_DARWIN_ARM64_SHA256=$(curl -sL ${PACKED_MN_DARWIN_ARM64_SHA256_URL} | cut -d ' ' -f1)
+REPLACE_MARKER_ARM64_BEGIN="# > formula-set-version.sh packed-mn-darwin-arm64 #"
+REPLACE_MARKER_ARM64_END="# < formula-set-version.sh packed-mn-darwin-arm64 #"
+${SED} -i "/${REPLACE_MARKER_ARM64_BEGIN}/,/${REPLACE_MARKER_ARM64_END}/c\      ${REPLACE_MARKER_ARM64_BEGIN}\n      url \"${PACKED_MN_DARWIN_ARM64_URL}\"\n      sha256 \"${PACKED_MN_DARWIN_ARM64_SHA256}\"\n      ${REPLACE_MARKER_ARM64_END}" Formula/metanorma.rb
 
 PACKED_MN_LINUX_URL="https://github.com/metanorma/packed-mn/releases/download/v${MN_CLI_GEM_VERSION}/metanorma-linux-x86_64.tgz"
 PACKED_MN_LINUX_SHA256_URL="${PACKED_MN_LINUX_URL}.sha256.txt"

@@ -23,11 +23,20 @@ class Metanorma < Formula
   depends_on "plantuml"
 
   if OS.mac?
-    resource "packed-mn" do
-      # > formula-set-version.sh packed-mn-darwin #
-      url "https://github.com/metanorma/packed-mn/releases/download/v1.10.8/metanorma-darwin-x86_64.tgz"
-      sha256 "2c8017c8ba7ce48efb91d9b3597774fbd45bfe4b4babb6c060a6cf19bd5011be"
-      # < formula-set-version.sh packed-mn-darwin #
+    if Hardware::CPU.arm?
+      resource "packed-mn" do
+        # > formula-set-version.sh packed-mn-darwin-arm64 #
+        url "https://github.com/metanorma/packed-mn/releases/download/v1.10.8/metanorma-darwin-arm64.tgz"
+        sha256 "98f2ac0bf474a94256efd1830210dece3d78787d91d288aa8fae948d493b941b"
+        # < formula-set-version.sh packed-mn-darwin-arm64 #
+      end
+    else # assume Hardware::CPU.intel
+      resource "packed-mn" do
+        # > formula-set-version.sh packed-mn-darwin-x86_64 #
+        url "https://github.com/metanorma/packed-mn/releases/download/v1.10.8/metanorma-darwin-x86_64.tgz"
+        sha256 "2c8017c8ba7ce48efb91d9b3597774fbd45bfe4b4babb6c060a6cf19bd5011be"
+        # < formula-set-version.sh packed-mn-darwin-x86_64 #
+      end
     end
   end
 
@@ -41,17 +50,21 @@ class Metanorma < Formula
   end
 
   def install
-    platform = OS.linux? ? :linux : :darwin
+    platform = if OS.mac?
+                 Hardware::CPU.arm? ? "darwin-arm64" : "darwin-x86_64"
+               elsif OS.linux?
+                 "linux-x86_64"
+               end
 
     resource("packed-mn").stage do
-      bin.install "metanorma-#{platform}-x86_64"
+      bin.install "metanorma-#{platform}"
     end
 
     ENV.prepend_path "PATH", Formula["libxslt"].opt_bin.to_s if OS.linux?
     ENV.prepend_path "PATH", Formula["libxml2"].opt_bin.to_s if OS.linux?
 
-    (bin/"metanorma").write_env_script(
-      bin/"metanorma-#{platform}-x86_64",
+    (bin / "metanorma").write_env_script(
+      bin / "metanorma-#{platform}",
       JAVA_HOME:  Language::Java.java_home("1.8+"),
       PATH:       [libexec/"bin", "$PATH"].join(":"),
     )
