@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        formula: [ metanorma, xml2rfc ]
+        formula: [ metanorma ]
         experimental: [ false ]
         include:
           - formula: metanorma-dev

@@ -18,7 +18,7 @@ class Metanorma < Formula
   depends_on "gflags"
   depends_on "graphviz"
   depends_on "libxslt" if OS.linux?
-  depends_on "metanorma/metanorma/xml2rfc" # required by 'metanorma-ietf' gem
+  depends_on "metanorma/xml2rfc/xml2rfc" # required by 'metanorma-ietf' gem
   depends_on "openjdk"
   depends_on "plantuml"
 
