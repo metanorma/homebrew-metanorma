@@ -7,8 +7,8 @@ class Metanorma < Formula
   homepage "https://www.metanorma.com"
 
   # > formula-set-version.sh packed-mn #
-  url "https://github.com/metanorma/packed-mn/archive/v1.11.4.tar.gz"
-  sha256 "8bd2abd638c98d2fa7391d7eb8ef638873085be02afd5c4e7eeacc60bb2ae6c3"
+  url "https://github.com/metanorma/packed-mn/archive/v1.11.5.tar.gz"
+  sha256 "39296105205109334d182838272fc5f8096d69cbb2d74256e5438046d3a4ad55"
   # < formula-set-version.sh packed-mn #
 
   license "0BSD"
@@ -26,15 +26,15 @@ class Metanorma < Formula
     if Hardware::CPU.arm?
       resource "packed-mn" do
       # > formula-set-version.sh packed-mn-darwin-arm64 #
-      url "https://github.com/metanorma/packed-mn/releases/download/v1.11.4/metanorma-darwin-arm64.tgz"
-      sha256 "787b9f510c1bd87e21b9bef4885cf52bc7fdddb75f6bf47e139a04f70193320b"
+      url "https://github.com/metanorma/packed-mn/releases/download/v1.11.5/metanorma-darwin-arm64.tgz"
+      sha256 "4cfa73836889c52b8906e6164e152e6fb5c91b3346d50c5a6f651941a8882be1"
       # < formula-set-version.sh packed-mn-darwin-arm64 #
       end
     else # assume Hardware::CPU.intel
       resource "packed-mn" do
       # > formula-set-version.sh packed-mn-darwin-x86_64 #
-      url "https://github.com/metanorma/packed-mn/releases/download/v1.11.4/metanorma-darwin-x86_64.tgz"
-      sha256 "a902e7122e02084934291cef1ce45cca23433f150542a32cd0f505d8509bd207"
+      url "https://github.com/metanorma/packed-mn/releases/download/v1.11.5/metanorma-darwin-x86_64.tgz"
+      sha256 "Not"
       # < formula-set-version.sh packed-mn-darwin-x86_64 #
       end
     end
@@ -43,8 +43,8 @@ class Metanorma < Formula
   if OS.linux?
     resource "packed-mn" do
       # > formula-set-version.sh packed-mn-linux #
-      url "https://github.com/metanorma/packed-mn/releases/download/v1.11.4/metanorma-linux-x86_64.tgz"
-      sha256 "5e071278a1dfd1908eeb1340ef53acd6042aad0ac60b0f19a9b926c214b86a5e"
+      url "https://github.com/metanorma/packed-mn/releases/download/v1.11.5/metanorma-linux-x86_64.tgz"
+      sha256 "874929de4aa6b4869f487640ee2dbcb05c67767e4e7793838f6ede3488749dfe"
       # < formula-set-version.sh packed-mn-linux #
     end
   end
