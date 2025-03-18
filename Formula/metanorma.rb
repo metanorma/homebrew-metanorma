@@ -34,7 +34,7 @@ class Metanorma < Formula
       resource "packed-mn" do
       # > formula-set-version.sh packed-mn-darwin-x86_64 #
       url "https://github.com/metanorma/packed-mn/releases/download/v1.12.3/metanorma-darwin-x86_64.tgz"
-      sha256 "Not"
+      sha256 "c88a489a77974d3f102d321570cdfeb665b6c8d00c9faa122648115d25cee018"
       # < formula-set-version.sh packed-mn-darwin-x86_64 #
       end
     end
