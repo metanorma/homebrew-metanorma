@@ -11,16 +11,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ macos-14, macos-12 ]
+        os: [ macos-15, macos-14, macos-13 ]
         formula: [ metanorma ]
         experimental: [ false ]
         include:
           - formula: metanorma-dev
-            os: macos-12
-            experimental: true
-            executable: metanorma
-          - formula: metanorma-dev
-            os: macos-14
+            os: macos-15
             experimental: true
             executable: metanorma
 
