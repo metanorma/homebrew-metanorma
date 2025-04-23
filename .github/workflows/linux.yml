@@ -10,11 +10,9 @@ jobs:
     name: Install on Linux
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
-    concurrency:
-      group: '${{ github.workflow }}-${{ matrix.formula }}-${{ github.head_ref || github.ref_name }}'
-      cancel-in-progress: true
     strategy:
       fail-fast: false
+      max-parallel: 2
       matrix:
         os: [ ubuntu-latest, ubuntu-22.04 ]
         formula: [ metanorma ]
