@@ -8,7 +8,7 @@ on:
 jobs:
   build-linux:
     name: Install on Linux
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
     concurrency:
       group: '${{ github.workflow }}-${{ matrix.formula }}-${{ github.head_ref || github.ref_name }}'
@@ -16,12 +16,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        os: [ ubuntu-latest, ubuntu-22.04 ]
         formula: [ metanorma ]
         experimental: [ false ]
-        include:
-          - formula: metanorma-dev
-            executable: metanorma
-            experimental: true
     steps:
       - uses: actions/checkout@v4
 
