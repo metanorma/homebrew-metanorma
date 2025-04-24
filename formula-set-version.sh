@@ -38,7 +38,14 @@ PACKED_MN_LINUX_SHA256_URL="${PACKED_MN_LINUX_URL}.sha256.txt"
 PACKED_MN_LINUX_SHA256=$(curl -sL ${PACKED_MN_LINUX_SHA256_URL} | cut -d ' ' -f1)
 REPLACE_MARKER_BEGIN="# > formula-set-version.sh packed-mn-linux #"
 REPLACE_MARKER_END="# < formula-set-version.sh packed-mn-linux #"
-${SED} -i "/${REPLACE_MARKER_BEGIN}/,/${REPLACE_MARKER_END}/c\      ${REPLACE_MARKER_BEGIN}\n      url \"${PACKED_MN_LINUX_URL}\"\n      sha256 \"${PACKED_MN_LINUX_SHA256}\"\n      ${REPLACE_MARKER_END}" Formula/metanorma.rb
+${SED} -i "/${REPLACE_MARKER_BEGIN}/,/${REPLACE_MARKER_END}/c\        ${REPLACE_MARKER_BEGIN}\n        url \"${PACKED_MN_LINUX_URL}\"\n        sha256 \"${PACKED_MN_LINUX_SHA256}\"\n        ${REPLACE_MARKER_END}" Formula/metanorma.rb
+
+PACKED_MN_LINUX_ARM_URL="https://github.com/metanorma/packed-mn/releases/download/v${MN_CLI_GEM_VERSION}/metanorma-linux-aarch64.tgz"
+PACKED_MN_LINUX_ARM_SHA256_URL="${PACKED_MN_LINUX_ARM_URL}.sha256.txt"
+PACKED_MN_LINUX_ARM_SHA256=$(curl -sL ${PACKED_MN_LINUX_ARM_SHA256_URL} | cut -d ' ' -f1)
+REPLACE_MARKER_BEGIN="# > formula-set-version.sh packed-mn-linux-arm #"
+REPLACE_MARKER_END="# < formula-set-version.sh packed-mn-linux-arm #"
+${SED} -i "/${REPLACE_MARKER_BEGIN}/,/${REPLACE_MARKER_END}/c\        ${REPLACE_MARKER_BEGIN}\n        url \"${PACKED_MN_LINUX_ARM_URL}\"\n        sha256 \"${PACKED_MN_LINUX_ARM_SHA256}\"\n        ${REPLACE_MARKER_END}" Formula/metanorma.rb
 
 if [ "${PACKED_MN_LINUX_SHA256}" = "Not" ]; then
 	echo "Skip test bump because Linux packed-mn binary is not compiled yet"
