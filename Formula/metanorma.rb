@@ -7,8 +7,8 @@ class Metanorma < Formula
   homepage "https://www.metanorma.com"
 
   # > formula-set-version.sh packed-mn #
-  url "https://github.com/metanorma/packed-mn/archive/v1.12.5.tar.gz"
-  sha256 "9a59aa884476b5b424459b0c11ace821dadad89306af8abd86ef257d8a398f66"
+  url "https://github.com/metanorma/packed-mn/archive/v1.12.6.tar.gz"
+  sha256 "139136c4f66b3418aadd8f168d2df14effa0a698373515ff79d227e8fa4b0dbb"
   # < formula-set-version.sh packed-mn #
 
   license "0BSD"
@@ -26,15 +26,15 @@ class Metanorma < Formula
     if Hardware::CPU.arm?
       resource "packed-mn" do
       # > formula-set-version.sh packed-mn-darwin-arm64 #
-      url "https://github.com/metanorma/packed-mn/releases/download/v1.12.5/metanorma-darwin-arm64.tgz"
-      sha256 "8d4c7ccdaf2a8a74d5316076973f958a213f66e550116f4ea3e64581ee35b864"
+      url "https://github.com/metanorma/packed-mn/releases/download/v1.12.6/metanorma-darwin-arm64.tgz"
+      sha256 "1e8d9a728e3aa6825dcfde05e1b8cf429df776ec33b2170b693784513f6590e3"
       # < formula-set-version.sh packed-mn-darwin-arm64 #
       end
     else # assume Hardware::CPU.intel
       resource "packed-mn" do
       # > formula-set-version.sh packed-mn-darwin-x86_64 #
-      url "https://github.com/metanorma/packed-mn/releases/download/v1.12.5/metanorma-darwin-x86_64.tgz"
-      sha256 "214ccbaab3691f2fd3f1414e3b3f50c0d2350748c222e2428f579dec0a4ab37e"
+      url "https://github.com/metanorma/packed-mn/releases/download/v1.12.6/metanorma-darwin-x86_64.tgz"
+      sha256 "Not"
       # < formula-set-version.sh packed-mn-darwin-x86_64 #
       end
     end
@@ -44,15 +44,15 @@ class Metanorma < Formula
     if Hardware::CPU.arm?
       resource "packed-mn" do
         # > formula-set-version.sh packed-mn-linux-arm #
-        url "https://github.com/metanorma/packed-mn/releases/download/v1.12.5/metanorma-linux-aarch64.tgz"
-        sha256 "23beca72bf87728360201c078cbdae0df8b576e24b1469b8b6b5a76dfc3e938e"
+        url "https://github.com/metanorma/packed-mn/releases/download/v1.12.6/metanorma-linux-aarch64.tgz"
+        sha256 "bfbd9892ecde63eafa172182728d3bb3929d9f2851e0e1438fec9b61f8df20fc"
         # < formula-set-version.sh packed-mn-linux-arm #
       end
     else # assume Hardware::CPU.intel
       resource "packed-mn" do
         # > formula-set-version.sh packed-mn-linux #
-        url "https://github.com/metanorma/packed-mn/releases/download/v1.12.5/metanorma-linux-x86_64.tgz"
-        sha256 "652d32fb6433f75f38960f960ea300fe77fd68f8839c09c9d3d73e0dfe712745"
+        url "https://github.com/metanorma/packed-mn/releases/download/v1.12.6/metanorma-linux-x86_64.tgz"
+        sha256 "3fbe39bf05dd8025102b889392e2052cd87033bc992a3fbb3342457076d16f97"
         # < formula-set-version.sh packed-mn-linux #
       end
     end
