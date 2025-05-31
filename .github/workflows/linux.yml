@@ -21,11 +21,11 @@ jobs:
         include:
           # One x64 and one arm enough?
           - os: ubuntu-24.04
-            formula: metanorma-dev
+            formula: metanorma-src
             executable: metanorma
             experimental: true
           - os: ubuntu-22.04-arm
-            formula: metanorma-dev
+            formula: metanorma-src
             executable: metanorma
             experimental: true
     steps:
