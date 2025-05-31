@@ -23,7 +23,7 @@ class MetanormaSrc < Formula
   def install
     ENV["GEM_HOME"] = libexec
     system "gem", "install", cached_download, "--no-document"
-    bin.install Dir["#{libexec}/bin/*"]
+    bin.install Dir["#{libexec}/bin/metanorma"]
     bin.env_script_all_files(libexec/"bin", GEM_HOME: ENV["GEM_HOME"])
   end
 
