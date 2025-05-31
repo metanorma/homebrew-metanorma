@@ -16,11 +16,11 @@ jobs:
         formula: [ metanorma ]
         experimental: [ false ]
         include:
-          - formula: metanorma-dev
+          - formula: metanorma-src
             os: macos-15
             experimental: true
             executable: metanorma
-          - formula: metanorma-dev
+          - formula: metanorma-src
             os: macos-13
             experimental: true
             executable: metanorma
