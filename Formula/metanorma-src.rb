@@ -1,6 +1,4 @@
 class MetanormaSrc < Formula
-  include Language::Python::Virtualenv
-
   desc "Toolchain for publishing metanorma documentation"
   homepage "https://www.metanorma.com"
 
