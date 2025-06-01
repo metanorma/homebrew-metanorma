@@ -30,9 +30,9 @@ class Metanorma < Formula
     ENV["LDFLAGS"] = "-L#{Formula["zlib"].opt_lib}"
     ENV["PKG_CONFIG_PATH"] = "#{Formula["zlib"].opt_lib}/pkgconfig"
 
-    system "gem", "install", cached_download, "--no-document", "--platform=ruby"
-    #system "gem", "install", "pngcheck", "--platform", Gem::Platform::RUBY.to_s, "--no-document"
-    #system "gem", "install", "sqlite3", "--platform", Gem::Platform::RUBY.to_s, "--no-document"
+    system "gem", "install", cached_download, "--no-document"
+    system "gem", "install", "pngcheck", "--no-document", "--platform=ruby", "--force"
+    system "gem", "install", "sqlite3", "--no-document", "--platform=ruby", "--force"
 
     bin.install Dir["#{libexec}/bin/metanorma"]
     bin.env_script_all_files(
