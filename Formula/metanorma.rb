@@ -12,6 +12,7 @@ class Metanorma < Formula
   depends_on "graphviz"
   depends_on "openjdk"
   depends_on "plantuml"
+  depends_on "readline"
   depends_on "ruby"
   depends_on "xml2rfc"
 
@@ -26,7 +27,12 @@ class Metanorma < Formula
     ENV["GEM_HOME"] = libexec
     system "gem", "install", cached_download, "--no-document"
     bin.install Dir["#{libexec}/bin/metanorma"]
-    bin.env_script_all_files(libexec/"bin", GEM_HOME: ENV["GEM_HOME"])
+    bin.env_script_all_files(
+      libexec/"bin",
+      PATH:      [libexec/"bin", "$PATH"].join(":"),
+      GEM_HOME:  ENV["GEM_HOME"],
+      JAVA_HOME: Language::Java.java_home("1.8+"),
+      )
   end
 
   def caveats
