@@ -1,4 +1,4 @@
-class MetanormaSrc < Formula
+class Metanorma < Formula
   desc "Toolchain for publishing metanorma documentation"
   homepage "https://www.metanorma.com"
 
@@ -7,12 +7,15 @@ class MetanormaSrc < Formula
 
   license "0BSD"
 
+  depends_on "pkgconf" => :build
   depends_on "gflags"
   depends_on "graphviz"
   depends_on "openjdk"
   depends_on "plantuml"
-  depends_on "ruby"
-  depends_on "xml2rfc" # required by 'metanorma-ietf' gem
+  depends_on "xml2rfc"
+
+  uses_from_macos "ruby"
+  uses_from_macos "zlib"
 
   on_linux do
     depends_on "libxslt"
