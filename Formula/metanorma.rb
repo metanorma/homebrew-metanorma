@@ -1165,7 +1165,7 @@ class Metanorma < Formula
 
   resource "extract_ttc" do
     url "https://rubygems.org/gems/extract_ttc-0.3.6-x86_64-darwin.gem"
-    sha256 "6f3b2b982782adf7692f9adb473e282878f6145da47f622d2c1b896878308081"
+    sha256 "cdc8bb4f7d78ab63489192a28d29d11994530103afa43fbd7007e727a1f10fa6"
   end
 
   resource "down" do
