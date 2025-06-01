@@ -23,7 +23,6 @@ class Metanorma < Formula
     depends_on "zlib" => :build
   end
 
-=begin
   resource "socksify" do
     url "https://rubygems.org/gems/socksify-1.7.1.gem"
     sha256 "d1b2c7ae908ad1a3f1ea5184065e856b7edbabef61b40c00a4231c4f2ebae4ba"
@@ -80,8 +79,8 @@ class Metanorma < Formula
   end
 
   resource "nokogiri" do
-    url "https://rubygems.org/gems/nokogiri-1.18.7-x86_64-darwin.gem"
-    sha256 "081d1aa517454ba3415304e2ea51fe411d6a3a809490d0c4aa42799cada417b7"
+    url "https://rubygems.org/gems/nokogiri-1.18.7.gem"
+    sha256 "6b63ff5defe48f30d1d3b3122f65255ca91df2caf5378c6e0482ce73ff46fb31"
   end
 
   resource "iso639" do
@@ -810,8 +809,8 @@ class Metanorma < Formula
   end
 
   resource "ffi" do
-    url "https://rubygems.org/gems/ffi-1.17.2-x86_64-darwin.gem"
-    sha256 "981f2d4e32ea03712beb26e55e972797c2c5a7b0257955d8667ba58f2da6440e"
+    url "https://rubygems.org/gems/ffi-1.17.2.gem"
+    sha256 "297235842e5947cc3036ebe64077584bff583cd7a4e94e9a02fdec399ef46da6"
   end
 
   resource "bundler" do
@@ -820,8 +819,8 @@ class Metanorma < Formula
   end
 
   resource "pngcheck" do
-    url "https://rubygems.org/gems/pngcheck-0.3.1-x86_64-darwin.gem"
-    sha256 "22ae86c9939e41e8a6668472dba9c889115e974724240a4175f5a5d9a84b1c8c"
+    url "https://rubygems.org/gems/pngcheck-0.3.1.gem"
+    sha256 "d0abd18190ca2b5098ba82862493bb6ef701ce20cb4baa34650a906a066f1e29"
   end
 
   resource "optout" do
@@ -1065,8 +1064,8 @@ class Metanorma < Formula
   end
 
   resource "emf2svg" do
-    url "https://rubygems.org/gems/emf2svg-1.4.3-x86_64-darwin.gem"
-    sha256 "0fcb77ed6ee43f7dd08823fd9231ca04f0732eb52c0fb87a8f27a31315582450"
+    url "https://rubygems.org/gems/emf2svg-1.4.3.gem"
+    sha256 "ee549502d3a0863906fe0a0a241667ccc099544e664459c9e75adc4002ec7c51"
   end
 
   resource "vectory" do
@@ -1166,7 +1165,7 @@ class Metanorma < Formula
 
   resource "extract_ttc" do
     url "https://rubygems.org/gems/extract_ttc-0.3.6-x86_64-darwin.gem"
-    sha256 "cdc8bb4f7d78ab63489192a28d29d11994530103afa43fbd7007e727a1f10fa6"
+    sha256 "6f3b2b982782adf7692f9adb473e282878f6145da47f622d2c1b896878308081"
   end
 
   resource "down" do
@@ -1259,62 +1258,60 @@ class Metanorma < Formula
     sha256 "51aff2d0307c85e9a9c7df6c6af36b5b49b96e77fbdc63c0ba174315f74d7618"
   end
 
-  resource "metanorma" do
+  resource "metanorma-iho" do
     url "https://rubygems.org/gems/metanorma-iho-1.1.4.gem"
     sha256 "04003c777d782a72a940a5802a28d533aae6f87d651d0893a08cb7f775f80f01"
   end
 
-  resource "metanorma" do
+  resource "metanorma-ietf-data" do
     url "https://rubygems.org/gems/metanorma-ietf-data-0.2.0.gem"
     sha256 "3bae28b99b24212cc8b92dc3def3559dbeaf8868b319da8c21d42bda3f09bbf7"
   end
 
-  resource "metanorma" do
+  resource "metanorma-ietf" do
     url "https://rubygems.org/gems/metanorma-ietf-3.5.4.gem"
     sha256 "a0eb5dfdf022f6e28202fdd0b654ac253f7bcf397ae1c35c772c9957a205798b"
   end
 
-  resource "metanorma" do
+  resource "metanorma-ieee" do
     url "https://rubygems.org/gems/metanorma-ieee-1.4.4.gem"
     sha256 "9b6e90618ec18d70e3d866dfa77bc53a527d12fca6bc5c37eb8fee76df295251"
   end
 
-  resource "metanorma" do
+  resource "metanorma-iec" do
     url "https://rubygems.org/gems/metanorma-iec-2.6.4.gem"
     sha256 "9586c6d21e4608d6c1cbcf33f774041f8e42ea929619906b7a5fc007527d9729"
   end
 
-  resource "metanorma" do
+  resource "metanorma-csa" do
     url "https://rubygems.org/gems/metanorma-csa-2.6.4.gem"
     sha256 "8e4a6202ffd364843a70610f2646c7405ac2834cee969252880c32ea87d2f19d"
   end
 
-  resource "metanorma" do
+  resource "metanorma-cc" do
     url "https://rubygems.org/gems/metanorma-cc-2.6.4.gem"
     sha256 "567ec6c9150da347799dc7c83886dacf7b1e11b5f1c40786133b04cdb2723a4a"
   end
 
-  resource "metanorma" do
+  resource "metanorma-bipm" do
     url "https://rubygems.org/gems/metanorma-bipm-2.6.5.gem"
     sha256 "fea839398dd1efcbc7235a72dc748bb96a27db19ed1e0cd094544eddc05fea33"
   end
-=end
 
   def install
     ENV["GEM_HOME"] = libexec
 
-    #ENV["CPPFLAGS"] = "-I#{Formula["zlib"].opt_include}"
-    #ENV["LDFLAGS"] = "-L#{Formula["zlib"].opt_lib}"
-    #ENV["PKG_CONFIG_PATH"] = "#{Formula["zlib"].opt_lib}/pkgconfig"
-
     resources.each do |r|
       r.fetch
-      system "gem", "install", r.cached_download, "--no-document", "--install-dir", libexec, "--ignore-dependencies"
+      args = ["--ignore-dependencies", "--no-document", "--install-dir", libexec]
+      args += ["--platform=ruby", "--force"] if r.name == "pngcheck" or r.name == "sqlite3"
+      system "gem", "install", r.cached_download, *args
+      # system "gem", "install", r.cached_download, "--no-document", "--install-dir", libexec, "--ignore-dependencies"
     end
 
     system "gem", "install", cached_download, "--no-document", "--ignore-dependencies"
-    system "gem", "install", "pngcheck", "--no-document", "--platform=ruby", "--force"
-    system "gem", "install", "sqlite3", "--no-document", "--platform=ruby", "--force"
+    #system "gem", "install", "pngcheck", "--no-document", "--platform=ruby", "--force"
+    #system "gem", "install", "sqlite3", "--no-document", "--platform=ruby", "--force"
 
     bin.install Dir["#{libexec}/bin/metanorma"]
     bin.env_script_all_files(
@@ -1334,7 +1331,6 @@ class Metanorma < Formula
   end
 
   test do
-=begin
     test_doc = <<~ADOC
       = Document title
       Author
@@ -1355,6 +1351,5 @@ class Metanorma < Formula
            "--agree-to-terms"
     assert_path_exists testpath / "test-csa.pdf"
     assert_path_exists testpath / "test-csa.html"
-=end
   end
 end
