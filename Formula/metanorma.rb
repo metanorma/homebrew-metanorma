@@ -1313,8 +1313,8 @@ class Metanorma < Formula
     end
 
     system "gem", "install", cached_download, "--no-document", "--ignore-dependencies"
-    #system "gem", "install", "pngcheck", "--no-document", "--platform=ruby", "--force"
-    #system "gem", "install", "sqlite3", "--no-document", "--platform=ruby", "--force"
+    system "gem", "install", "pngcheck", "--no-document", "--platform=ruby", "--force"
+    system "gem", "install", "sqlite3", "--no-document", "--platform=ruby", "--force"
 
     bin.install Dir["#{libexec}/bin/metanorma"]
     bin.env_script_all_files(
