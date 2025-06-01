@@ -16,11 +16,11 @@ class Metanorma < Formula
   depends_on "ruby@3.3"
   depends_on "xml2rfc"
 
-  uses_from_macos "zlib"
+  #uses_from_macos "zlib"
 
   on_linux do
     depends_on "libxslt"
-    depends_on "zlib"
+    #depends_on "zlib"
   end
 
   def install

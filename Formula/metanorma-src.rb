@@ -1,4 +1,4 @@
-class Metanorma < Formula
+class MetanormaSrc < Formula
   desc "Toolchain for publishing metanorma documentation"
   homepage "https://www.metanorma.com"
 

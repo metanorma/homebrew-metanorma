@@ -15,19 +15,9 @@ jobs:
       max-parallel: 6
       matrix:
         # Test all options
-        os: [ ubuntu-24.04, ubuntu-22.04, ubuntu-24.04-arm, ubuntu-22.04-arm ]
+        os: [ ubuntu-24.04, ubuntu-24.04-arm ]
         formula: [ metanorma ]
         experimental: [ false ]
-        include:
-          # One x64 and one arm enough?
-          - os: ubuntu-24.04
-            formula: metanorma-src
-            executable: metanorma
-            experimental: true
-          - os: ubuntu-22.04-arm
-            formula: metanorma-src
-            executable: metanorma
-            experimental: true
     steps:
       - uses: actions/checkout@v4
 

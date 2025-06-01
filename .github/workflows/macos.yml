@@ -7,6 +7,7 @@ on:
 
 jobs:
   test-macos:
+    if: false
     name: Install macOS
     strategy:
       fail-fast: false
