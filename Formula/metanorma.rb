@@ -8,6 +8,9 @@ class Metanorma < Formula
   license "0BSD"
 
   depends_on "pkgconf" => :build
+  # depends_on "cmake"
+  # depends_on "make"
+  # depends_on "gcc"
   depends_on "gflags"
   depends_on "graphviz"
   depends_on "openjdk"
@@ -23,6 +26,7 @@ class Metanorma < Formula
     depends_on "zlib" => :build
   end
 
+=begin
   resource "mini_portile2" do
     url "https://rubygems.org/gems/mini_portile2-2.8.8.gem"
     sha256 "8e47136cdac04ce81750bb6c09733b37895bf06962554e4b4056d78168d70a75"
@@ -1063,10 +1067,10 @@ class Metanorma < Formula
     sha256 "c6a580513fe74947e25e5d3f0aea1e33add6c20f7d0007efa65504317b7f029a"
   end
 
-  resource "emf2svg" do
-    url "https://rubygems.org/gems/emf2svg-1.4.3.gem"
-    sha256 "ee549502d3a0863906fe0a0a241667ccc099544e664459c9e75adc4002ec7c51"
-  end
+  #resource "emf2svg" do
+  #  url "https://rubygems.org/gems/emf2svg-1.4.3.gem"
+  #  sha256 "ee549502d3a0863906fe0a0a241667ccc099544e664459c9e75adc4002ec7c51"
+  #end
 
   resource "vectory" do
     url "https://rubygems.org/gems/vectory-0.7.7.gem"
@@ -1297,21 +1301,38 @@ class Metanorma < Formula
     url "https://rubygems.org/gems/metanorma-bipm-2.6.5.gem"
     sha256 "fea839398dd1efcbc7235a72dc748bb96a27db19ed1e0cd094544eddc05fea33"
   end
+=end
+
+  def delete_selected_gems(gem_names)
+    gem_names.each do |gem_name|
+      gem_dir = Pathname.glob("#{libexec}/gems/#{gem_name}-*").first
+      rm_r(gem_dir)
+    end
+  end
 
   def install
     ENV["GEM_HOME"] = libexec
 
-    resources.each do |r|
-      r.fetch
-      args = ["--ignore-dependencies", "--no-document", "--install-dir", libexec]
-      args += ["--platform=ruby", "--force"] if r.name == "pngcheck" or r.name == "sqlite3"
-      system "gem", "install", r.cached_download, *args
-      # system "gem", "install", r.cached_download, "--no-document", "--install-dir", libexec, "--ignore-dependencies"
-    end
+    #    resources.each do |r|
+    #  r.fetch
+    #  args = ["--ignore-dependencies", "--no-document", "--install-dir", libexec]
+    #  args += ["--platform=ruby", "--force"] if r.name == "pngcheck" or r.name == "sqlite3"
+    #  system "gem", "install", r.cached_download, *args
+    #  # system "gem", "install", r.cached_download, "--no-document", "--install-dir", libexec, "--ignore-dependencies"
+    #end
 
-    system "gem", "install", cached_download, "--no-document", "--ignore-dependencies"
-    #system "gem", "install", "pngcheck", "--no-document", "--platform=ruby", "--force"
-    #system "gem", "install", "sqlite3", "--no-document", "--platform=ruby", "--force"
+    #system "gem", "install", "emf2svg"
+
+    system "gem", "install", cached_download, "--no-document"
+
+    delete_selected_gems(%w[pngcheck sqlite3])
+
+    # Reinstall selected gems as pure Ruby (or platform-agnostic)
+    %w[pngcheck sqlite3].each do |gem_name|
+      system "gem", "install", gem_name, "--no-document", "--platform=ruby", "--force"
+    end
+    # system "gem", "install", "pngcheck", "--no-document", "--platform=ruby", "--force"
+    # system "gem", "install", "sqlite3", "--no-document", "--platform=ruby", "--force"
 
     bin.install Dir["#{libexec}/bin/metanorma"]
     bin.env_script_all_files(
