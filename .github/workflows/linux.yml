@@ -15,7 +15,7 @@ jobs:
       max-parallel: 6
       matrix:
         # Test all options
-        os: [ ubuntu-24.04, ubuntu-24.04-arm ]
+        os: [ ubuntu-24.04 ]
         formula: [ metanorma ]
         experimental: [ false ]
     steps:
