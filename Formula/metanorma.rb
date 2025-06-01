@@ -25,6 +25,11 @@ class Metanorma < Formula
 
   def install
     ENV["GEM_HOME"] = libexec
+
+    ENV["CPPFLAGS"] = "-I#{Formula["zlib"].opt_include}"
+    ENV["LDFLAGS"] = "-L#{Formula["zlib"].opt_lib}"
+    ENV["PKG_CONFIG_PATH"] = "#{Formula["zlib"].opt_lib}/pkgconfig"
+
     system "gem", "install", cached_download, "--no-document"
     bin.install Dir["#{libexec}/bin/metanorma"]
     bin.env_script_all_files(
