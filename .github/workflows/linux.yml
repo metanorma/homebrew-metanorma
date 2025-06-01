@@ -46,6 +46,8 @@ jobs:
         # To ignore potential: The `brew link` step did not complete successfully
         # continue-on-error: true
 
+      - run: brew linkage ${{ matrix.formula }}
+
       - run: brew linkage --test ${{ matrix.formula }}
 
       - run: which ${{ matrix.executable || matrix.formula }}
