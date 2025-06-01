@@ -23,6 +23,11 @@ class Metanorma < Formula
     depends_on "zlib" => :build
   end
 
+  resource "mini_portile2" do
+    url "https://rubygems.org/gems/mini_portile2-2.8.8.gem"
+    sha256 "8e47136cdac04ce81750bb6c09733b37895bf06962554e4b4056d78168d70a75"
+  end
+
   resource "socksify" do
     url "https://rubygems.org/gems/socksify-1.7.1.gem"
     sha256 "d1b2c7ae908ad1a3f1ea5184065e856b7edbabef61b40c00a4231c4f2ebae4ba"
@@ -596,11 +601,6 @@ class Metanorma < Formula
   resource "relaton" do
     url "https://rubygems.org/gems/relaton-ietf-1.20.0.gem"
     sha256 "b6f5a948032c095e2bd2dec56574d02a2454f345340b18985d7ffbef747a46e0"
-  end
-
-  resource "mini_portile2" do
-    url "https://rubygems.org/gems/mini_portile2-2.8.8.gem"
-    sha256 "8e47136cdac04ce81750bb6c09733b37895bf06962554e4b4056d78168d70a75"
   end
 
   resource "ieee" do
