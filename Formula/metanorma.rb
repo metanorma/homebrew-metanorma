@@ -16,11 +16,11 @@ class Metanorma < Formula
   depends_on "ruby@3.3"
   depends_on "xml2rfc"
 
-  # uses_from_macos "ruby"
   uses_from_macos "zlib"
 
   on_linux do
     depends_on "libxslt"
+    depends_on "zlib"
   end
 
   def install
@@ -33,11 +33,6 @@ class Metanorma < Formula
       GEM_HOME:  ENV["GEM_HOME"],
       JAVA_HOME: Language::Java.java_home("1.8+"),
       )
-
-    # Clean up shim references
-    # rm_rf Dir[
-    #   "#{libexec}/gems/sqlite3-*/ext/sqlite3/tmp/**/*.{log,Makefile,libtool,config.*}"
-    #   ]
   end
 
   def caveats
