@@ -19,11 +19,11 @@ class Metanorma < Formula
   depends_on "ruby@3.3"
   depends_on "xml2rfc"
 
-  uses_from_macos "zlib" => :build
+  uses_from_macos "zlib"
 
   on_linux do
     depends_on "libxslt"
-    depends_on "zlib" => :build
+    depends_on "zlib"
   end
 
 =begin
@@ -1306,12 +1306,14 @@ class Metanorma < Formula
   def delete_selected_gems(gem_names)
     gem_names.each do |gem_name|
       gem_dir = Pathname.glob("#{libexec}/gems/#{gem_name}-*").first
+      puts "Deleting #{gem_name}"
       rm_r(gem_dir)
     end
   end
 
   def install
     ENV["GEM_HOME"] = libexec
+    ENV["GEM_PATH"] = libexec
 
     #    resources.each do |r|
     #  r.fetch
@@ -1325,12 +1327,12 @@ class Metanorma < Formula
 
     system "gem", "install", cached_download, "--no-document"
 
-    delete_selected_gems(%w[pngcheck sqlite3])
+    #delete_selected_gems(%w[pngcheck sqlite3])
 
     # Reinstall selected gems as pure Ruby (or platform-agnostic)
-    %w[pngcheck sqlite3].each do |gem_name|
-      system "gem", "install", gem_name, "--no-document", "--platform=ruby", "--force"
-    end
+    #%w[pngcheck sqlite3].each do |gem_name|
+    #  system "gem", "install", gem_name, "--no-document", "--platform=ruby", "--force", "--ignore-dependencies"
+    #end
     # system "gem", "install", "pngcheck", "--no-document", "--platform=ruby", "--force"
     # system "gem", "install", "sqlite3", "--no-document", "--platform=ruby", "--force"
 
