@@ -39,9 +39,25 @@ class Metanorma < Formula
     ENV["GEM_HOME"] = libexec
     ENV["GEM_PATH"] = libexec
 
-    system "gem", "install", "sqlite3", "--no-document", "--platform=ruby", "--force", "--", "--with-sqlite3-lib=" + Formula["sqlite"].opt_lib/shared_library("libsqlite3")
+    # Ensure Homebrew's libsqlite is found before the system version.
+    #sqlite = Formula["sqlite"]
+    #ENV.append "LDFLAGS", "-L#{sqlite.opt_lib}"
+    #ENV.append "CFLAGS", "-I#{sqlite.opt_include}"
+
+    puts(Formula["sqlite"].opt_lib/shared_library("libsqlite3"))
+
+    system "gem", "install", "sqlite3", "--no-document", "--platform=ruby", "--force",
+           "--",
+           "--enable-system-libraries",
+           "--with-sqlite3-include=" + Formula["sqlite"].opt_include, "--with-sqlite3-lib=" + Formula["sqlite"].opt_lib
+
+    #system "gem", "contents", "sqlite3"
 
     system "gem", "install", cached_download, "--no-document"
+
+    system "gem", "contents", "sqlite3"
+
+    #system "find", libexec.to_s, "-type", "f"
 
     bin.install Dir["#{libexec}/bin/metanorma"]
     bin.env_script_all_files(
