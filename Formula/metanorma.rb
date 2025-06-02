@@ -46,7 +46,7 @@ class Metanorma < Formula
 
     puts(Formula["sqlite"].opt_lib/shared_library("libsqlite3"))
 
-    system "gem", "install", "sqlite3", "--no-document", "--platform=ruby", "--force",
+    system "gem", "install", "sqlite3", "-v", "1.7.3", "--no-document", "--platform=ruby", "--force",
            "--",
            "--enable-system-libraries",
            "--with-sqlite3-include=" + Formula["sqlite"].opt_include, "--with-sqlite3-lib=" + Formula["sqlite"].opt_lib
