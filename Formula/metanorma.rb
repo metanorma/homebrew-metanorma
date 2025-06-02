@@ -12,9 +12,9 @@ class Metanorma < Formula
   # depends_on "make"
   # depends_on "gcc"
   depends_on "gflags"
-  depends_on "graphviz"
-  depends_on "openjdk"
-  depends_on "plantuml"
+  #depends_on "graphviz"
+  #depends_on "openjdk"
+  #depends_on "plantuml"
   depends_on "readline"
   depends_on "ruby@3.3"
   depends_on "sqlite"
@@ -51,7 +51,11 @@ class Metanorma < Formula
            "--enable-system-libraries",
            "--with-sqlite3-include=" + Formula["sqlite"].opt_include, "--with-sqlite3-lib=" + Formula["sqlite"].opt_lib
 
-    #system "gem", "contents", "sqlite3"
+    ENV.append "CFLAGS", "-I$(brew --prefix zlib)/include"
+    ENV.append "LDFLAGS", "-L$(brew --prefix zlib)/lib -Wl,-rpath,$(brew --prefix zlib)/lib"
+    ENV.append "PKG_CONFIG_PATH", "$(brew --prefix zlib)/lib/pkgconfig"
+
+    system "gem", "install", "pngcheck", "--no-document", "--platform=ruby"
 
     system "gem", "install", cached_download, "--no-document"
 
