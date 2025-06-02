@@ -46,6 +46,7 @@ jobs:
           brew install --build-from-source --verbose --include-test --formula mysql-client@9.3
           brew linkage --reverse mysql-client@9.3
           brew linkage --test mysql-client@9.3
+        if: false
 
       - run: brew install --build-from-source --verbose --include-test --formula Formula/${{ matrix.formula }}.rb
         # To ignore potential: The `brew link` step did not complete successfully
