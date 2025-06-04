@@ -7,7 +7,6 @@ on:
 
 jobs:
   test-macos:
-    if: false
     name: Install macOS
     strategy:
       fail-fast: false
@@ -16,15 +15,6 @@ jobs:
         os: [ macos-15, macos-14, macos-13 ]
         formula: [ metanorma ]
         experimental: [ false ]
-        include:
-          - formula: metanorma-src
-            os: macos-15
-            experimental: true
-            executable: metanorma
-          - formula: metanorma-src
-            os: macos-13
-            experimental: true
-            executable: metanorma
 
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
@@ -58,6 +48,13 @@ jobs:
         #    The offending files are:
         #      libexec/gems/sqlite3-1.7.3/ext/sqlite3/tmp/arm64-apple-darwin24.4.0/ports/sqlite3/3.45.2/sqlite-autoconf-3450200/config.log
         continue-on-error: ${{ matrix.experimental }}
+
+      - run: which ${{ matrix.executable || matrix.formula }}
+
+      - run: |
+          brew linkage ${{ matrix.formula }}
+          brew linkage --reverse ${{ matrix.formula }}
+          brew linkage --test ${{ matrix.formula }}
 
       - run: which ${{ matrix.executable || matrix.formula }}
 
