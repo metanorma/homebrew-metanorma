@@ -48,7 +48,7 @@ class Metanorma < Formula
       libexec/"bin",
       PATH:      [libexec/"bin", "$PATH"].join(":"),
       GEM_HOME:  ENV["GEM_HOME"],
-      JAVA_HOME: ENV["JAVA_HOME"] || Language::Java.java_home("1.8+"),
+      JAVA_HOME: Language::Java.overridable_java_home_env(""),
       )
   end
 
