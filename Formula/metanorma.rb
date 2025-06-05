@@ -34,6 +34,10 @@ class Metanorma < Formula
       cp_r ".", buildpath
     end
 
+    system "bundle", "config", "build.sqlite3",
+           "--with-sqlite3-include=#{Formula["sqlite"].opt_include} " \
+             "--with-sqlite3-lib=#{Formula["sqlite"].opt_lib}"
+
     # Install dependencies from lockfile
     system "bundle", "config", "set", "--local", "path", libexec
     system "bundle", "install", "--local"
