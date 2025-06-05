@@ -20,14 +20,23 @@ class Metanorma < Formula
     depends_on "libxslt"
   end
 
-  resource "gemfiles" do
-    url "https://github.com/alex-sc/homebrew-core/releases/download/gemlock/metanorma-cli-gemlock.tar.gz"
-    sha256 "2fae75bc8e464edb681d34844d7951c32ede11e8cc83952b65986e6a7f6cd0ca"
+  resource "vendor-gems" do
+    url "https://github.com/alex-sc/homebrew-core/releases/download/gemlock/vendored-gems.tar.gz"
+    sha256 "ea6edeb3bcefd1fb37e6098d2604cbd6502bc264755492cfd3891043226ca64b"
   end
 
   def install
     ENV["GEM_HOME"] = libexec
     ENV["GEM_PATH"] = libexec
+
+    # Unpack the vendored gems (includes Gemfile, Gemfile.lock, vendor/cache/*.gem)
+    resource("vendor-gems").stage do
+      cp_r ".", buildpath
+    end
+
+    # Install dependencies from lockfile
+    system "bundle", "config", "set", "--local", "path", libexec
+    system "bundle", "install", "--local"
 
     if OS.linux?
       # Install sqlite3 with brew's libsqlite3
@@ -45,19 +54,8 @@ class Metanorma < Formula
       system "gem", "install", "pngcheck", "--no-document", "--platform=ruby"
     end
 
-    # Install main gem from downloaded .gem file
-    #system "gem", "install", cached_download, "--install-dir=#{libexec}", "--no-document", "--ignore-dependencies"
-
-    # Stage Gemfile and Gemfile.lock from resource
-    resource("gemfiles").stage do
-      cp "Gemfile", buildpath
-      cp "Gemfile.lock", buildpath
-    end
-
-    # Use the lockfile to install exact dependencies
-    system "gem", "install", "bundler", "--install-dir=#{libexec}", "--no-document"
-    system "#{libexec}/bin/bundle", "config", "set", "--local", "path", libexec
-    system "#{libexec}/bin/bundle", "install"
+    # Install metanorma-cli itself (already downloaded)
+    system "gem", "install", cached_download, "--install-dir=#{libexec}", "--ignore-dependencies", "--no-document"
 
     bin.install Dir["#{libexec}/bin/metanorma"]
     bin.env_script_all_files(
