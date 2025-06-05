@@ -21,8 +21,8 @@ class Metanorma < Formula
   end
 
   resource "vendor-gems" do
-    url "https://github.com/alex-sc/homebrew-core/releases/download/gemlock/vendored-gems2.tar.gz"
-    sha256 "35273f66e5149419ea4ea93a909d95c8a7833d6e8e0bc8bbcd163a1ff12baab6"
+    url "https://github.com/alex-sc/homebrew-core/releases/download/gemlock/vendored-gems3.tar.gz"
+    sha256 "95734ab68162d6ea0e52c2e02bb5f271ab80924d37ec966b2c0ad93e6f468edd"
   end
 
   def install

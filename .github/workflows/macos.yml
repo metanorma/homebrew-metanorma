@@ -7,6 +7,7 @@ on:
 
 jobs:
   generate-lockfile:
+    if: false
     runs-on: ubuntu-latest
 
     steps:
@@ -16,29 +17,23 @@ jobs:
           ruby-version: 3.3
           bundler-cache: true
 
-      - name: Create Gemfile
-        run: |
-          echo "source 'https://rubygems.org'" > Gemfile
-          echo "gem 'metanorma-cli', '1.12.8'" >> Gemfile
-
       - name: Install bundler
         run: gem install bundler
 
       - name: Add multiple platforms to lockfile
         run: |
-          bundle lock --add-platform x86_64-linux
-          bundle lock --add-platform x64-mingw32
-          bundle lock --add-platform arm64-darwin
-          bundle lock --add-platform x86_64-darwin
+          echo 'source "https://rubygems.org"' > Gemfile
+          echo 'gem "metanorma-cli", "1.12.8"' >> Gemfile
+          bundle lock --add-platform x86_64-linux aarch64-linux x86_64-darwin arm64-darwin ruby
+          bundle config set --local cache_all true
+          # bundle install          
+          bundle package --all-platforms
 
-      - name: Install dependencies
-        run: bundle install
-
-      - name: Upload lockfile artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: gemfile-lock
-          path: Gemfile.lock
+      #- name: Upload lockfile artifact
+      #  uses: actions/upload-artifact@v4
+      #  with:
+      #    name: gemfile-lock
+      #    path: Gemfile.lock
 
   test-macos:
     name: Install macOS
