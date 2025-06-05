@@ -34,29 +34,22 @@ class Metanorma < Formula
       cp_r ".", buildpath
     end
 
-    system "bundle", "config", "build.sqlite3",
-           "--with-sqlite3-include=#{Formula["sqlite"].opt_include} " \
-             "--with-sqlite3-lib=#{Formula["sqlite"].opt_lib}"
+    if OS.linux?
+      # Configure sqlite3 to use brew's libsqlite3
+      system "bundle", "config", "build.sqlite3",
+             "--with-sqlite3-include=#{Formula["sqlite"].opt_include} " \
+               "--with-sqlite3-lib=#{Formula["sqlite"].opt_lib}"
+
+
+      # Configure pngcheck to use brew's zlib (libz.so.1)
+      ENV.append "CFLAGS", "-I$(brew --prefix zlib)/include"
+      ENV.append "LDFLAGS", "-L$(brew --prefix zlib)/lib -Wl,-rpath,$(brew --prefix zlib)/lib"
+      ENV.append "PKG_CONFIG_PATH", "$(brew --prefix zlib)/lib/pkgconfig"
+    end
 
     # Install dependencies from lockfile
     system "bundle", "config", "set", "--local", "path", libexec
     system "bundle", "install", "--local"
-
-    if OS.linux?
-      # Install sqlite3 with brew's libsqlite3
-      system "gem", "install", "sqlite3", "-v", "1.7.3", "--no-document",
-             "--platform=ruby",
-             "--",
-             "--enable-system-libraries",
-             "--with-sqlite3-include=#{Formula["sqlite"].opt_include}",
-             "--with-sqlite3-lib=#{Formula["sqlite"].opt_lib}"
-
-      # Install pngcheck with brew's zlib (libz.so.1)
-      ENV.append "CFLAGS", "-I$(brew --prefix zlib)/include"
-      ENV.append "LDFLAGS", "-L$(brew --prefix zlib)/lib -Wl,-rpath,$(brew --prefix zlib)/lib"
-      ENV.append "PKG_CONFIG_PATH", "$(brew --prefix zlib)/lib/pkgconfig"
-      system "gem", "install", "pngcheck", "--no-document", "--platform=ruby"
-    end
 
     # Install metanorma-cli itself (already downloaded)
     system "gem", "install", cached_download, "--install-dir=#{libexec}", "--ignore-dependencies", "--no-document"
