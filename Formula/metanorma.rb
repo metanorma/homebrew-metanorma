@@ -20,6 +20,11 @@ class Metanorma < Formula
     depends_on "libxslt"
   end
 
+  resource "gemfiles" do
+    url "https://github.com/alex-sc/homebrew-core/releases/download/gemlock/metanorma-cli-gemlock.tar.gz"
+    sha256 "2fae75bc8e464edb681d34844d7951c32ede11e8cc83952b65986e6a7f6cd0ca"
+  end
+
   def install
     ENV["GEM_HOME"] = libexec
     ENV["GEM_PATH"] = libexec
@@ -40,8 +45,19 @@ class Metanorma < Formula
       system "gem", "install", "pngcheck", "--no-document", "--platform=ruby"
     end
 
-    # Install metanorma
-    system "gem", "install", cached_download, "--no-document"
+    # Install main gem from downloaded .gem file
+    #system "gem", "install", cached_download, "--install-dir=#{libexec}", "--no-document", "--ignore-dependencies"
+
+    # Stage Gemfile and Gemfile.lock from resource
+    resource("gemfiles").stage do
+      cp "Gemfile", buildpath
+      cp "Gemfile.lock", buildpath
+    end
+
+    # Use the lockfile to install exact dependencies
+    system "gem", "install", "bundler", "--install-dir=#{libexec}", "--no-document"
+    system "#{libexec}/bin/bundle", "config", "set", "--local", "path", libexec
+    system "#{libexec}/bin/bundle", "install"
 
     bin.install Dir["#{libexec}/bin/metanorma"]
     bin.env_script_all_files(
