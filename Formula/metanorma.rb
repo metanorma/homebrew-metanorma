@@ -48,8 +48,8 @@ class Metanorma < Formula
       libexec/"bin",
       PATH:      [libexec/"bin", "$PATH"].join(":"),
       GEM_HOME:  ENV["GEM_HOME"],
-      JAVA_HOME: Language::Java.overridable_java_home_env(""),
-      )
+      JAVA_HOME: Language::Java.overridable_java_home_env[:JAVA_HOME],
+    )
   end
 
   def caveats
