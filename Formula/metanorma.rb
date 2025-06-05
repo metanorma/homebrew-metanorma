@@ -11,7 +11,7 @@ class Metanorma < Formula
   depends_on "openjdk"
   depends_on "plantuml"
   depends_on "readline"
-  depends_on "ruby@3.3"
+  depends_on "ruby@3.4"
   depends_on "xml2rfc"
 
   uses_from_macos "sqlite"
@@ -21,8 +21,8 @@ class Metanorma < Formula
   end
 
   resource "vendor-gems" do
-    url "https://github.com/alex-sc/homebrew-core/releases/download/gemlock/vendored-gems.tar.gz"
-    sha256 "ea6edeb3bcefd1fb37e6098d2604cbd6502bc264755492cfd3891043226ca64b"
+    url "https://github.com/alex-sc/homebrew-core/releases/download/gemlock/vendored-gems2.tar.gz"
+    sha256 "35273f66e5149419ea4ea93a909d95c8a7833d6e8e0bc8bbcd163a1ff12baab6"
   end
 
   def install
