@@ -11,7 +11,7 @@ class Metanorma < Formula
   depends_on "openjdk"
   depends_on "plantuml"
   depends_on "readline"
-  depends_on "ruby@3.4"
+  depends_on "ruby@3.3"
   depends_on "xml2rfc"
 
   uses_from_macos "sqlite"
@@ -52,7 +52,7 @@ class Metanorma < Formula
     system "bundle", "install", "--local"
 
     # Install metanorma-cli itself (already downloaded)
-    #system "gem", "install", cached_download, "--install-dir=#{libexec}", "--ignore-dependencies", "--no-document"
+    system "gem", "install", cached_download, "--install-dir=#{libexec}", "--ignore-dependencies", "--no-document"
 
     bin.install Dir["#{libexec}/bin/metanorma"]
     bin.env_script_all_files(
