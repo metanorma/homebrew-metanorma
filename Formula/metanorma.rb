@@ -51,7 +51,7 @@ class Metanorma < Formula
     system "bundle", "config", "set", "--local", "path", libexec
     system "bundle", "install", "--local"
 
-    system "gem", "install", cached_download, "--install-dir=#{libexec}", "--ignore-dependencies", "--no-document", "--local"
+    system "gem", "install", cached_download, "--install-dir=#{libexec}", "--no-document", "--local"
 
     bin.install Dir["#{libexec}/bin/metanorma"]
     bin.env_script_all_files(
