@@ -34,13 +34,12 @@ class Metanorma < Formula
       cp_r ".", buildpath
     end
 
+    # Configure sqlite3 to use brew's libsqlite3
+    system "bundle", "config", "build.sqlite3",
+           "--with-sqlite3-include=#{Formula["sqlite"].opt_include} " \
+             "--with-sqlite3-lib=#{Formula["sqlite"].opt_lib}"
+
     if OS.linux?
-      # Configure sqlite3 to use brew's libsqlite3
-      system "bundle", "config", "build.sqlite3",
-             "--with-sqlite3-include=#{Formula["sqlite"].opt_include} " \
-               "--with-sqlite3-lib=#{Formula["sqlite"].opt_lib}"
-
-
       # Configure pngcheck to use brew's zlib (libz.so.1)
       ENV.append "CFLAGS", "-I$(brew --prefix zlib)/include"
       ENV.append "LDFLAGS", "-L$(brew --prefix zlib)/lib -Wl,-rpath,$(brew --prefix zlib)/lib"
@@ -52,7 +51,7 @@ class Metanorma < Formula
     system "bundle", "install", "--local"
 
     # Install metanorma-cli itself (already downloaded)
-    system "gem", "install", cached_download, "--install-dir=#{libexec}", "--ignore-dependencies", "--no-document"
+    #system "gem", "install", cached_download, "--install-dir=#{libexec}", "--ignore-dependencies", "--no-document"
 
     bin.install Dir["#{libexec}/bin/metanorma"]
     bin.env_script_all_files(
