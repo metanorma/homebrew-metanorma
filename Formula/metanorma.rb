@@ -49,10 +49,7 @@ class Metanorma < Formula
 
     # Install dependencies from lockfile
     system "bundle", "config", "set", "--local", "path", libexec
-    system "bundle", "install", "--local"
-
-    # Install metanorma-cli itself (already downloaded)
-    system "gem", "install", cached_download, "--install-dir=#{libexec}", "--ignore-dependencies", "--no-document"
+    system "bundle", "install", "--local", "--binstubs=./bin"
 
     bin.install Dir["#{libexec}/bin/metanorma"]
     bin.env_script_all_files(
