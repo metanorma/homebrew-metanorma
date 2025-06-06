@@ -15,6 +15,7 @@ class Metanorma < Formula
   depends_on "xml2rfc"
 
   uses_from_macos "sqlite"
+  uses_from_macos "zlib"
 
   on_linux do
     depends_on "libxslt"
