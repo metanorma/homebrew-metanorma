@@ -6,6 +6,35 @@ on:
   pull_request:
 
 jobs:
+  generate-vendored-gems:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.4
+          bundler-cache: true
+
+      - name: Install bundler
+        run: gem install bundler
+
+      - name: Generate vendored-gems.tar.gz
+        run: |
+          echo 'source "https://rubygems.org"' > Gemfile
+          echo 'gem "metanorma-cli", "1.12.8"' >> Gemfile
+          bundle lock --add-platform x86_64-linux aarch64-linux x86_64-darwin arm64-darwin ruby
+          bundle config set --local cache_all true
+          # bundle install          
+          bundle package --all-platforms
+          tar -czf vendored-gems.tar.gz Gemfile Gemfile.lock vendor/
+
+      - name: Upload lockfile artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vendored-gems.tar.gz
+          path: vendored-gems.tar.gz
+
   test-macos:
     name: Install macOS
     strategy:
@@ -15,15 +44,6 @@ jobs:
         os: [ macos-15, macos-14, macos-13 ]
         formula: [ metanorma ]
         experimental: [ false ]
-        include:
-          - formula: metanorma-dev
-            os: macos-15
-            experimental: true
-            executable: metanorma
-          - formula: metanorma-dev
-            os: macos-13
-            experimental: true
-            executable: metanorma
 
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
@@ -62,5 +82,12 @@ jobs:
 
       - run: brew test --verbose ${{ matrix.formula }}
         #continue-on-error: true # Because ietf test fails anyway
+
+      - run: |
+          brew linkage ${{ matrix.formula }}
+          brew linkage --reverse ${{ matrix.formula }}
+          brew linkage --test ${{ matrix.formula }}
+
+      - run: which ${{ matrix.executable || matrix.formula }}
 
       - run: brew uninstall ${{ matrix.formula }}
