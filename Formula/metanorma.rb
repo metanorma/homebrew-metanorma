@@ -37,8 +37,9 @@ class Metanorma < Formula
 
     # Configure sqlite3 to use brew's libsqlite3
     system "bundle", "config", "build.sqlite3",
-           "--with-sqlite3-include=#{Formula['sqlite'].opt_include} " \
-             "--with-sqlite3-lib=#{Formula['sqlite'].opt_lib}"
+           "--enable-system-libraries",
+           "--with-sqlite3-include=#{Formula['sqlite'].opt_include} ",
+           "--with-sqlite3-lib=#{Formula['sqlite'].opt_lib}"
 
     if OS.linux?
       zlib = Formula["zlib"]
@@ -47,17 +48,13 @@ class Metanorma < Formula
       ENV.append "PKG_CONFIG_PATH", "#{zlib.opt_lib}/pkgconfig"
     end
 
-    # Install dependencies from lockfile
+    # Install dependencies from lockfile (offline)
     system "bundle", "config", "set", "--local", "path", libexec
     system "bundle", "install", "--local"
 
-    # system "gem", "install", cached_download, "--install-dir=#{libexec}", "--no-document", "--local"
-
-    # "3.4.0"
+    # "3.4.0", not "3.4.x"
     ruby_series = "#{Formula['ruby@3.4'].any_installed_version.major_minor}.0"
-    puts "#{libexec}/ruby/#{ruby_series}/bin/metanorma"
     bin.install Dir["#{libexec}/ruby/#{ruby_series}/bin/metanorma"]
-
     bin.env_script_all_files(
       libexec/"bin",
       PATH:      [libexec/"bin", "$PATH"].join(":"),

@@ -6,21 +6,20 @@ on:
   pull_request:
 
 jobs:
-  generate-lockfile:
-    if: false
+  generate-vendored-gems:
     runs-on: ubuntu-latest
 
     steps:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.3
+          ruby-version: 3.4
           bundler-cache: true
 
       - name: Install bundler
         run: gem install bundler
 
-      - name: Add multiple platforms to lockfile
+      - name: Generate vendored-gems.tar.gz
         run: |
           echo 'source "https://rubygems.org"' > Gemfile
           echo 'gem "metanorma-cli", "1.12.8"' >> Gemfile
@@ -28,12 +27,13 @@ jobs:
           bundle config set --local cache_all true
           # bundle install          
           bundle package --all-platforms
+          tar -czf vendored-gems.tar.gz Gemfile Gemfile.lock vendor/
 
-      #- name: Upload lockfile artifact
-      #  uses: actions/upload-artifact@v4
-      #  with:
-      #    name: gemfile-lock
-      #    path: Gemfile.lock
+      - name: Upload lockfile artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vendored-gems.tar.gz
+          path: vendored-gems.tar.gz
 
   test-macos:
     name: Install macOS
