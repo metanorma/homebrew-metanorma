@@ -37,14 +37,14 @@ class Metanorma < Formula
 
     # Configure sqlite3 to use brew's libsqlite3
     system "bundle", "config", "build.sqlite3",
-           "--with-sqlite3-include=#{Formula["sqlite"].opt_include} " \
-             "--with-sqlite3-lib=#{Formula["sqlite"].opt_lib}"
+           "--with-sqlite3-include=#{Formula['sqlite'].opt_include} " \
+             "--with-sqlite3-lib=#{Formula['sqlite'].opt_lib}"
 
     if OS.linux?
-      # Configure pngcheck to use brew's zlib (libz.so.1)
-      ENV.append "CFLAGS", "-I$(brew --prefix zlib)/include"
-      ENV.append "LDFLAGS", "-L$(brew --prefix zlib)/lib -Wl,-rpath,$(brew --prefix zlib)/lib"
-      ENV.append "PKG_CONFIG_PATH", "$(brew --prefix zlib)/lib/pkgconfig"
+      zlib = Formula["zlib"]
+      ENV.append "CFLAGS", "-I#{zlib.opt_include}"
+      ENV.append "LDFLAGS", "-L#{zlib.opt_lib} -Wl,-rpath,#{zlib.opt_lib}"
+      ENV.append "PKG_CONFIG_PATH", "#{zlib.opt_lib}/pkgconfig"
     end
 
     # Install dependencies from lockfile
@@ -53,8 +53,8 @@ class Metanorma < Formula
 
     # system "gem", "install", cached_download, "--install-dir=#{libexec}", "--no-document", "--local"
 
-    #ruby_series = Formula["ruby@3.4"].any_installed_version.major_minor.to_s
-    ruby_series = "3.4.0"
+    # "3.4.0"
+    ruby_series = "#{Formula['ruby@3.4'].any_installed_version.major_minor}.0"
     puts "#{libexec}/ruby/#{ruby_series}/bin/metanorma"
     bin.install Dir["#{libexec}/ruby/#{ruby_series}/bin/metanorma"]
 
