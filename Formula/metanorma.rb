@@ -51,9 +51,13 @@ class Metanorma < Formula
     system "bundle", "config", "set", "--local", "path", libexec
     system "bundle", "install", "--local"
 
-    system "gem", "install", cached_download, "--install-dir=#{libexec}", "--no-document", "--local"
+    # system "gem", "install", cached_download, "--install-dir=#{libexec}", "--no-document", "--local"
 
-    bin.install Dir["#{libexec}/bin/metanorma"]
+    #ruby_series = Formula["ruby@3.4"].any_installed_version.major_minor.to_s
+    ruby_series = "3.4.0"
+    puts "#{libexec}/ruby/#{ruby_series}/bin/metanorma"
+    bin.install Dir["#{libexec}/ruby/#{ruby_series}/bin/metanorma"]
+
     bin.env_script_all_files(
       libexec/"bin",
       PATH:      [libexec/"bin", "$PATH"].join(":"),
