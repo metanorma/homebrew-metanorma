@@ -11,7 +11,7 @@ class Metanorma < Formula
   depends_on "openjdk"
   depends_on "plantuml"
   depends_on "readline"
-  depends_on "ruby@3.4"
+  depends_on "ruby@3.3"
   depends_on "xml2rfc"
 
   uses_from_macos "sqlite"
@@ -22,8 +22,8 @@ class Metanorma < Formula
   end
 
   resource "vendor-gems" do
-    url "https://github.com/alex-sc/homebrew-core/releases/download/gemlock/vendored-gems3.tar.gz"
-    sha256 "95734ab68162d6ea0e52c2e02bb5f271ab80924d37ec966b2c0ad93e6f468edd"
+    url "https://github.com/metanorma/metanorma-cli/releases/download/v1.12.8/vendored-gems.tar.gz"
+    sha256 "697b48ee98f9baceac914033f8ed48551a64ea96ce1ca7ee6fd46b618745a8bd"
   end
 
   def install
@@ -50,15 +50,21 @@ class Metanorma < Formula
 
     # Install dependencies from lockfile (offline)
     system "bundle", "config", "set", "--local", "path", libexec
-    system "bundle", "install", "--local"
+    system "bundle", "config", "set", "--local", "bin", libexec/"bin"
+    system "bundle", "install", "--local", "--standalone"
+    #system "gem", "install", "vendor/cache/*.gem", "--install-dir=#{libexec}", "--no-document", "--local"
+    # system "gem", "install", "#{name}-#{version}.gem"
 
     # "3.4.0", not "3.4.x"
-    ruby_series = "#{Formula['ruby@3.4'].any_installed_version.major_minor}.0"
-    bin.install Dir["#{libexec}/ruby/#{ruby_series}/bin/metanorma"]
+    #ruby_series = "#{Formula['ruby@3.4'].any_installed_version.major_minor}.0"
+    #bin.install Dir["#{libexec}/ruby/#{ruby_series}/bin/metanorma"]
+    bin.install Dir["#{libexec}/bin/metanorma"]
     bin.env_script_all_files(
       libexec/"bin",
-      PATH:      [libexec/"bin", "$PATH"].join(":"),
-      GEM_HOME:  ENV["GEM_HOME"],
+      PATH: libexec/"bin:#{Formula["ruby@3.3"].opt_bin}:$PATH",
+      #PATH:      [libexec/"bin", "$PATH"].join(":"),
+      GEM_HOME: ENV["GEM_HOME"],
+      GEM_PATH: ENV["GEM_PATH"],
       JAVA_HOME: Language::Java.overridable_java_home_env[:JAVA_HOME],
     )
   end
