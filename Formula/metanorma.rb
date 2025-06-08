@@ -309,7 +309,7 @@ class Metanorma < Formula
     arch = if OS.mac?
              Hardware::CPU.arm? ? "arm64-darwin" : "x86_64-darwin"
            else
-             Hardware::CPU.arm? ? "aarch64-linux-gnu" : "x86_64-linux-gnu"
+             Hardware::CPU.arm? ? "aarch64-linux" : "x86_64-linux"
            end
 
     gems.each { |gem|
@@ -323,7 +323,7 @@ class Metanorma < Formula
 
       args = ["gem", "install", "--local", gem_file, "--install-dir", libexec, "--no-document"]
       args << "--force"
-      if gem == "sqlite3"
+      if gem == "sqlite3-1.7.3"
         # Install sqlite3 with brew's libsqlite3
         args += [
           "--",
