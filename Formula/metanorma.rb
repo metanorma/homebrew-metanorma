@@ -35,6 +35,7 @@ class Metanorma < Formula
     end
 
     gems = [
+      "mini_portile2-2.8.9",
       "link_header-0.0.8",
       "bigdecimal-3.2.2",
       "bcp47_spec-0.2.1",
@@ -148,7 +149,6 @@ class Metanorma < Formula
       "relaton-index-0.2.16",
       "pubid-0.1.2",
       "loc_mods-0.2.7",
-      "mini_portile2-2.8.9",
       "ieee-idams-0.2.14",
       "mechanize-2.14.0",
       "graphql-2.5.9",
@@ -344,7 +344,7 @@ class Metanorma < Formula
       PATH:      [libexec/"bin", "$PATH"].join(":"),
       GEM_HOME:  ENV["GEM_HOME"],
       JAVA_HOME: Language::Java.overridable_java_home_env[:JAVA_HOME],
-      )
+    )
   end
 
   def caveats
