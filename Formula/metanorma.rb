@@ -35,14 +35,6 @@ class Metanorma < Formula
     end
 
     if OS.linux?
-      # Install sqlite3 with brew's libsqlite3
-      system "gem", "install", "sqlite3", "-v", "1.7.3", "--no-document",
-             "--platform=ruby",
-             "--",
-             "--enable-system-libraries",
-             "--with-sqlite3-include=#{Formula["sqlite"].opt_include}",
-             "--with-sqlite3-lib=#{Formula["sqlite"].opt_lib}"
-
       # Install pngcheck with brew's zlib (libz.so.1)
       ENV.append "CFLAGS", "-I$(brew --prefix zlib)/include"
       ENV.append "LDFLAGS", "-L$(brew --prefix zlib)/lib -Wl,-rpath,$(brew --prefix zlib)/lib"
@@ -331,7 +323,18 @@ class Metanorma < Formula
       end
 
       files.each do |gem_file|
-        system "gem", "install", "--local", gem_file, "--install-dir", libexec, "--no-document", "--force"
+        args = ["gem", "install", "--local", gem_file, "--install-dir", libexec, "--no-document"]
+        args << "--force"
+        if OS.linux?
+          # Install sqlite3 with brew's libsqlite3
+          args += [
+            "--",
+            "--enable-system-libraries",
+            "--with-sqlite3-include=#{Formula["sqlite"].opt_include}",
+            "--with-sqlite3-lib=#{Formula["sqlite"].opt_lib}"
+          ]
+        end
+        system(*args)
       end
     end
 
