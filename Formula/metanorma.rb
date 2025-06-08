@@ -1,8 +1,8 @@
 class Metanorma < Formula
   desc "Toolchain for publishing metanorma documentation"
   homepage "https://www.metanorma.com"
-  url "https://rubygems.org/downloads/metanorma-cli-1.12.8.gem"
-  sha256 "b746637b00a051ca409ccf98fc82c12c443d27183c3d4bdd3535ad47eb015573"
+  url "https://github.com/metanorma/metanorma-cli/releases/download/v1.12.8/vendored-gems.tar.gz"
+  sha256 "697b48ee98f9baceac914033f8ed48551a64ea96ce1ca7ee6fd46b618745a8bd"
   license "0BSD"
 
   depends_on "pkgconf" => :build
@@ -38,6 +38,10 @@ class Metanorma < Formula
       cp_r ".", buildpath
     end
 
+    inreplace "Gemfile.lock", "remote: https://rubygems.org/", "remote: file:vendor/cache"
+    inreplace "Gemfile", 'source "https://rubygems.org"', 'source "file:vendor/cache"'
+    system "gem", "install", "metanorma-cli"
+
     # Configure sqlite3 to use brew's libsqlite3
     system "bundle", "config", "build.sqlite3",
            "--enable-system-libraries",
@@ -51,18 +55,15 @@ class Metanorma < Formula
       ENV.append "LDFLAGS", "-L#{zlib.opt_lib} -Wl,-rpath,#{zlib.opt_lib}"
       ENV.append "PKG_CONFIG_PATH", "#{zlib.opt_lib}/pkgconfig"
     end
-
-    # Install dependencies from lockfile (offline)
-    system "bundle", "config", "set", "--local", "path", libexec
-    system "bundle", "config", "set", "--local", "bin", libexec/"bin"
-    system "bundle", "install", "--local", "--standalone"
-
     # "3.4.0", not "3.4.x"
-    ruby_series = "#{Formula['ruby@3.4'].any_installed_version.major_minor}.0"
-    bin.install libexec/"ruby/#{ruby_series}/bin/metanorma"
+    # ruby_series = "#{Formula['ruby@3.4'].any_installed_version.major_minor}.0"
+    # bin.install libexec/"ruby/#{ruby_series}/bin/metanorma"
+    bin.install libexec/"bin/metanorma"
     bin.env_script_all_files(
       libexec/"bin",
       PATH: "#{Formula["ruby@3.4"].opt_bin}:$PATH",
+      #GEM_HOME: ENV["GEM_HOME"],
+      #GEM_PATH: ENV["GEM_PATH"],
       JAVA_HOME: Language::Java.overridable_java_home_env[:JAVA_HOME],
     )
   end
