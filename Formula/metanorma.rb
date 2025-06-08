@@ -38,10 +38,11 @@ class Metanorma < Formula
     # Configure sqlite3 to use brew's libsqlite3
     system "bundle", "config", "build.sqlite3",
            "--enable-system-libraries",
-           "--with-sqlite3-include=#{Formula['sqlite'].opt_include} ",
+           "--with-sqlite3-include=#{Formula['sqlite'].opt_include}",
            "--with-sqlite3-lib=#{Formula['sqlite'].opt_lib}"
 
     if OS.linux?
+      # Configure pngcheck to use brew's zlib (libz.so.1)
       zlib = Formula["zlib"]
       ENV.append "CFLAGS", "-I#{zlib.opt_include}"
       ENV.append "LDFLAGS", "-L#{zlib.opt_lib} -Wl,-rpath,#{zlib.opt_lib}"
@@ -53,13 +54,11 @@ class Metanorma < Formula
     system "bundle", "config", "set", "--local", "bin", libexec/"bin"
     system "bundle", "install", "--local", "--standalone"
 
+    # "3.4.0", not "3.4.x"
     ruby_series = "#{Formula['ruby@3.4'].any_installed_version.major_minor}.0"
     bin.install libexec/"ruby/#{ruby_series}/bin/metanorma"
     bin.env_script_all_files(
       libexec/"bin",
-      #PATH: libexec/"bin:#{Formula["ruby@3.4"].opt_bin}:$PATH",
-      #GEM_HOME: ENV["GEM_HOME"],
-      #GEM_PATH: ENV["GEM_PATH"],
       JAVA_HOME: Language::Java.overridable_java_home_env[:JAVA_HOME],
     )
   end
@@ -83,13 +82,13 @@ class Metanorma < Formula
     ADOC
 
     (testpath / "test-iso.adoc").write(test_doc)
-    system bin / "metanorma", "--type", "iso", testpath / "test-iso.adoc",
+    system "metanorma", "--type", "iso", testpath / "test-iso.adoc",
            "--agree-to-terms"
     assert_path_exists testpath / "test-iso.xml"
     assert_path_exists testpath / "test-iso.html"
 
     (testpath / "test-csa.adoc").write(test_doc)
-    system bin / "metanorma", "--type", "csa", testpath / "test-csa.adoc",
+    system "metanorma", "--type", "csa", testpath / "test-csa.adoc",
            "--agree-to-terms"
     assert_path_exists testpath / "test-csa.pdf"
     assert_path_exists testpath / "test-csa.html"
