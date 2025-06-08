@@ -30,6 +30,9 @@ class Metanorma < Formula
     ENV["GEM_HOME"] = libexec
     ENV["GEM_PATH"] = libexec
 
+    # Ensure Ruby 3.4 is used
+    ENV.prepend_path "PATH", Formula["ruby@3.4"].opt_bin
+
     # Unpack the vendored gems (includes Gemfile, Gemfile.lock, vendor/cache/*.gem)
     resource("vendor-gems").stage do
       cp_r ".", buildpath
@@ -59,6 +62,7 @@ class Metanorma < Formula
     bin.install libexec/"ruby/#{ruby_series}/bin/metanorma"
     bin.env_script_all_files(
       libexec/"bin",
+      PATH: "#{Formula["ruby@3.4"].opt_bin}:$PATH",
       JAVA_HOME: Language::Java.overridable_java_home_env[:JAVA_HOME],
     )
   end
