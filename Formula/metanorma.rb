@@ -306,7 +306,7 @@ class Metanorma < Formula
     gems.each { |gem|
       # Prefer arch-specific gem
       files = Dir["vendor/cache/#{gem}-#{arch}.gem"]
-      files = Dir["vendor/cache/#{gem}.gem"] if files.empty?
+      files = Dir["vendor/cache/#{gem}.gem"] if files.empty? || gem.start_with?("pngcheck-")
       gem_file = files.first
 
       args = [
@@ -328,6 +328,7 @@ class Metanorma < Formula
         ENV.append "CFLAGS", "-I$(brew --prefix zlib)/include"
         ENV.append "LDFLAGS", "-L$(brew --prefix zlib)/lib -Wl,-rpath,$(brew --prefix zlib)/lib"
         ENV.append "PKG_CONFIG_PATH", "$(brew --prefix zlib)/lib/pkgconfig"
+        args += ["--platform=ruby"]
       end
 
       system(*args)
