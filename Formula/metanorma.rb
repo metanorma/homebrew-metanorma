@@ -82,13 +82,13 @@ class Metanorma < Formula
     ADOC
 
     (testpath / "test-iso.adoc").write(test_doc)
-    system "metanorma", "--type", "iso", testpath / "test-iso.adoc",
+    system libexec/"bin/metanorma", "--type", "iso", testpath / "test-iso.adoc",
            "--agree-to-terms"
     assert_path_exists testpath / "test-iso.xml"
     assert_path_exists testpath / "test-iso.html"
 
     (testpath / "test-csa.adoc").write(test_doc)
-    system "metanorma", "--type", "csa", testpath / "test-csa.adoc",
+    system libexec/"bin/metanorma", "--type", "csa", testpath / "test-csa.adoc",
            "--agree-to-terms"
     assert_path_exists testpath / "test-csa.pdf"
     assert_path_exists testpath / "test-csa.html"
