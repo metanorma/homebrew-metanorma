@@ -11,7 +11,7 @@ class Metanorma < Formula
   depends_on "openjdk"
   depends_on "plantuml"
   depends_on "readline"
-  depends_on "ruby@3.3"
+  depends_on "ruby@3.4"
   depends_on "xml2rfc"
 
   uses_from_macos "sqlite"
@@ -52,19 +52,14 @@ class Metanorma < Formula
     system "bundle", "config", "set", "--local", "path", libexec
     system "bundle", "config", "set", "--local", "bin", libexec/"bin"
     system "bundle", "install", "--local", "--standalone"
-    #system "gem", "install", "vendor/cache/*.gem", "--install-dir=#{libexec}", "--no-document", "--local"
-    # system "gem", "install", "#{name}-#{version}.gem"
 
-    # "3.4.0", not "3.4.x"
-    #ruby_series = "#{Formula['ruby@3.4'].any_installed_version.major_minor}.0"
-    #bin.install Dir["#{libexec}/ruby/#{ruby_series}/bin/metanorma"]
-    bin.install Dir["#{libexec}/bin/metanorma"]
+    ruby_series = "#{Formula['ruby@3.4'].any_installed_version.major_minor}.0"
+    bin.install libexec/"ruby/#{ruby_series}/bin/metanorma"
     bin.env_script_all_files(
       libexec/"bin",
-      PATH: libexec/"bin:#{Formula["ruby@3.3"].opt_bin}:$PATH",
-      #PATH:      [libexec/"bin", "$PATH"].join(":"),
-      GEM_HOME: ENV["GEM_HOME"],
-      GEM_PATH: ENV["GEM_PATH"],
+      #PATH: libexec/"bin:#{Formula["ruby@3.4"].opt_bin}:$PATH",
+      #GEM_HOME: ENV["GEM_HOME"],
+      #GEM_PATH: ENV["GEM_PATH"],
       JAVA_HOME: Language::Java.overridable_java_home_env[:JAVA_HOME],
     )
   end
