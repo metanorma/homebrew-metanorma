@@ -34,14 +34,6 @@ class Metanorma < Formula
       cp_r ".", buildpath
     end
 
-    if OS.linux?
-      # Install pngcheck with brew's zlib (libz.so.1)
-      ENV.append "CFLAGS", "-I$(brew --prefix zlib)/include"
-      ENV.append "LDFLAGS", "-L$(brew --prefix zlib)/lib -Wl,-rpath,$(brew --prefix zlib)/lib"
-      ENV.append "PKG_CONFIG_PATH", "$(brew --prefix zlib)/lib/pkgconfig"
-      system "gem", "install", "pngcheck", "--no-document", "--platform=ruby"
-    end
-
     gems = [
       "link_header-0.0.8",
       "bigdecimal-3.2.2",
@@ -303,7 +295,6 @@ class Metanorma < Formula
       "metanorma-csa-2.6.7",
       "metanorma-cc-2.6.7",
       "metanorma-bipm-2.6.8",
-      "metanorma-cli-1.12.8",
     ]
 
     arch = if OS.mac?
@@ -312,17 +303,24 @@ class Metanorma < Formula
              Hardware::CPU.arm? ? "aarch64-linux" : "x86_64-linux"
            end
 
+    if OS.linux?
+      # Ling pngcheck with brew's zlib (libz.so.1)
+      ENV.append "CFLAGS", "-I$(brew --prefix zlib)/include"
+      ENV.append "LDFLAGS", "-L$(brew --prefix zlib)/lib -Wl,-rpath,$(brew --prefix zlib)/lib"
+      ENV.append "PKG_CONFIG_PATH", "$(brew --prefix zlib)/lib/pkgconfig"
+    end
+
     gems.each { |gem|
+      # Prefer arch-specific gem
       files = Dir["vendor/cache/#{gem}-#{arch}.gem"]
       files = Dir["vendor/cache/#{gem}.gem"] if files.empty?
-
-      if files.empty? || files.length > 1
-        puts "!!! for #{gem}, no matching gem file: #{files.inspect}"
-      end
       gem_file = files.first
 
-      args = ["gem", "install", "--local", gem_file, "--install-dir", libexec, "--no-document"]
-      args << "--force"
+      args = [
+        "gem", "install", "--local", gem_file,
+        "--install-dir", libexec, "--no-document",
+        "--ignore-dependencies",
+      ]
       if gem == "sqlite3-1.7.3"
         # Install sqlite3 with brew's libsqlite3
         args += [
@@ -332,11 +330,13 @@ class Metanorma < Formula
           "--with-sqlite3-lib=#{Formula["sqlite"].opt_lib}"
         ]
       end
+
       system(*args)
     }
 
     # Install metanorma
-    system "gem", "install", cached_download, "--no-document"
+    system "gem", "install", "--local", cached_download, "--install-dir", libexec,
+           "--no-document", "--ignore-dependencies"
 
     bin.install Dir["#{libexec}/bin/metanorma"]
     bin.env_script_all_files(
