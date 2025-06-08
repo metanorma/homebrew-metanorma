@@ -303,13 +303,6 @@ class Metanorma < Formula
              Hardware::CPU.arm? ? "aarch64-linux" : "x86_64-linux"
            end
 
-    if OS.linux?
-      # Ling pngcheck with brew's zlib (libz.so.1)
-      ENV.append "CFLAGS", "-I$(brew --prefix zlib)/include"
-      ENV.append "LDFLAGS", "-L$(brew --prefix zlib)/lib -Wl,-rpath,$(brew --prefix zlib)/lib"
-      ENV.append "PKG_CONFIG_PATH", "$(brew --prefix zlib)/lib/pkgconfig"
-    end
-
     gems.each { |gem|
       # Prefer arch-specific gem
       files = Dir["vendor/cache/#{gem}-#{arch}.gem"]
@@ -321,14 +314,20 @@ class Metanorma < Formula
         "--install-dir", libexec, "--no-document",
         "--ignore-dependencies",
       ]
-      if gem == "sqlite3-1.7.3"
-        # Install sqlite3 with brew's libsqlite3
+
+      if gem.start_with?("sqlite3-")
+        # Link sqlite3 with brew's libsqlite3
         args += [
           "--",
           "--enable-system-libraries",
           "--with-sqlite3-include=#{Formula["sqlite"].opt_include}",
           "--with-sqlite3-lib=#{Formula["sqlite"].opt_lib}"
         ]
+      elsif gem.start_with?("pngcheck-") and OS.linux?
+        # Link pngcheck with brew's zlib (libz.so.1)
+        ENV.append "CFLAGS", "-I$(brew --prefix zlib)/include"
+        ENV.append "LDFLAGS", "-L$(brew --prefix zlib)/lib -Wl,-rpath,$(brew --prefix zlib)/lib"
+        ENV.append "PKG_CONFIG_PATH", "$(brew --prefix zlib)/lib/pkgconfig"
       end
 
       system(*args)
