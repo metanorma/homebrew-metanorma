@@ -1,8 +1,8 @@
 class Metanorma < Formula
   desc "Toolchain for publishing metanorma documentation"
   homepage "https://www.metanorma.com"
-  url "https://github.com/metanorma/metanorma-cli/releases/download/v1.12.8/vendored-gems.tar.gz"
-  sha256 "697b48ee98f9baceac914033f8ed48551a64ea96ce1ca7ee6fd46b618745a8bd"
+  url "https://rubygems.org/downloads/metanorma-cli-1.12.8.gem"
+  sha256 "b746637b00a051ca409ccf98fc82c12c443d27183c3d4bdd3535ad47eb015573"
   license "0BSD"
 
   depends_on "pkgconf" => :build
@@ -11,61 +11,45 @@ class Metanorma < Formula
   depends_on "openjdk"
   depends_on "plantuml"
   depends_on "readline"
-  depends_on "ruby@3.4"
+  depends_on "ruby@3.3"
   depends_on "xml2rfc"
 
   uses_from_macos "sqlite"
-  uses_from_macos "zlib"
 
   on_linux do
     depends_on "libxslt"
-  end
-
-  resource "vendor-gems" do
-    url "https://github.com/metanorma/metanorma-cli/releases/download/v1.12.8/vendored-gems.tar.gz"
-    sha256 "697b48ee98f9baceac914033f8ed48551a64ea96ce1ca7ee6fd46b618745a8bd"
   end
 
   def install
     ENV["GEM_HOME"] = libexec
     ENV["GEM_PATH"] = libexec
 
-    # Ensure Ruby 3.4 is used
-    ENV.prepend_path "PATH", Formula["ruby@3.4"].opt_bin
-
-    # Unpack the vendored gems (includes Gemfile, Gemfile.lock, vendor/cache/*.gem)
-    resource("vendor-gems").stage do
-      cp_r ".", buildpath
-    end
-
-    inreplace "Gemfile.lock", "remote: https://rubygems.org/", "remote: file:vendor/cache"
-    inreplace "Gemfile", 'source "https://rubygems.org"', 'source "file:vendor/cache"'
-    system "gem", "install", "metanorma-cli"
-
-    # Configure sqlite3 to use brew's libsqlite3
-    system "bundle", "config", "build.sqlite3",
-           "--enable-system-libraries",
-           "--with-sqlite3-include=#{Formula['sqlite'].opt_include}",
-           "--with-sqlite3-lib=#{Formula['sqlite'].opt_lib}"
-
     if OS.linux?
-      # Configure pngcheck to use brew's zlib (libz.so.1)
-      zlib = Formula["zlib"]
-      ENV.append "CFLAGS", "-I#{zlib.opt_include}"
-      ENV.append "LDFLAGS", "-L#{zlib.opt_lib} -Wl,-rpath,#{zlib.opt_lib}"
-      ENV.append "PKG_CONFIG_PATH", "#{zlib.opt_lib}/pkgconfig"
+      # Install sqlite3 with brew's libsqlite3
+      system "gem", "install", "sqlite3", "-v", "1.7.3", "--no-document",
+             "--platform=ruby",
+             "--",
+             "--enable-system-libraries",
+             "--with-sqlite3-include=#{Formula["sqlite"].opt_include}",
+             "--with-sqlite3-lib=#{Formula["sqlite"].opt_lib}"
+
+      # Install pngcheck with brew's zlib (libz.so.1)
+      ENV.append "CFLAGS", "-I$(brew --prefix zlib)/include"
+      ENV.append "LDFLAGS", "-L$(brew --prefix zlib)/lib -Wl,-rpath,$(brew --prefix zlib)/lib"
+      ENV.append "PKG_CONFIG_PATH", "$(brew --prefix zlib)/lib/pkgconfig"
+      system "gem", "install", "pngcheck", "--no-document", "--platform=ruby"
     end
-    # "3.4.0", not "3.4.x"
-    # ruby_series = "#{Formula['ruby@3.4'].any_installed_version.major_minor}.0"
-    # bin.install libexec/"ruby/#{ruby_series}/bin/metanorma"
-    bin.install libexec/"bin/metanorma"
+
+    # Install metanorma
+    system "gem", "install", cached_download, "--no-document"
+
+    bin.install Dir["#{libexec}/bin/metanorma"]
     bin.env_script_all_files(
       libexec/"bin",
-      PATH: "#{Formula["ruby@3.4"].opt_bin}:$PATH",
-      #GEM_HOME: ENV["GEM_HOME"],
-      #GEM_PATH: ENV["GEM_PATH"],
+      PATH:      [libexec/"bin", "$PATH"].join(":"),
+      GEM_HOME:  ENV["GEM_HOME"],
       JAVA_HOME: Language::Java.overridable_java_home_env[:JAVA_HOME],
-    )
+      )
   end
 
   def caveats
@@ -87,13 +71,13 @@ class Metanorma < Formula
     ADOC
 
     (testpath / "test-iso.adoc").write(test_doc)
-    system libexec/"bin/metanorma", "--type", "iso", testpath / "test-iso.adoc",
+    system bin / "metanorma", "--type", "iso", testpath / "test-iso.adoc",
            "--agree-to-terms"
     assert_path_exists testpath / "test-iso.xml"
     assert_path_exists testpath / "test-iso.html"
 
     (testpath / "test-csa.adoc").write(test_doc)
-    system libexec/"bin/metanorma", "--type", "csa", testpath / "test-csa.adoc",
+    system bin / "metanorma", "--type", "csa", testpath / "test-csa.adoc",
            "--agree-to-terms"
     assert_path_exists testpath / "test-csa.pdf"
     assert_path_exists testpath / "test-csa.html"
