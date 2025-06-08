@@ -53,18 +53,26 @@ class Metanorma < Formula
     end
 
     # Install dependencies from lockfile (offline)
-    system "bundle", "config", "set", "--local", "path", libexec
-    system "bundle", "config", "set", "--local", "bin", libexec/"bin"
+    #system "bundle", "config", "set", "--local", "path", libexec
+    #system "bundle", "config", "set", "--local", "bin", libexec/"bin"
     system "bundle", "install", "--local", "--standalone"
 
+    libexec.install Dir["*"]
+
     # "3.4.0", not "3.4.x"
-    ruby_series = "#{Formula['ruby@3.4'].any_installed_version.major_minor}.0"
-    bin.install libexec/"ruby/#{ruby_series}/bin/metanorma"
-    bin.env_script_all_files(
-      libexec/"bin",
-      PATH: "#{Formula["ruby@3.4"].opt_bin}:$PATH",
-      JAVA_HOME: Language::Java.overridable_java_home_env[:JAVA_HOME],
-    )
+    #ruby_series = "#{Formula['ruby@3.4'].any_installed_version.major_minor}.0"
+    #bin.install libexec/"ruby/#{ruby_series}/bin/metanorma"
+    # Create a custom wrapper
+    (wrapper = bin/"metanorma").write <<~EOS
+      #!/bin/bash
+      export PATH="#{Formula["ruby@3.4"].opt_bin}:#{libexec}/bin:$PATH"
+      export GEM_HOME="#{ENV["GEM_HOME"]}"
+      export GEM_PATH="#{ENV["GEM_PATH"]}"
+      export JAVA_HOME="#{Language::Java.overridable_java_home_env[:JAVA_HOME]}"
+      export BUNDLE_GEMFILE="#{libexec}/Gemfile"
+      exec bundle exec metanorma "$@"
+    EOS
+    # exec "#{libexec}/bin/bundle" exec metanorma "$@"
   end
 
   def caveats
