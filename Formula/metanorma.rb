@@ -36,11 +36,10 @@ class Metanorma < Formula
     ENV["GEM_HOME"] = libexec
 
     # Unpack the gemfile-lock and gemfile (to be shipped with the source code in future releases)
-    resource("gemfile-lock").stage do
-      cp_r ".", buildpath
-    end
-    resource("gemfile").stage do
-      cp_r ".", buildpath
+    resources.each do |r|
+      r.stage do
+        cp_r ".", buildpath
+      end
     end
     # Remove the metanorma GitHub source block
     inreplace "Gemfile", /source "https:\/\/rubygems\.pkg\.github\.com\/metanorma" do\s+gem "metanorma-nist"\s+end\n?/m, ""
@@ -92,13 +91,13 @@ class Metanorma < Formula
     ADOC
 
     (testpath / "test-iso.adoc").write(test_doc)
-    system libexec/"bin/metanorma", "--type", "iso", testpath / "test-iso.adoc",
+    system bin/"/metanorma", "--type", "iso", testpath / "test-iso.adoc",
            "--agree-to-terms"
     assert_path_exists testpath / "test-iso.xml"
     assert_path_exists testpath / "test-iso.html"
 
     (testpath / "test-csa.adoc").write(test_doc)
-    system libexec/"bin/metanorma", "--type", "csa", testpath / "test-csa.adoc",
+    system bin/"/metanorma", "--type", "csa", testpath / "test-csa.adoc",
            "--agree-to-terms"
     assert_path_exists testpath / "test-csa.pdf"
     assert_path_exists testpath / "test-csa.html"
