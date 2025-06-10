@@ -1,81 +1,77 @@
-# frozen_string_literal: true
-
 class Metanorma < Formula
-  include Language::Python::Virtualenv
-
   desc "Toolchain for publishing metanorma documentation"
   homepage "https://www.metanorma.com"
-
-  # > formula-set-version.sh packed-mn #
-  url "https://github.com/metanorma/packed-mn/archive/v1.12.9.tar.gz"
-  sha256 "dbbb35e8c51676ac763393b4a75532e33c1ec2158ef22b9d1b6356d95682be10"
-  # < formula-set-version.sh packed-mn #
-
+  url "https://github.com/metanorma/metanorma-cli/archive/refs/tags/v1.12.8.tar.gz"
+  sha256 "92f5b0f0675d260cdebc29685e205af912116b0fa18f4a3dbf203df23f82c528"
   license "0BSD"
-  revision 1
 
-  depends_on "git"
+  depends_on "pkgconf" => :build
   depends_on "gflags"
   depends_on "graphviz"
-  depends_on "libxslt" if OS.linux?
-  depends_on "metanorma/xml2rfc/xml2rfc" # required by 'metanorma-ietf' gem
   depends_on "openjdk"
   depends_on "plantuml"
+  depends_on "readline"
+  depends_on "ruby@3.4"
+  depends_on "xml2rfc"
 
-  if OS.mac?
-    if Hardware::CPU.arm?
-      resource "packed-mn" do
-      # > formula-set-version.sh packed-mn-darwin-arm64 #
-      url "https://github.com/metanorma/packed-mn/releases/download/v1.12.9/metanorma-darwin-arm64.tgz"
-      sha256 "a29cf23e51057aab54f31b7d6f52c68a3f95c799518cc45987ed7adc327a1f5b"
-      # < formula-set-version.sh packed-mn-darwin-arm64 #
-      end
-    else # assume Hardware::CPU.intel
-      resource "packed-mn" do
-      # > formula-set-version.sh packed-mn-darwin-x86_64 #
-      url "https://github.com/metanorma/packed-mn/releases/download/v1.12.9/metanorma-darwin-x86_64.tgz"
-      sha256 "Not"
-      # < formula-set-version.sh packed-mn-darwin-x86_64 #
-      end
-    end
+  uses_from_macos "sqlite"
+  uses_from_macos "zlib"
+
+  on_linux do
+    depends_on "libxslt"
   end
 
-  if OS.linux?
-    if Hardware::CPU.arm?
-      resource "packed-mn" do
-        # > formula-set-version.sh packed-mn-linux-arm #
-        url "https://github.com/metanorma/packed-mn/releases/download/v1.12.9/metanorma-linux-aarch64.tgz"
-        sha256 "3c33f32b97d3ce9b42d08cae532bf93c768dc523d143f1cc921977158a29d39f"
-        # < formula-set-version.sh packed-mn-linux-arm #
-      end
-    else # assume Hardware::CPU.intel
-      resource "packed-mn" do
-        # > formula-set-version.sh packed-mn-linux #
-        url "https://github.com/metanorma/packed-mn/releases/download/v1.12.9/metanorma-linux-x86_64.tgz"
-        sha256 "22f766dcaa07717e5cebda4269663f63153804629711b684b8769bc6cad62cd1"
-        # < formula-set-version.sh packed-mn-linux #
-      end
-    end
+  resource "gemfile-lock" do
+    url "https://github.com/metanorma/metanorma-cli/releases/download/v1.12.8/Gemfile.lock"
+    sha256 "d5abc46cdde32a1707736f76db4a2a5da4727ea78dcef59003f514ccd1ba5240"
+  end
+
+  resource "gemfile" do
+    url "https://rubygems.org/downloads/metanorma-cli-1.12.8.gem"
+    sha256 "b746637b00a051ca409ccf98fc82c12c443d27183c3d4bdd3535ad47eb015573"
   end
 
   def install
-    platform = if OS.mac?
-                 Hardware::CPU.arm? ? "darwin-arm64" : "darwin-x86_64"
-               elsif OS.linux?
-                 Hardware::CPU.arm? ? "linux-aarch64" : "linux-x86_64"
-               end
+    ENV["GEM_HOME"] = libexec
 
-    resource("packed-mn").stage do
-      bin.install "metanorma-#{platform}"
+    # Ensure Ruby 3.4 is used
+    #ENV.prepend_path "PATH", Formula["ruby@3.4"].opt_bin
+
+    # Unpack the gemfile-lock and gemfile (to be shipped with the source code in future releases)
+    resource("gemfile-lock").stage do
+      cp_r ".", buildpath
+    end
+    resource("gemfile").stage do
+      cp_r ".", buildpath
+    end
+    # Remove the metanorma GitHub source block
+    inreplace "Gemfile", /source "https:\/\/rubygems\.pkg\.github\.com\/metanorma" do\s+gem "metanorma-nist"\s+end\n?/m, ""
+
+    # Configure sqlite3 to use brew's libsqlite3
+    system "bundle", "config", "build.sqlite3",
+           "--enable-system-libraries",
+           "--with-sqlite3-include=#{Formula['sqlite'].opt_include}",
+           "--with-sqlite3-lib=#{Formula['sqlite'].opt_lib}"
+
+    if OS.linux?
+      # Configure pngcheck to use brew's zlib (libz.so.1)
+      zlib = Formula["zlib"]
+      ENV.append "CFLAGS", "-I#{zlib.opt_include}"
+      ENV.append "LDFLAGS", "-L#{zlib.opt_lib} -Wl,-rpath,#{zlib.opt_lib}"
+      ENV.append "PKG_CONFIG_PATH", "#{zlib.opt_lib}/pkgconfig"
     end
 
-    ENV.prepend_path "PATH", Formula["libxslt"].opt_bin.to_s if OS.linux?
-    ENV.prepend_path "PATH", Formula["libxml2"].opt_bin.to_s if OS.linux?
+    system "bundle", "config", "set", "without", "development", "test"
+    system "bundle", "install"
+    system "gem", "build", "metanorma-cli.gemspec"
+    system "gem", "install", "metanorma-cli-#{version}.gem"
 
-    (bin / "metanorma").write_env_script(
-      bin / "metanorma-#{platform}",
-      JAVA_HOME:  Language::Java.java_home("1.8+"),
-      PATH:       [libexec/"bin", "$PATH"].join(":"),
+    bin.install libexec/"bin/#{name}"
+    bin.env_script_all_files(
+      libexec/"bin",
+      PATH: "#{Formula["ruby"].opt_bin}:$PATH",
+      GEM_HOME: ENV["GEM_HOME"],
+      JAVA_HOME: Language::Java.overridable_java_home_env[:JAVA_HOME],
     )
   end
 
@@ -88,7 +84,7 @@ class Metanorma < Formula
   end
 
   test do
-    test_doc = <<~'ADOC'
+    test_doc = <<~ADOC
       = Document title
       Author
       :docfile: test.adoc
@@ -97,55 +93,16 @@ class Metanorma < Formula
       :no-isobib:
     ADOC
 
-    latexml_test_doc = <<~'ADOC'
-      = File
-      :stem
-
-      [latexmath]
-      ++++
-      M =
-      \\begin{bmatrix}
-      -\\sin λ_0 & \\cos λ_0 & 0 \\\\
-      -\\sin φ_0 \\cos λ_0 & -\\sin φ_0 \\sin λ_0 & \\cos φ_0 \\\\
-      \\cos φ_0 \\cos λ_0 & \\cos φ_0 \\sin λ_0 & \\sin φ_0
-      \\end{bmatrix}
-      ++++
-    ADOC
-
-    ietf_test_doc = <<~'ADOC'
-      :sort-refs: true
-      :revdate: 2018-04-15T00:00:00Z
-      :fullname: Test Test
-      :initials: T.
-      :surname: Test
-      :email: test@test.org
-      :docfile: document.adoc
-      :mn-document-class: ietf
-      :mn-output-extensions: rfc,xml,txt,html,rxl
-
-      == Clause
-      Clause
-    ADOC
-
     (testpath / "test-iso.adoc").write(test_doc)
-    system bin / "metanorma", "--type", "iso", testpath / "test-iso.adoc",
+    system libexec/"bin/metanorma", "--type", "iso", testpath / "test-iso.adoc",
            "--agree-to-terms"
-    assert_predicate testpath / "test-iso.xml", :exist?
-    assert_predicate testpath / "test-iso.html", :exist?
+    assert_path_exists testpath / "test-iso.xml"
+    assert_path_exists testpath / "test-iso.html"
 
     (testpath / "test-csa.adoc").write(test_doc)
-    system bin / "metanorma", "--type", "csa", testpath / "test-csa.adoc",
+    system libexec/"bin/metanorma", "--type", "csa", testpath / "test-csa.adoc",
            "--agree-to-terms"
-    assert_predicate testpath / "test-csa.pdf", :exist?
-    assert_predicate testpath / "test-csa.html", :exist?
-
-    #(testpath / "test-ietf.adoc").write(ietf_test_doc)
-    #system bin / "metanorma", testpath / "test-ietf.adoc", "--agree-to-terms"
-    #assert_predicate testpath / "test-ietf.html", :exist?
-
-    #(testpath / "test-standoc.adoc").write(latexml_test_doc)
-    #system bin / "metanorma", "--type", "standoc", "--extensions", "xml",
-    #       testpath / "test-standoc.adoc", "--agree-to-terms"
-    #assert_predicate testpath / "test-standoc.xml", :exist?
+    assert_path_exists testpath / "test-csa.pdf"
+    assert_path_exists testpath / "test-csa.html"
   end
 end
