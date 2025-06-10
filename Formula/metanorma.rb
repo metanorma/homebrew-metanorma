@@ -11,7 +11,7 @@ class Metanorma < Formula
   depends_on "openjdk"
   depends_on "plantuml"
   depends_on "readline"
-  depends_on "ruby@3.4"
+  depends_on "ruby"
   depends_on "xml2rfc"
 
   uses_from_macos "sqlite"
@@ -32,10 +32,8 @@ class Metanorma < Formula
   end
 
   def install
+    ENV["BUNDLE_VERSION"] = "system" # Avoid installing Bundler into the keg
     ENV["GEM_HOME"] = libexec
-
-    # Ensure Ruby 3.4 is used
-    ENV.prepend_path "PATH", Formula["ruby@3.4"].opt_bin
 
     # Unpack the gemfile-lock and gemfile (to be shipped with the source code in future releases)
     resource("gemfile-lock").stage do
@@ -69,7 +67,7 @@ class Metanorma < Formula
     bin.install libexec/"bin/#{name}"
     bin.env_script_all_files(
       libexec/"bin",
-      PATH: "#{Formula["ruby@3.4"].opt_bin}:$PATH",
+      PATH: "#{Formula["ruby"].opt_bin}:$PATH",
       GEM_HOME: ENV["GEM_HOME"],
       JAVA_HOME: Language::Java.overridable_java_home_env[:JAVA_HOME],
     )
