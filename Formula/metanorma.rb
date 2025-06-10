@@ -34,6 +34,7 @@ class Metanorma < Formula
   def install
     ENV["BUNDLE_VERSION"] = "system" # Avoid installing Bundler into the keg
     ENV["GEM_HOME"] = libexec
+    ENV["GEM_PATH"] = libexec
 
     # Unpack the gemfile-lock and gemfile (to be shipped with the source code in future releases)
     resources.each do |r|
