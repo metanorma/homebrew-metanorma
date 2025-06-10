@@ -1,8 +1,8 @@
 class Metanorma < Formula
   desc "Toolchain for publishing metanorma documentation"
   homepage "https://www.metanorma.com"
-  url "https://rubygems.org/downloads/metanorma-cli-1.12.8.gem"
-  sha256 "b746637b00a051ca409ccf98fc82c12c443d27183c3d4bdd3535ad47eb015573"
+  url "https://github.com/metanorma/metanorma-cli/archive/refs/tags/v1.12.8.tar.gz"
+  sha256 "92f5b0f0675d260cdebc29685e205af912116b0fa18f4a3dbf203df23f82c528"
   license "0BSD"
 
   depends_on "pkgconf" => :build
@@ -21,22 +21,31 @@ class Metanorma < Formula
     depends_on "libxslt"
   end
 
-  resource "vendor-gems" do
-    url "https://github.com/metanorma/metanorma-cli/releases/download/v1.12.8/vendored-gems.tar.gz"
-    sha256 "697b48ee98f9baceac914033f8ed48551a64ea96ce1ca7ee6fd46b618745a8bd"
+  resource "gemfile-lock" do
+    url "https://github.com/metanorma/metanorma-cli/releases/download/v1.12.8/Gemfile.lock"
+    sha256 "d5abc46cdde32a1707736f76db4a2a5da4727ea78dcef59003f514ccd1ba5240"
+  end
+
+  resource "gemfile" do
+    url "https://rubygems.org/downloads/metanorma-cli-1.12.8.gem"
+    sha256 "b746637b00a051ca409ccf98fc82c12c443d27183c3d4bdd3535ad47eb015573"
   end
 
   def install
     ENV["GEM_HOME"] = libexec
-    ENV["GEM_PATH"] = libexec
 
     # Ensure Ruby 3.4 is used
     ENV.prepend_path "PATH", Formula["ruby@3.4"].opt_bin
 
-    # Unpack the vendored gems (includes Gemfile, Gemfile.lock, vendor/cache/*.gem)
-    resource("vendor-gems").stage do
+    # Unpack the gemfile-lock and gemfile (to be shipped with the source code in future releases)
+    resource("gemfile-lock").stage do
       cp_r ".", buildpath
     end
+    resource("gemfile").stage do
+      cp_r ".", buildpath
+    end
+    # Remove the metanorma GitHub source block
+    inreplace "Gemfile", /source "https:\/\/rubygems\.pkg\.github\.com\/metanorma" do\s+gem "metanorma-nist"\s+end\n?/m, ""
 
     # Configure sqlite3 to use brew's libsqlite3
     system "bundle", "config", "build.sqlite3",
@@ -52,17 +61,16 @@ class Metanorma < Formula
       ENV.append "PKG_CONFIG_PATH", "#{zlib.opt_lib}/pkgconfig"
     end
 
-    # Install dependencies from lockfile (offline)
-    system "bundle", "config", "set", "--local", "path", libexec
-    system "bundle", "config", "set", "--local", "bin", libexec/"bin"
-    system "bundle", "install", "--local", "--standalone"
+    system "bundle", "config", "set", "without", "development", "test"
+    system "bundle", "install"
+    system "gem", "build", "metanorma-cli.gemspec"
+    system "gem", "install", "metanorma-cli-#{version}.gem"
 
-    # "3.4.0", not "3.4.x"
-    ruby_series = "#{Formula['ruby@3.4'].any_installed_version.major_minor}.0"
-    bin.install libexec/"ruby/#{ruby_series}/bin/metanorma"
+    bin.install libexec/"bin/#{name}"
     bin.env_script_all_files(
       libexec/"bin",
       PATH: "#{Formula["ruby@3.4"].opt_bin}:$PATH",
+      GEM_HOME: ENV["GEM_HOME"],
       JAVA_HOME: Language::Java.overridable_java_home_env[:JAVA_HOME],
     )
   end
