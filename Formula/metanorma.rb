@@ -3,7 +3,7 @@ class Metanorma < Formula
   homepage "https://www.metanorma.com"
   url "https://github.com/metanorma/metanorma-cli/archive/refs/tags/v1.12.8.tar.gz"
   sha256 "92f5b0f0675d260cdebc29685e205af912116b0fa18f4a3dbf203df23f82c528"
-  license "0BSD"
+  license "BSD-2-Clause"
 
   depends_on "pkgconf" => :build
   depends_on "gflags"
@@ -11,7 +11,7 @@ class Metanorma < Formula
   depends_on "openjdk"
   depends_on "plantuml"
   depends_on "readline"
-  depends_on "ruby@3.4"
+  depends_on "ruby@3.3" # default ruby 2.6 is not supported
   depends_on "xml2rfc"
 
   uses_from_macos "sqlite"
@@ -32,26 +32,32 @@ class Metanorma < Formula
   end
 
   def install
+    ENV["BUNDLE_VERSION"] = "system" # Avoid installing Bundler into the keg
     ENV["GEM_HOME"] = libexec
 
-    # Ensure Ruby 3.4 is used
-    ENV.prepend_path "PATH", Formula["ruby@3.4"].opt_bin
+    # Ensure Ruby 3.3 is used
+    ENV.prepend_path "PATH", Formula["ruby@3.3"].opt_bin
 
     # Unpack the gemfile-lock and gemfile (to be shipped with the source code in future releases)
-    resource("gemfile-lock").stage do
-      cp_r ".", buildpath
-    end
-    resource("gemfile").stage do
-      cp_r ".", buildpath
+    resources.each do |r|
+      r.stage do
+        cp_r ".", buildpath
+      end
     end
     # Remove the metanorma GitHub source block
-    inreplace "Gemfile", /source "https:\/\/rubygems\.pkg\.github\.com\/metanorma" do\s+gem "metanorma-nist"\s+end\n?/m, ""
+    regex = %r{
+      source\s+"https://rubygems\.pkg\.github\.com/metanorma"\s+do\s+
+      gem\s+"metanorma-nist"\s+
+      end\n?
+    }mx
+    inreplace "Gemfile", regex, ""
 
     # Configure sqlite3 to use brew's libsqlite3
+    sqlite = Formula["sqlite"]
     system "bundle", "config", "build.sqlite3",
            "--enable-system-libraries",
-           "--with-sqlite3-include=#{Formula['sqlite'].opt_include}",
-           "--with-sqlite3-lib=#{Formula['sqlite'].opt_lib}"
+           "--with-sqlite3-include=#{sqlite.opt_include}",
+           "--with-sqlite3-lib=#{sqlite.opt_include}"
 
     if OS.linux?
       # Configure pngcheck to use brew's zlib (libz.so.1)
@@ -69,8 +75,8 @@ class Metanorma < Formula
     bin.install libexec/"bin/#{name}"
     bin.env_script_all_files(
       libexec/"bin",
-      PATH: "#{Formula["ruby@3.4"].opt_bin}:$PATH",
-      GEM_HOME: ENV["GEM_HOME"],
+      PATH:      "#{Formula["ruby@3.3"].opt_bin}:$PATH",
+      GEM_HOME:  ENV["GEM_HOME"],
       JAVA_HOME: Language::Java.overridable_java_home_env[:JAVA_HOME],
     )
   end
@@ -94,13 +100,13 @@ class Metanorma < Formula
     ADOC
 
     (testpath / "test-iso.adoc").write(test_doc)
-    system libexec/"bin/metanorma", "--type", "iso", testpath / "test-iso.adoc",
+    system bin/"metanorma", "--type", "iso", testpath / "test-iso.adoc",
            "--agree-to-terms"
     assert_path_exists testpath / "test-iso.xml"
     assert_path_exists testpath / "test-iso.html"
 
     (testpath / "test-csa.adoc").write(test_doc)
-    system libexec/"bin/metanorma", "--type", "csa", testpath / "test-csa.adoc",
+    system bin/"metanorma", "--type", "csa", testpath / "test-csa.adoc",
            "--agree-to-terms"
     assert_path_exists testpath / "test-csa.pdf"
     assert_path_exists testpath / "test-csa.html"
