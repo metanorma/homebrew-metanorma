@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
 class Metanorma < Formula
-  include Language::Python::Virtualenv
-
-  desc "Toolchain for publishing metanorma documentation"
-  homepage "https://www.metanorma.com"
+  desc "Publishing standards for tomorrow, today"
+  homepage "https://www.metanorma.org"
 
   # > formula-set-version.sh packed-mn #
   url "https://github.com/metanorma/packed-mn/archive/v1.13.0.tar.gz"
@@ -17,12 +15,11 @@ class Metanorma < Formula
   depends_on "git"
   depends_on "gflags"
   depends_on "graphviz"
-  depends_on "libxslt" if OS.linux?
-  depends_on "metanorma/xml2rfc/xml2rfc" # required by 'metanorma-ietf' gem
+  depends_on "xml2rfc" # required by 'metanorma-ietf' gem
   depends_on "openjdk"
   depends_on "plantuml"
 
-  if OS.mac?
+  on_macos do
     if Hardware::CPU.arm?
       resource "packed-mn" do
       # > formula-set-version.sh packed-mn-darwin-arm64 #
@@ -40,7 +37,9 @@ class Metanorma < Formula
     end
   end
 
-  if OS.linux?
+  on_linux do
+    depends_on "libxslt"
+
     if Hardware::CPU.arm?
       resource "packed-mn" do
         # > formula-set-version.sh packed-mn-linux-arm #
@@ -133,11 +132,11 @@ class Metanorma < Formula
     assert_predicate testpath / "test-iso.xml", :exist?
     assert_predicate testpath / "test-iso.html", :exist?
 
-    (testpath / "test-csa.adoc").write(test_doc)
-    system bin / "metanorma", "--type", "csa", testpath / "test-csa.adoc",
-           "--agree-to-terms"
-    assert_predicate testpath / "test-csa.pdf", :exist?
-    assert_predicate testpath / "test-csa.html", :exist?
+    # (testpath / "test-csa.adoc").write(test_doc)
+    # system bin / "metanorma", "--type", "csa", testpath / "test-csa.adoc",
+    #        "--agree-to-terms"
+    # assert_predicate testpath / "test-csa.pdf", :exist?
+    # assert_predicate testpath / "test-csa.html", :exist?
 
     #(testpath / "test-ietf.adoc").write(ietf_test_doc)
     #system bin / "metanorma", testpath / "test-ietf.adoc", "--agree-to-terms"

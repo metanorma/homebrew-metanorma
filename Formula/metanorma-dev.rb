@@ -12,13 +12,12 @@ class MetanormaDev < Formula
   sha256 "21a15cbd5957c405629c9f77108943f060d07aa9e3c748dfd1deffee441e38d8"
   # < formula-set-version.sh metanorma-cli #
 
-  license "0BSD"
-  revision 1
+  license "2BSD"
 
   depends_on "graphviz"
   depends_on "libxml2" if OS.linux?
   depends_on "libxslt" if OS.linux?
-  depends_on "metanorma/xml2rfc/xml2rfc" # required by 'metanorma-ietf' gem
+  depends_on "xml2rfc" # required by 'metanorma-ietf' gem
   depends_on "openjdk"
   depends_on "plantuml"
   depends_on "ruby@3"
