@@ -46,6 +46,9 @@ jobs:
           mkdir -p $(dirname $(brew --repository $GITHUB_REPOSITORY))
           ln -s $PWD $(brew --repository $GITHUB_REPOSITORY)
 
+      - name: Install inkscape (required for tests)
+        run: brew install --cask inkscape
+
       - run: |
           brew install --build-from-source --verbose --formula Formula/${{ matrix.formula }}.rb
         # To ignore potential: The `brew link` step did not complete successfully

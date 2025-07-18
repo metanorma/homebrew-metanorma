@@ -20,14 +20,6 @@ class Metanorma < Formula
   depends_on "plantuml"
 
   on_macos do
-    depends_on cask: "inkscape"
-  end
-
-  on_linux do
-    depends_on "inkscape"
-  end
-
-  on_macos do
     if Hardware::CPU.arm?
       resource "packed-mn" do
       # > formula-set-version.sh packed-mn-darwin-arm64 #
@@ -86,6 +78,13 @@ class Metanorma < Formula
     )
   end
 
+  def caveats
+    <<~EOS
+      inkscape >= 1.0 is required to generate Word output using SVG images.
+      Install it by running `brew cask install inkscape` or
+      directly download from https://inkscape.org/release/inkscape-1.0/
+    EOS
+  end
 
   test do
     test_doc = <<~'ADOC'

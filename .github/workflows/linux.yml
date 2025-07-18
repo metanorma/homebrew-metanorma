@@ -52,6 +52,9 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y libpng16-16 libfreetype6 libfontconfig
 
+      - name: Install inkscape (required for tests)
+        run: sudo apt-get install -y inkscape
+
       - run: brew install --build-from-source --verbose --include-test --formula Formula/${{ matrix.formula }}.rb
         # To ignore potential: The `brew link` step did not complete successfully
         # continue-on-error: true
