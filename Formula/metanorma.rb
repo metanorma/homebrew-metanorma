@@ -24,14 +24,14 @@ class Metanorma < Formula
       resource "packed-mn" do
       # > formula-set-version.sh packed-mn-darwin-arm64 #
       url "https://github.com/metanorma/packed-mn/releases/download/v1.13.0/metanorma-darwin-arm64.tgz"
-      sha256 "56912978cc8d209d3ba5ad773698304f733201e7ec2f6d10e1a61621bf520274"
+      sha256 "d98848cfd9f4750aef09aefcca6fd65911bcc8ff458f4307a9ef112194ccf7fb"
       # < formula-set-version.sh packed-mn-darwin-arm64 #
       end
     else # assume Hardware::CPU.intel
       resource "packed-mn" do
       # > formula-set-version.sh packed-mn-darwin-x86_64 #
       url "https://github.com/metanorma/packed-mn/releases/download/v1.13.0/metanorma-darwin-x86_64.tgz"
-      sha256 "c64f164760ed4aed7ff414ef8f58c86755e794ec8bffdbcc939528a1d8207fb3"
+      sha256 "7b70e3f97b8e37afd812978aca94194bed07c60bc12d70a18db6f5372b725706"
       # < formula-set-version.sh packed-mn-darwin-x86_64 #
       end
     end
