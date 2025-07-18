@@ -3,9 +3,9 @@
 # Metanorma formula
 class MetanormaDev < Formula
   include Language::Python::Virtualenv
+  desc "Publishing standards for tomorrow, today (development version)"
+  homepage "https://www.metanorma.org"
 
-  desc "Toolchain for publishing metanorma documentation"
-  homepage "https://www.metanorma.com"
 
   # > formula-set-version.sh metanorma-cli #
   url "https://github.com/metanorma/metanorma-cli/archive/v1.13.0.tar.gz"

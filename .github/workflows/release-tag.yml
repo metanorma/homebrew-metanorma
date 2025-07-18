@@ -29,14 +29,19 @@ jobs:
       env:
         METANORMA_CLI_TAG: ${{ github.event.client_payload.ref }}
 
+    - name: Install dependencies
+      run: gem install octokit
+
     - name: Update Formula
-      run: ./formula-set-version.sh ${METANORMA_CLI_VERSION}
+      run: ./generate-formula.rb --version ${METANORMA_CLI_VERSION}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Push commit and tag
       run: |
         git config --global user.name "metanorma-ci"
         git config --global user.email "metanorma-ci@users.noreply.github.com"
-        git add Formula/metanorma.rb Formula/metanorma-dev.rb
+        git add Formula/metanorma.rb Formula/metanorma-dev.rb formula-metadata.json
         git commit -m "Bump version to ${METANORMA_CLI_VERSION}"
         git tag v${METANORMA_CLI_VERSION}
         git push origin HEAD:${GITHUB_REF} --tags
