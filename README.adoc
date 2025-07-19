@@ -3,7 +3,7 @@
 image:https://github.com/metanorma/homebrew-metanorma/workflows/linux/badge.svg["Build Status (Ubuntu)", link="https://github.com/metanorma/homebrew-metanorma/actions?workflow=linux"]
 image:https://github.com/metanorma/homebrew-metanorma/workflows/macos/badge.svg["Build Status (macOS)", link="https://github.com/metanorma/homebrew-metanorma/actions?workflow=macos"]
 
-This tap contains formulae relating to https://www.metanorma.com[Metanorma].
+This tap contains formulae relating to https://www.metanorma.org[Metanorma].
 
 == Install metanorma
 
@@ -16,6 +16,90 @@ brew install metanorma/metanorma/metanorma
 brew tap metanorma/metanorma
 brew install metanorma
 ----
+
+== Available Formulae
+
+This tap provides two different Metanorma formulae:
+
+=== metanorma (Binary Distribution)
+
+The main `metanorma` formula installs pre-compiled binaries from the https://github.com/metanorma/packed-mn[packed-mn] repository. This is the recommended installation method as it's faster and doesn't require compilation.
+
+* **Source**: Pre-compiled binaries from packed-mn releases
+* **Installation time**: Fast (no compilation required)
+* **Dependencies**: Minimal system dependencies
+* **Platforms**: macOS (ARM64/x86_64), Linux (x86_64/aarch64)
+
+=== metanorma-dev (Source Distribution)
+
+The `metanorma-dev` formula builds Metanorma from source using the https://github.com/metanorma/metanorma-cli[metanorma-cli] repository. This is useful for development or when you need the latest features.
+
+* **Source**: Built from metanorma-cli source code
+* **Installation time**: Slower (requires compilation)
+* **Dependencies**: Ruby, build tools, and gem dependencies
+* **Use case**: Development, testing, or when binary distribution is unavailable
+
+[source,sh]
+----
+# Install development version
+brew install metanorma/metanorma/metanorma-dev
+----
+
+== Formula Generation System
+
+This repository uses an automated formula generation system to maintain consistency and simplify updates.
+
+=== Architecture
+
+The formula generation system consists of:
+
+* **Templates** (`templates/`): ERB templates for each formula
+* **Metadata** (`formula-metadata.json`): Version information and SHA256 hashes
+* **Generator** (`generate-formula.rb`): Script that combines templates with metadata
+
+=== Generating Formulae
+
+To update the formulae with a new version:
+
+[source,sh]
+----
+# Update to a specific version
+ruby generate-formula.rb --version 1.14.0
+
+# Regenerate with current metadata
+ruby generate-formula.rb
+
+# Dry run to preview changes
+ruby generate-formula.rb --dry-run
+----
+
+The generator script will:
+
+1. Fetch SHA256 hashes from GitHub releases
+2. Update the metadata file
+3. Generate new formulae from templates
+4. Create backups of existing formulae
+
+=== Manual Updates
+
+If you need to manually update metadata:
+
+1. Edit `formula-metadata.json` to update version numbers
+2. Run `ruby generate-formula.rb` to regenerate formulae
+3. Test the formulae locally
+4. Commit and push changes
+
+=== Template Structure
+
+Templates use ERB syntax and have access to the `metadata` hash:
+
+[source,ruby]
+----
+url "<%= metadata['packed_mn']['url'] %>"
+sha256 "<%= metadata['packed_mn']['sha256'] %>"
+----
+
+Static information (description, dependencies, etc.) is hardcoded in templates for better maintainability.
 
 == Acceptable Formulae
 
