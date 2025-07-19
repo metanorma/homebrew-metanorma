@@ -1,0 +1,50 @@
+{
+  "version": "1.13.0",
+  "revision": 1,
+  "description": "Publishing standards for tomorrow, today",
+  "homepage": "https://www.metanorma.org",
+  "packed_mn": {
+    "url_template": "https://github.com/metanorma/packed-mn/archive/v{version}.tar.gz",
+    "sha256": "7195a3a39ef0f8e5721414573c815d3ae6fc0206c8dbbe98e98eead90f4b7c76",
+    "url": "https://github.com/metanorma/packed-mn/archive/v1.13.0.tar.gz"
+  },
+  "metanorma_cli": {
+    "url_template": "https://github.com/metanorma/metanorma-cli/archive/v{version}.tar.gz",
+    "sha256": "89db2f422fb0646ffa2d29f6d62eaf017446091afb1d127ff67351a5f90ed96d",
+    "url": "https://github.com/metanorma/metanorma-cli/archive/v1.13.0.tar.gz"
+  },
+  "binaries": {
+    "darwin-arm64": {
+      "url_template": "https://github.com/metanorma/packed-mn/releases/download/v{version}/metanorma-darwin-arm64.tgz",
+      "sha256": "56912978cc8d209d3ba5ad773698304f733201e7ec2f6d10e1a61621bf520274",
+      "url": "https://github.com/metanorma/packed-mn/releases/download/v1.13.0/metanorma-darwin-arm64.tgz"
+    },
+    "darwin-x86_64": {
+      "url_template": "https://github.com/metanorma/packed-mn/releases/download/v{version}/metanorma-darwin-x86_64.tgz",
+      "sha256": "c64f164760ed4aed7ff414ef8f58c86755e794ec8bffdbcc939528a1d8207fb3",
+      "url": "https://github.com/metanorma/packed-mn/releases/download/v1.13.0/metanorma-darwin-x86_64.tgz"
+    },
+    "linux-x86_64": {
+      "url_template": "https://github.com/metanorma/packed-mn/releases/download/v{version}/metanorma-linux-x86_64.tgz",
+      "sha256": "0e7a147430e29c2233233f7606581075569d7cd78d515d6ab4ad5119188d1e33",
+      "url": "https://github.com/metanorma/packed-mn/releases/download/v1.13.0/metanorma-linux-x86_64.tgz"
+    },
+    "linux-aarch64": {
+      "url_template": "https://github.com/metanorma/packed-mn/releases/download/v{version}/metanorma-linux-aarch64.tgz",
+      "sha256": "87adec81d9c3e53a3ba134dd11d65c3664b179862e913ac209fa6b315deeffff",
+      "url": "https://github.com/metanorma/packed-mn/releases/download/v1.13.0/metanorma-linux-aarch64.tgz"
+    }
+  },
+  "dependencies": [
+    "git",
+    "gflags",
+    "graphviz",
+    "xml2rfc",
+    "openjdk",
+    "plantuml"
+  ],
+  "linux_dependencies": [
+    "libxslt"
+  ],
+  "caveats": "inkscape >= 1.0 is required to generate Word output using SVG images.\nInstall it by running `brew cask install inkscape` or\ndirectly download from https://inkscape.org/release/inkscape-1.0/"
+}
