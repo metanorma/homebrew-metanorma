@@ -7,7 +7,7 @@ class Metanorma < Formula
   url "https://github.com/metanorma/packed-mn/archive/v1.13.0.tar.gz"
   sha256 "7195a3a39ef0f8e5721414573c815d3ae6fc0206c8dbbe98e98eead90f4b7c76"
 
-  license "0BSD"
+  license ""
   revision 1
 
   depends_on "git"
