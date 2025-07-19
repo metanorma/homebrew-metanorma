@@ -1,44 +1,49 @@
 # frozen_string_literal: true
 
 class Metanorma < Formula
-  desc "<%= metadata['description'] %>"
-  homepage "<%= metadata['homepage'] %>"
+  desc "Publishing standards for tomorrow, today"
+  homepage "https://www.metanorma.org"
 
   url "<%= metadata['packed_mn']['url'] %>"
   sha256 "<%= metadata['packed_mn']['sha256'] %>"
 
-  license "<%= metadata['license'] %>"
-  revision <%= metadata['revision'] %>
+  license "BSD-2-Clause"
+  revision 1
 
-<% metadata['dependencies'].each do |dep| -%>
-  depends_on "<%= dep %>"<%= dep == 'xml2rfc' ? ' # required by \'metanorma-ietf\' gem' : '' %>
-<% end -%>
+  depends_on "git"
+  depends_on "gflags"
+  depends_on "graphviz"
+  depends_on "xml2rfc" # required by 'metanorma-ietf' gem
+  depends_on "openjdk"
+  depends_on "plantuml"
 
   on_macos do
-    if Hardware::CPU.arm?
+    on_arm do
       resource "packed-mn" do
-      url "<%= metadata['binaries']['darwin-arm64']['url'] %>"
-      sha256 "<%= metadata['binaries']['darwin-arm64']['sha256'] %>"
+        url "<%= metadata['binaries']['darwin-arm64']['url'] %>"
+        sha256 "<%= metadata['binaries']['darwin-arm64']['sha256'] %>"
       end
-    else # assume Hardware::CPU.intel
+    end
+
+    on_intel do
       resource "packed-mn" do
-      url "<%= metadata['binaries']['darwin-x86_64']['url'] %>"
-      sha256 "<%= metadata['binaries']['darwin-x86_64']['sha256'] %>"
+        url "<%= metadata['binaries']['darwin-x86_64']['url'] %>"
+        sha256 "<%= metadata['binaries']['darwin-x86_64']['sha256'] %>"
       end
     end
   end
 
   on_linux do
-<% metadata['linux_dependencies'].each do |dep| -%>
-    depends_on "<%= dep %>"
-<% end -%>
+    depends_on "libxslt"
 
-    if Hardware::CPU.arm?
+    on_arm do
       resource "packed-mn" do
         url "<%= metadata['binaries']['linux-aarch64']['url'] %>"
         sha256 "<%= metadata['binaries']['linux-aarch64']['sha256'] %>"
       end
-    else # assume Hardware::CPU.intel
+    end
+
+    on_intel do
       resource "packed-mn" do
         url "<%= metadata['binaries']['linux-x86_64']['url'] %>"
         sha256 "<%= metadata['binaries']['linux-x86_64']['sha256'] %>"
@@ -57,8 +62,10 @@ class Metanorma < Formula
       bin.install "metanorma-#{platform}"
     end
 
-    ENV.prepend_path "PATH", Formula["libxslt"].opt_bin.to_s if OS.linux?
-    ENV.prepend_path "PATH", Formula["libxml2"].opt_bin.to_s if OS.linux?
+    if OS.linux?
+      ENV.prepend_path "PATH", Formula["libxslt"].opt_bin.to_s
+      ENV.prepend_path "PATH", Formula["libxml2"].opt_bin.to_s
+    end
 
     (bin / "metanorma").write_env_script(
       bin / "metanorma-#{platform}",
@@ -69,7 +76,9 @@ class Metanorma < Formula
 
   def caveats
     <<~EOS
-      <%= metadata['caveats'] %>
+      inkscape >= 1.0 is required to generate Word output using SVG images.
+      Install it by running `brew cask install inkscape` or
+      directly download from https://inkscape.org/release/inkscape-1.0/
     EOS
   end
 

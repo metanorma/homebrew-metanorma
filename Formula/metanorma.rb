@@ -5,9 +5,9 @@ class Metanorma < Formula
   homepage "https://www.metanorma.org"
 
   url "https://github.com/metanorma/packed-mn/archive/v1.13.0.tar.gz"
-  sha256 "5d525c223fdfeb5585f963fbac1bdfa386c8e64e25a37ca5a706323641c444ce"
+  sha256 "7195a3a39ef0f8e5721414573c815d3ae6fc0206c8dbbe98e98eead90f4b7c76"
 
-  license ""
+  license "BSD-2-Clause"
   revision 1
 
   depends_on "git"
@@ -18,15 +18,17 @@ class Metanorma < Formula
   depends_on "plantuml"
 
   on_macos do
-    if Hardware::CPU.arm?
+    on_arm do
       resource "packed-mn" do
-      url "https://github.com/metanorma/packed-mn/releases/download/v1.13.0/metanorma-darwin-arm64.tgz"
-      sha256 "56912978cc8d209d3ba5ad773698304f733201e7ec2f6d10e1a61621bf520274"
+        url "https://github.com/metanorma/packed-mn/releases/download/v1.13.0/metanorma-darwin-arm64.tgz"
+        sha256 "56912978cc8d209d3ba5ad773698304f733201e7ec2f6d10e1a61621bf520274"
       end
-    else # assume Hardware::CPU.intel
+    end
+
+    on_intel do
       resource "packed-mn" do
-      url "https://github.com/metanorma/packed-mn/releases/download/v1.13.0/metanorma-darwin-x86_64.tgz"
-      sha256 "c64f164760ed4aed7ff414ef8f58c86755e794ec8bffdbcc939528a1d8207fb3"
+        url "https://github.com/metanorma/packed-mn/releases/download/v1.13.0/metanorma-darwin-x86_64.tgz"
+        sha256 "c64f164760ed4aed7ff414ef8f58c86755e794ec8bffdbcc939528a1d8207fb3"
       end
     end
   end
@@ -34,12 +36,14 @@ class Metanorma < Formula
   on_linux do
     depends_on "libxslt"
 
-    if Hardware::CPU.arm?
+    on_arm do
       resource "packed-mn" do
         url "https://github.com/metanorma/packed-mn/releases/download/v1.13.0/metanorma-linux-aarch64.tgz"
         sha256 "87adec81d9c3e53a3ba134dd11d65c3664b179862e913ac209fa6b315deeffff"
       end
-    else # assume Hardware::CPU.intel
+    end
+
+    on_intel do
       resource "packed-mn" do
         url "https://github.com/metanorma/packed-mn/releases/download/v1.13.0/metanorma-linux-x86_64.tgz"
         sha256 "0e7a147430e29c2233233f7606581075569d7cd78d515d6ab4ad5119188d1e33"
@@ -58,8 +62,10 @@ class Metanorma < Formula
       bin.install "metanorma-#{platform}"
     end
 
-    ENV.prepend_path "PATH", Formula["libxslt"].opt_bin.to_s if OS.linux?
-    ENV.prepend_path "PATH", Formula["libxml2"].opt_bin.to_s if OS.linux?
+    if OS.linux?
+      ENV.prepend_path "PATH", Formula["libxslt"].opt_bin.to_s
+      ENV.prepend_path "PATH", Formula["libxml2"].opt_bin.to_s
+    end
 
     (bin / "metanorma").write_env_script(
       bin / "metanorma-#{platform}",
@@ -71,8 +77,8 @@ class Metanorma < Formula
   def caveats
     <<~EOS
       inkscape >= 1.0 is required to generate Word output using SVG images.
-Install it by running `brew cask install inkscape` or
-directly download from https://inkscape.org/release/inkscape-1.0/
+      Install it by running `brew cask install inkscape` or
+      directly download from https://inkscape.org/release/inkscape-1.0/
     EOS
   end
 

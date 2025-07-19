@@ -1,8 +1,5 @@
 {
   "version": "1.13.0",
-  "revision": 1,
-  "description": "Publishing standards for tomorrow, today",
-  "homepage": "https://www.metanorma.org",
   "packed_mn": {
     "url_template": "https://github.com/metanorma/packed-mn/archive/v{version}.tar.gz",
     "sha256": "7195a3a39ef0f8e5721414573c815d3ae6fc0206c8dbbe98e98eead90f4b7c76",
@@ -34,17 +31,5 @@
       "sha256": "87adec81d9c3e53a3ba134dd11d65c3664b179862e913ac209fa6b315deeffff",
       "url": "https://github.com/metanorma/packed-mn/releases/download/v1.13.0/metanorma-linux-aarch64.tgz"
     }
-  },
-  "dependencies": [
-    "git",
-    "gflags",
-    "graphviz",
-    "xml2rfc",
-    "openjdk",
-    "plantuml"
-  ],
-  "linux_dependencies": [
-    "libxslt"
-  ],
-  "caveats": "inkscape >= 1.0 is required to generate Word output using SVG images.\nInstall it by running `brew cask install inkscape` or\ndirectly download from https://inkscape.org/release/inkscape-1.0/"
+  }
 }

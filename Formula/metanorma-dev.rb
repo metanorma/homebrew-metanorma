@@ -8,10 +8,10 @@ class MetanormaDev < Formula
 
   # > formula-set-version.sh metanorma-cli #
   url "https://github.com/metanorma/metanorma-cli/archive/v1.13.0.tar.gz"
-  sha256 "21a15cbd5957c405629c9f77108943f060d07aa9e3c748dfd1deffee441e38d8"
+  sha256 "89db2f422fb0646ffa2d29f6d62eaf017446091afb1d127ff67351a5f90ed96d"
   # < formula-set-version.sh metanorma-cli #
 
-  license "2BSD"
+  license "BSD-2-Clause"
 
   depends_on "git"
   depends_on "gflags"
@@ -45,10 +45,10 @@ class MetanormaDev < Formula
       ENV.append "CFLAGS", "-I#{zlib.opt_include}"
       ENV.append "LDFLAGS", "-L#{zlib.opt_lib} -Wl,-rpath,#{zlib.opt_lib}"
       ENV.append "PKG_CONFIG_PATH", "#{zlib.opt_lib}/pkgconfig"
-    end
 
-    ENV.prepend_path "PATH", Formula["libxslt"].opt_bin.to_s if OS.linux?
-    ENV.prepend_path "PATH", Formula["libxml2"].opt_bin.to_s if OS.linux?
+      ENV.prepend_path "PATH", Formula["libxslt"].opt_bin.to_s
+      ENV.prepend_path "PATH", Formula["libxml2"].opt_bin.to_s
+    end
 
     # Use Homebrew Ruby formula pattern
     system "bundle", "config", "set", "without", "development", "test"
@@ -69,8 +69,8 @@ class MetanormaDev < Formula
   def caveats
     <<~EOS
       inkscape >= 1.0 is required to generate Word output using SVG images.
-Install it by running `brew cask install inkscape` or
-directly download from https://inkscape.org/release/inkscape-1.0/
+      Install it by running `brew cask install inkscape` or
+      directly download from https://inkscape.org/release/inkscape-1.0/
     EOS
   end
 
