@@ -5,7 +5,7 @@ class Metanorma < Formula
   homepage "https://www.metanorma.org"
 
   url "https://github.com/metanorma/packed-mn/archive/v1.13.0.tar.gz"
-  sha256 "7195a3a39ef0f8e5721414573c815d3ae6fc0206c8dbbe98e98eead90f4b7c76"
+  sha256 "5d525c223fdfeb5585f963fbac1bdfa386c8e64e25a37ca5a706323641c444ce"
 
   license ""
   revision 1
