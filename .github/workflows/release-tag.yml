@@ -29,11 +29,17 @@ jobs:
       env:
         METANORMA_CLI_TAG: ${{ github.event.client_payload.ref }}
 
+    - name: Install Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.4'
+        bundler-cache: true
+
     - name: Install dependencies
       run: gem install octokit
 
     - name: Update Formula
-      run: ruby generate-formula.rb --version ${METANORMA_CLI_VERSION}
+      run: bundle exec generate-formula.rb --version ${METANORMA_CLI_VERSION}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
