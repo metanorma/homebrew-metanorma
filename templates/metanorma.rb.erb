@@ -4,8 +4,8 @@ class Metanorma < Formula
   desc "Publishing standards for tomorrow, today"
   homepage "https://www.metanorma.org"
 
-  url "<%= metadata['packed_mn']['url'] %>"
-  sha256 "<%= metadata['packed_mn']['sha256'] %>"
+  url "<%= metadata['metanorma/metanorma-cli']['src']['url'] %>"
+  sha256 "<%= metadata['metanorma/metanorma-cli']['src']['sha256'] %>"
 
   license "BSD-2-Clause"
   revision 1
@@ -20,15 +20,15 @@ class Metanorma < Formula
   on_macos do
     on_arm do
       resource "packed-mn" do
-        url "<%= metadata['binaries']['darwin-arm64']['url'] %>"
-        sha256 "<%= metadata['binaries']['darwin-arm64']['sha256'] %>"
+        url "<%= metadata['metanorma/packed-mn']['darwin-arm64']['url'] %>"
+        sha256 "<%= metadata['metanorma/packed-mn']['darwin-arm64']['sha256'] %>"
       end
     end
 
     on_intel do
       resource "packed-mn" do
-        url "<%= metadata['binaries']['darwin-x86_64']['url'] %>"
-        sha256 "<%= metadata['binaries']['darwin-x86_64']['sha256'] %>"
+        url "<%= metadata['metanorma/packed-mn']['darwin-x86_64']['url'] %>"
+        sha256 "<%= metadata['metanorma/packed-mn']['darwin-x86_64']['sha256'] %>"
       end
     end
   end
@@ -38,15 +38,15 @@ class Metanorma < Formula
 
     on_arm do
       resource "packed-mn" do
-        url "<%= metadata['binaries']['linux-aarch64']['url'] %>"
-        sha256 "<%= metadata['binaries']['linux-aarch64']['sha256'] %>"
+        url "<%= metadata['metanorma/packed-mn']['linux-aarch64']['url'] %>"
+        sha256 "<%= metadata['metanorma/packed-mn']['linux-aarch64']['sha256'] %>"
       end
     end
 
     on_intel do
       resource "packed-mn" do
-        url "<%= metadata['binaries']['linux-x86_64']['url'] %>"
-        sha256 "<%= metadata['binaries']['linux-x86_64']['sha256'] %>"
+        url "<%= metadata['metanorma/packed-mn']['linux-x86_64']['url'] %>"
+        sha256 "<%= metadata['metanorma/packed-mn']['linux-x86_64']['sha256'] %>"
       end
     end
   end

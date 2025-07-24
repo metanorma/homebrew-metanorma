@@ -3,10 +3,10 @@
 
 require 'json'
 require 'erb'
-require 'net/http'
-require 'uri'
 require 'digest'
 require 'fileutils'
+require 'net/http'
+require 'uri'
 
 begin
   require 'octokit'
@@ -16,32 +16,57 @@ rescue LoadError
 end
 
 class FormulaGenerator
-  GITHUB_OWNER = 'metanorma'
-  PACKED_MN_REPO = 'packed-mn'
-  METANORMA_CLI_REPO = 'metanorma-cli'
-  SUCCESS_CODE = '200'
-  REDIRECT_CODES = %w[301 302 303 307 308].freeze
-  ASSET_EXTENSION = '.tgz'
-  SHA256_SUFFIX = '.sha256.txt'
+
+  RESOURCES_AND_TEMPLATES ={
+    "metanorma/packed-mn" => {
+      "src" => {
+        "type" => "source"
+      },
+      "darwin-arm64" => {
+        "type" => "release-artifact",
+        "filename" => "metanorma-darwin-arm64.tgz",
+      },
+      "darwin-x86_64" => {
+        "type" => "release-artifact",
+        "filename" => "metanorma-darwin-x86_64.tgz",
+      },
+      "linux-x86_64" => {
+        "type" => "release-artifact",
+        "filename" => "metanorma-linux-x86_64.tgz",
+      },
+      "linux-aarch64" => {
+        "type" => "release-artifact",
+        "filename" => "metanorma-linux-aarch64.tgz",
+      }
+    },
+    "metanorma/metanorma-cli" => {
+      "src" => {
+        "type" => "source"
+      }
+    },
+  }
 
   def initialize(metadata_file = 'formula-metadata.json')
     @metadata_file = metadata_file
     @metadata = load_metadata
     @dry_run = false
     @client = Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
-    @client.auto_paginate = true
   end
 
-  def generate(version: nil, dry_run: false)
+  def generate(version:, dry_run: false)
     @dry_run = dry_run
 
-    if version
-      @metadata['version'] = version
-      puts "Updating to version #{version}"
-    end
+    raise "Version must be specified (e.g. v1.0.0)" unless version
+    raise "Version must be a valid semantic version with 'v' prefix (e.g. v1.0.0)" unless version.match?(/^v\d+\.\d+\.\d+$/)
 
     puts "Fetching SHA256 hashes..."
-    update_sha256_hashes
+    results = update_sha256_hashes(version)
+    puts "Passing metadata to templates..."
+    json = JSON.pretty_generate(results)
+    puts '--' * 20
+    puts json
+    puts '--' * 20
+    File.write(@metadata_file, json)
 
     puts "Generating formulas..."
     generate_formula('metanorma', 'templates/metanorma.rb.erb', 'Formula/metanorma.rb')
@@ -69,178 +94,65 @@ class FormulaGenerator
     File.write(@metadata_file, JSON.pretty_generate(@metadata))
   end
 
-  def update_sha256_hashes
-    version = @metadata['version']
+  def update_sha256_hashes(version)
+    result = {}
 
-    # Update source archives
-    update_source_archive('packed_mn', PACKED_MN_REPO, version)
-    update_source_archive('metanorma_cli', METANORMA_CLI_REPO, version)
+    # Process each resource group in RESOURCES_AND_TEMPLATES
+    RESOURCES_AND_TEMPLATES.each do |resource_repo, resources|
 
-    # Update binary SHA256s using GitHub releases API
-    update_binary_hashes(version)
-  end
+      puts "Processing #{resource_repo}..."
 
-  def update_source_archive(key, repo_name, version)
-    archive_info = @metadata[key]
-    archive_info['url'] = substitute_version(archive_info['url_template'], version)
-    archive_info['sha256'] = fetch_sha256_from_github_archive(GITHUB_OWNER, repo_name, version)
-  end
+      # resource_repo is in the format "metanorma/packed-mn"
+      release = @client.release_for_tag(resource_repo, version)
+      raise "Release not found for #{resource_repo} at tag #{version}" unless release
 
-  def update_binary_hashes(version)
-    @metadata['binaries'].each do |platform, info|
-      info['url'] = substitute_version(info['url_template'], version)
+      result[resource_repo.to_s] = {}
+      resources.each do |resource_name, resource_info|
+        puts "  Processing resource: #{resource_name} (#{resource_info['type']})"
+        url = case resource_info['type']
+        when 'source'
+          release.tarball_url
+        when 'release-artifact'
+          asset_name = resource_info['filename']
+          asset = release.assets.find { |a| a.name == asset_name }
+          raise "Asset '#{asset_name}' not found in release #{version}" unless asset
+          asset.browser_download_url
+        end
 
-      # Try to fetch SHA256 from GitHub release assets
-      sha256 = fetch_sha256_from_github_release(GITHUB_OWNER, PACKED_MN_REPO, version, platform)
+        puts "    Downloading from #{url}"
+        content = download_http(url)
+        hash = Digest::SHA256.hexdigest(content)
+        puts "    SHA256: #{hash}"
 
-      if sha256.nil?
-        puts "  Warning: Could not fetch SHA256 from GitHub API, downloading binary..."
-        sha256 = fetch_sha256(info['url'])
+        result[resource_repo.to_s][resource_name] = {
+          "url" => url,
+          "sha256" => hash
+        }
       end
-
-      info['sha256'] = sha256
-      puts "  #{platform}: #{sha256}"
     end
+
+    result
   end
 
-  def substitute_version(template, version)
-    template.gsub('{version}', version)
-  end
-
-  def fetch_sha256_from_github_archive(owner, repo, version)
-    puts "  Fetching SHA256 for #{owner}/#{repo} archive v#{version}..."
-
-    begin
-      # Get the tarball URL and download it to calculate SHA256
-      tarball_url = @client.archive_link("#{owner}/#{repo}", ref: "v#{version}", format: 'tarball')
-      fetch_sha256(tarball_url)
-    rescue Octokit::NotFound, StandardError => e
-      warning_msg = e.is_a?(Octokit::NotFound) ?
-        "Release v#{version} not found for #{owner}/#{repo}" :
-        "GitHub API error for #{owner}/#{repo}: #{e.message}"
-      puts "  Warning: #{warning_msg}"
-
-      # Fallback to direct URL construction
-      fallback_url = "https://github.com/#{owner}/#{repo}/archive/v#{version}.tar.gz"
-      fetch_sha256(fallback_url)
-    end
-  end
-
-  def fetch_sha256_from_github_release(owner, repo, version, platform)
-    puts "  Fetching SHA256 for #{owner}/#{repo} release v#{version} (#{platform})..."
-
-    begin
-      release = @client.release_for_tag("#{owner}/#{repo}", "v#{version}")
-
-      # Try SHA256 file first, then binary asset
-      sha256_from_file = try_fetch_sha256_file(release, platform)
-      return sha256_from_file if sha256_from_file
-
-      sha256_from_binary = try_fetch_sha256_from_binary(release, platform)
-      return sha256_from_binary if sha256_from_binary
-
-      puts "    No matching assets found for platform #{platform}"
-      nil
-
-    rescue Octokit::NotFound
-      puts "    Release v#{version} not found for #{owner}/#{repo}"
-      nil
-    rescue => e
-      puts "    GitHub API error: #{e.message}"
-      nil
-    end
-  end
-
-  def try_fetch_sha256_file(release, platform)
-    sha256_asset_name = build_asset_name(platform, SHA256_SUFFIX)
-    sha256_asset = find_asset(release, sha256_asset_name)
-
-    return nil unless sha256_asset
-
-    puts "    Found SHA256 file: #{sha256_asset.name}"
-    sha256_content = fetch_asset_content(sha256_asset.browser_download_url)
-    sha256_content&.strip&.split&.first
-  end
-
-  def try_fetch_sha256_from_binary(release, platform)
-    binary_asset_name = build_asset_name(platform)
-    binary_asset = find_asset(release, binary_asset_name)
-
-    return nil unless binary_asset
-
-    puts "    Found binary asset: #{binary_asset.name}, calculating SHA256..."
-    fetch_sha256(binary_asset.browser_download_url)
-  end
-
-  def build_asset_name(platform, suffix = ASSET_EXTENSION)
-    "metanorma-#{platform}#{suffix}"
-  end
-
-  def find_asset(release, asset_name)
-    release.assets.find { |asset| asset.name == asset_name }
-  end
-
-  def fetch_asset_content(url)
-    response = make_http_request(url)
-    response.code == SUCCESS_CODE ? response.body : nil
-  rescue => e
-    puts "    Warning: Failed to fetch asset content from #{url}: #{e.message}"
-    nil
-  end
-
-  def fetch_sha256_from_file(url)
-    response = make_http_request(url)
-
-    if response.code == SUCCESS_CODE
-      # SHA256 files typically contain "hash filename", we want just the hash
-      response.body.strip.split.first
-    else
-      nil
-    end
-  rescue => e
-    puts "  Warning: Failed to fetch SHA256 from #{url}: #{e.message}"
-    nil
-  end
-
-  def make_http_request(url)
+  def download_http(url)
     uri = URI(url)
-    Net::HTTP.get_response(uri)
-  end
-
-  def fetch_sha256(url, max_redirects = 5)
-    uri = URI(url)
-
     Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
       request = Net::HTTP::Get.new(uri)
+      request['User-Agent'] = 'Homebrew Formula Generator'
+      response = http.request(request)
 
-      http.request(request) do |response|
-        case response.code
-        when SUCCESS_CODE
-          digest = Digest::SHA256.new
-          response.read_body do |chunk|
-            digest.update(chunk)
-          end
-          return digest.hexdigest
-        when *REDIRECT_CODES
-          if max_redirects > 0
-            location = resolve_redirect_location(response, uri)
-            return fetch_sha256(location, max_redirects - 1)
-          else
-            raise "Too many redirects for #{url}"
-          end
-        else
-          raise "Failed to download #{url}: HTTP #{response.code}"
-        end
+      case response
+      when Net::HTTPSuccess
+        response.body
+      when Net::HTTPRedirection
+        location = response['location']
+        raise "Redirect without location" unless location
+        location = URI.join(url, location).to_s if location.start_with?('/')
+        download_http(location)
+      else
+        raise "HTTP #{response.code}: #{response.message}"
       end
     end
-  rescue => e
-    puts "  Error fetching SHA256 for #{url}: #{e.message}"
-    raise
-  end
-
-  def resolve_redirect_location(response, original_uri)
-    location = response['location']
-    location.start_with?('/') ? "#{original_uri.scheme}://#{original_uri.host}#{location}" : location
   end
 
   def generate_formula(name, template_path, output_path)
@@ -301,8 +213,8 @@ if __FILE__ == $0
       version: options[:version],
       dry_run: options[:dry_run]
     )
-  rescue => e
-    puts "Error: #{e.message}"
-    exit 1
+  # rescue => e
+  #   puts "Error: #{e.message}"
+  #   exit 1
   end
 end

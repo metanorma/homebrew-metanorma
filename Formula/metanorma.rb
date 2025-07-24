@@ -4,8 +4,8 @@ class Metanorma < Formula
   desc "Publishing standards for tomorrow, today"
   homepage "https://www.metanorma.org"
 
-  url "https://github.com/metanorma/packed-mn/archive/v1.13.0.tar.gz"
-  sha256 "7195a3a39ef0f8e5721414573c815d3ae6fc0206c8dbbe98e98eead90f4b7c76"
+  url "https://api.github.com/repos/metanorma/metanorma-cli/tarball/v1.13.0"
+  sha256 "89db2f422fb0646ffa2d29f6d62eaf017446091afb1d127ff67351a5f90ed96d"
 
   license "BSD-2-Clause"
   revision 1
