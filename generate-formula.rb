@@ -61,23 +61,15 @@ class FormulaGenerator
 
     puts "Fetching SHA256 hashes..."
     results = update_sha256_hashes(version)
-    puts "Passing metadata to templates..."
-    json = JSON.pretty_generate(results)
-    puts '--' * 20
-    puts json
-    puts '--' * 20
-    File.write(@metadata_file, json)
 
     puts "Generating formulas..."
     generate_formula('metanorma', 'templates/metanorma.rb.erb', 'Formula/metanorma.rb')
     generate_formula('metanorma-dev', 'templates/metanorma-dev.rb.erb', 'Formula/metanorma-dev.rb')
 
-    if @dry_run
-      puts "\nDry run completed. No files were modified."
-    else
-      puts "\nFormulas generated successfully!"
-      save_metadata
-    end
+    puts "Saving metadata..."
+    save_metadata(results)
+
+    puts "\nFormulas generated successfully!"
   end
 
   private
@@ -90,8 +82,17 @@ class FormulaGenerator
     JSON.parse(File.read(@metadata_file))
   end
 
-  def save_metadata
-    File.write(@metadata_file, JSON.pretty_generate(@metadata))
+  def save_metadata(metadata)
+    if @dry_run
+      puts "\n--- #{@metadata_file} (DRY RUN) ---"
+      puts '```json'
+      puts JSON.pretty_generate(metadata)
+      puts '```'
+      puts "--- END #{@metadata_file} ---\n"
+      return
+    end
+
+    File.write(@metadata_file, JSON.pretty_generate(metadata))
   end
 
   def update_sha256_hashes(version)
@@ -111,12 +112,20 @@ class FormulaGenerator
         puts "  Processing resource: #{resource_name} (#{resource_info['type']})"
         url = case resource_info['type']
         when 'source'
-          release.tarball_url
+          if release.tarball_url?
+            release.tarball_url
+          else
+            raise "No tarball URL found for source resource in release #{version}"
+          end
         when 'release-artifact'
           asset_name = resource_info['filename']
           asset = release.assets.find { |a| a.name == asset_name }
           raise "Asset '#{asset_name}' not found in release #{version}" unless asset
-          asset.browser_download_url
+          if asset.browser_download_url?
+            asset.browser_download_url
+          else
+            raise "No download URL found for asset '#{asset_name}' in release #{version}"
+          end
         end
 
         puts "    Downloading from #{url}"
@@ -167,17 +176,11 @@ class FormulaGenerator
       puts "\n--- #{output_path} (DRY RUN) ---"
       puts content
       puts "--- END #{output_path} ---\n"
-    else
-      # Create backup
-      if File.exist?(output_path)
-        backup_path = "#{output_path}.backup.#{Time.now.to_i}"
-        FileUtils.cp(output_path, backup_path)
-        puts "  Created backup: #{backup_path}"
-      end
-
-      File.write(output_path, content)
-      puts "  Generated: #{output_path}"
+      return
     end
+
+    File.write(output_path, content)
+    puts "  Generated: #{output_path}"
   end
 
   def metadata
