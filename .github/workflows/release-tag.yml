@@ -35,9 +35,6 @@ jobs:
         ruby-version: '3.4'
         bundler-cache: true
 
-    - name: Install dependencies
-      run: gem install octokit
-
     - name: Update Formula
       run: bundle exec generate-formula.rb --version ${METANORMA_CLI_VERSION}
       env:
