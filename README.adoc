@@ -3,34 +3,144 @@
 image:https://github.com/metanorma/homebrew-metanorma/workflows/linux/badge.svg["Build Status (Ubuntu)", link="https://github.com/metanorma/homebrew-metanorma/actions?workflow=linux"]
 image:https://github.com/metanorma/homebrew-metanorma/workflows/macos/badge.svg["Build Status (macOS)", link="https://github.com/metanorma/homebrew-metanorma/actions?workflow=macos"]
 
-This tap contains formulae relating to https://www.metanorma.com[Metanorma].
+== Purpose
 
-== Install metanorma
+This tap contains formulas for the installation of
+https://www.metanorma.org[Metanorma].
+
+
+== Install Metanorma using Homebrew
 
 [source,sh]
 ----
-# Without installing the metanorma tap
+# Without installing the Metanorma tap
 brew install metanorma/metanorma/metanorma
 
-# Installing the metanorma tap
+# or
+# Install the Metanorma tap then install Metanorma
 brew tap metanorma/metanorma
 brew install metanorma
 ----
 
-== Acceptable Formulae
 
-You can read Homebrew’s Acceptable Formulae document https://github.com/Homebrew/brew/blob/master/docs/Acceptable-Formulae.md[here].
+== Formulas
 
-== Troubleshooting
+=== General
 
-First, please run `brew update` and `brew doctor`.
+This tap provides the following Metanorma formulas:
 
-Second, read the https://github.com/Homebrew/brew/blob/master/docs/Troubleshooting.md#troubleshooting[Troubleshooting Checklist].
+* `metanorma`: Pre-compiled binary distribution. This is suitable for most users
+and is the recommended installation method. The binary distribution is released
+every 2 weeks.
 
-== More Documentation
+* `metanorma-dev`: Source distribution for development. This is for developers
+who need the latest features that are not available in the binary distribution.
 
-`brew help`, `man brew` or check https://github.com/Homebrew/brew/tree/master/docs#readme[our documentation].
+=== `metanorma` formula
 
-== License
+The `metanorma` formula installs pre-compiled binaries from the
+https://github.com/metanorma/packed-mn[packed-mn] repository.
 
-Code is under the https://github.com/Homebrew/brew/tree/master/LICENSE.txt[BSD 2 Clause license].
+This is the recommended installation method being much faster and does not
+require compilation.
+
+* **Source**: Pre-compiled binaries from packed-mn releases
+* **Installation time**: Fast (no compilation required)
+* **Dependencies**: Minimal system dependencies
+* **Platforms**: macOS (ARM64/x86_64), Linux (x86_64/aarch64)
+
+[source,sh]
+----
+# Install development version
+brew install metanorma/metanorma/metanorma
+----
+
+=== `metanorma-dev` formula
+
+The `metanorma-dev` formula builds Metanorma from source using the
+https://github.com/metanorma/metanorma-cli[metanorma-cli] repository.
+
+This formula is suitable when you need the latest features that are not
+yet provided in the binary distribution.
+
+WARNING: This formula requires a Ruby development environment and build tools.
+
+* **Source**: Built from `metanorma-cli` source code
+* **Installation time**: Slower (requires compilation)
+* **Dependencies**: Ruby, build tools, and gem dependencies
+* **Use case**: Development, testing, or when binary distribution is unavailable
+
+[source,sh]
+----
+# Install development version
+brew install metanorma/metanorma/metanorma-dev
+----
+
+== Formula updates
+
+=== General
+
+This repository uses an automated formula generation system to maintain
+consistency and simplify updates.
+
+=== Architecture
+
+The formula generation system consists of:
+
+* **Templates** (`templates/`): ERB templates for each formula.
+
+* **Metadata** (`formula-metadata.json`): Version information and SHA256 hashes.
+This file is automatically updated with each release.
+
+* **Generator** (`generate-formula.rb`): Script that combines templates with
+metadata.
+
+=== Generating formulas
+
+To update the formulae with a new version:
+
+[source,sh]
+----
+# Update metadata to a specific version
+bundle exec ruby generate-formula.rb --version 1.14.0
+
+# Regenerate using latest template with current metadata
+bundle exec ruby generate-formula.rb
+
+# Dry run to preview changes
+bundle exec ruby generate-formula.rb --dry-run
+----
+
+The generator script will:
+
+. Fetch SHA256 hashes from GitHub Releases of packed-mn
+. Update the `formula-metadata.json` file with new version and SHA256
+. Generate new formulae from templates
+
+=== Manual updates
+
+If you need to manually update metadata:
+
+. Edit `formula-metadata.json` to update version numbers
+. Run `bundle exec ruby generate-formula.rb` to regenerate formulae
+. Test the formulae locally
+. Commit and push changes
+
+=== Template structure
+
+Templates use ERB syntax and have access to the `metadata` hash:
+
+[source,ruby]
+----
+url "<%= metadata['packed_mn']['url'] %>"
+sha256 "<%= metadata['packed_mn']['sha256'] %>"
+----
+
+Static information (description, dependencies, etc.) is hardcoded in templates
+for better maintainability.
+
+
+== Copyright and license
+
+Copyright Ribose. The formulas in this repository are licensed under the
+https://opensource.org/license/bsd-2-clause[BSD 2-Clause License].
