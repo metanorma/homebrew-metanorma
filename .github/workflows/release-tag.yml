@@ -7,7 +7,7 @@ on:
     inputs:
       next_version:
         description: |
-          Next release version.
+          Next release version with 'v' prefix (e.g. v1.23.2).
         required: true
 
 jobs:
@@ -23,11 +23,6 @@ jobs:
       if: ${{ github.event_name == 'workflow_dispatch' }}
       run: echo METANORMA_CLI_VERSION=${{ github.event.inputs.next_version }} >> ${GITHUB_ENV}
 
-    - name: Parse metanorma-cli version
-      if: ${{ github.event_name == 'repository_dispatch' }}
-      run: echo METANORMA_CLI_VERSION=${METANORMA_CLI_TAG#*/v} >> ${GITHUB_ENV}
-      env:
-        METANORMA_CLI_TAG: ${{ github.event.client_payload.ref }}
 
     - name: Install Ruby
       uses: ruby/setup-ruby@v1
@@ -46,5 +41,5 @@ jobs:
         git config --global user.email "metanorma-ci@users.noreply.github.com"
         git add Formula/metanorma.rb Formula/metanorma-dev.rb formula-metadata.json
         git commit -m "Bump version to ${METANORMA_CLI_VERSION}"
-        git tag v${METANORMA_CLI_VERSION}
+        git tag ${METANORMA_CLI_VERSION}
         git push origin HEAD:${GITHUB_REF} --tags

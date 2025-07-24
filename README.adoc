@@ -101,11 +101,8 @@ To update the formulae with a new version:
 
 [source,sh]
 ----
-# Update metadata to a specific version
-bundle exec ruby generate-formula.rb --version 1.14.0
-
-# Regenerate using latest template with current metadata
-bundle exec ruby generate-formula.rb
+# Update metadata for a specific version
+bundle exec ruby generate-formula.rb --version v1.23.2
 
 # Dry run to preview changes
 bundle exec ruby generate-formula.rb --dry-run
