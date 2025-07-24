@@ -15,15 +15,15 @@ jobs:
         os: [ macos-15, macos-14, macos-13 ]
         formula: [ metanorma ]
         experimental: [ false ]
-        include:
-          - formula: metanorma-dev
-            os: macos-15
-            experimental: true
-            executable: metanorma
-          - formula: metanorma-dev
-            os: macos-13
-            experimental: true
-            executable: metanorma
+        # include:
+        #   - formula: metanorma-dev
+        #     os: macos-15
+        #     experimental: true
+        #     executable: metanorma
+        #   - formula: metanorma-dev
+        #     os: macos-13
+        #     experimental: true
+        #     executable: metanorma
 
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
