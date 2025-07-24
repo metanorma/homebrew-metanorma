@@ -1,30 +1,30 @@
 {
   "metanorma/packed-mn": {
     "src": {
-      "url": "https://api.github.com/repos/metanorma/packed-mn/tarball/v1.13.0",
-      "sha256": "7195a3a39ef0f8e5721414573c815d3ae6fc0206c8dbbe98e98eead90f4b7c76"
+      "url": "https://api.github.com/repos/metanorma/packed-mn/tarball/v1.13.2",
+      "sha256": "f5bb8159afe0600eae9e66b5ca8d82c938006d8d95363335b49769964fbb7589"
     },
     "darwin-arm64": {
-      "url": "https://github.com/metanorma/packed-mn/releases/download/v1.13.0/metanorma-darwin-arm64.tgz",
-      "sha256": "56912978cc8d209d3ba5ad773698304f733201e7ec2f6d10e1a61621bf520274"
+      "url": "https://github.com/metanorma/packed-mn/releases/download/v1.13.2/metanorma-darwin-arm64.tgz",
+      "sha256": "3957f72855421e3f5ad832f5ffb3ecf651c0ede3578c77f9a317369f08441164"
     },
     "darwin-x86_64": {
-      "url": "https://github.com/metanorma/packed-mn/releases/download/v1.13.0/metanorma-darwin-x86_64.tgz",
-      "sha256": "c64f164760ed4aed7ff414ef8f58c86755e794ec8bffdbcc939528a1d8207fb3"
+      "url": "https://github.com/metanorma/packed-mn/releases/download/v1.13.2/metanorma-darwin-x86_64.tgz",
+      "sha256": "3b2e82e6f7e12327f93a475d55264c4f56fa64e360c239c651b525c48bda32ab"
     },
     "linux-x86_64": {
-      "url": "https://github.com/metanorma/packed-mn/releases/download/v1.13.0/metanorma-linux-x86_64.tgz",
-      "sha256": "0e7a147430e29c2233233f7606581075569d7cd78d515d6ab4ad5119188d1e33"
+      "url": "https://github.com/metanorma/packed-mn/releases/download/v1.13.2/metanorma-linux-x86_64.tgz",
+      "sha256": "80d3d1681dbd7a7845de8ac0927ffb3eeb372cce158d95184c1fe2b94a1c4b73"
     },
     "linux-aarch64": {
-      "url": "https://github.com/metanorma/packed-mn/releases/download/v1.13.0/metanorma-linux-aarch64.tgz",
-      "sha256": "87adec81d9c3e53a3ba134dd11d65c3664b179862e913ac209fa6b315deeffff"
+      "url": "https://github.com/metanorma/packed-mn/releases/download/v1.13.2/metanorma-linux-aarch64.tgz",
+      "sha256": "33d5eea1a1de9cc84d2e1adc7a500c08022a119e5d4ce549896fa5e6b94f5384"
     }
   },
   "metanorma/metanorma-cli": {
     "src": {
-      "url": "https://api.github.com/repos/metanorma/metanorma-cli/tarball/v1.13.0",
-      "sha256": "89db2f422fb0646ffa2d29f6d62eaf017446091afb1d127ff67351a5f90ed96d"
+      "url": "https://api.github.com/repos/metanorma/metanorma-cli/tarball/v1.13.2",
+      "sha256": "c07e42d5c15a62072eb4a4d25536de4ef925e5c88c08b7d706a7b2e47b734dd9"
     }
   }
 }
