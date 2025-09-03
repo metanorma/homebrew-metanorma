@@ -20,8 +20,18 @@ jobs:
         token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
 
     - name: Parse metanorma-cli version
-      if: ${{ github.event_name == 'workflow_dispatch' }}
-      run: echo METANORMA_CLI_VERSION=${{ github.event.inputs.next_version }} >> ${GITHUB_ENV}
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "METANORMA_CLI_VERSION=${{ github.event.inputs.next_version }}" >> ${GITHUB_ENV}
+        elif [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+          # Extract version from refs/tags/v1.2.3 -> v1.2.3
+          VERSION=$(echo "${{ github.event.client_payload.ref }}" | sed 's|refs/tags/||')
+          echo "METANORMA_CLI_VERSION=${VERSION}" >> ${GITHUB_ENV}
+        else
+          echo "ERROR: Unsupported event type: ${{ github.event_name }}"
+          exit 1
+        fi
+        echo "Set METANORMA_CLI_VERSION=${METANORMA_CLI_VERSION}"
 
 
     - name: Install Ruby
