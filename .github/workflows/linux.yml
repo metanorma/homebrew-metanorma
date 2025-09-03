@@ -55,13 +55,16 @@ jobs:
       - name: Install inkscape (required for tests)
         run: sudo apt-get install -y inkscape
 
-      - run: brew install --build-from-source --verbose --include-test --formula Formula/${{ matrix.formula }}.rb
+      - name: Add local tap for testing
+        run: brew tap metanorma/metanorma $GITHUB_WORKSPACE
+
+      - run: brew install --build-from-source --verbose --include-test metanorma/metanorma/${{ matrix.formula }}
         # To ignore potential: The `brew link` step did not complete successfully
         # continue-on-error: true
 
       - run: which ${{ matrix.executable || matrix.formula }}
 
-      - run: brew test --verbose ${{ matrix.formula }}
+      - run: brew test --verbose metanorma/metanorma/${{ matrix.formula }}
         # continue-on-error: true # Because ietf test fails anyway
 
-      - run: brew uninstall ${{ matrix.formula }}
+      - run: brew uninstall metanorma/metanorma/${{ matrix.formula }}
