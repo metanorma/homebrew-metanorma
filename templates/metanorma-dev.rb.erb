@@ -13,13 +13,13 @@ class MetanormaDev < Formula
 
   license "BSD-2-Clause"
 
-  depends_on "git"
   depends_on "gflags"
+  depends_on "git"
   depends_on "graphviz"
-  depends_on "xml2rfc" # required by 'metanorma-ietf' gem
   depends_on "openjdk"
   depends_on "plantuml"
   depends_on "ruby@3"
+  depends_on "xml2rfc" # required by 'metanorma-ietf' gem
 
   uses_from_macos "libxml2"
   uses_from_macos "libxslt"
@@ -117,13 +117,13 @@ class MetanormaDev < Formula
     (testpath / "test-iso.adoc").write(metanorma_test_doc)
     system bin / "metanorma", "--type", "iso", testpath / "test-iso.adoc",
            "--agree-to-terms"
-    assert_predicate testpath / "test-iso.xml", :exist?
-    assert_predicate testpath / "test-iso.html", :exist?
+    assert_path_exists testpath / "test-iso.xml"
+    assert_path_exists testpath / "test-iso.html"
 
     (testpath / "test-csa.adoc").write(metanorma_test_doc)
     system bin / "metanorma", "--type", "csa", testpath / "test-csa.adoc",
            "--agree-to-terms"
-    assert_predicate testpath / "test-csa.html", :exist?
+    assert_path_exists testpath / "test-csa.html"
 
     #(testpath / "test-ietf.adoc").write(ietf_test_doc)
     #system bin / "metanorma", testpath / "test-ietf.adoc", "--agree-to-terms"

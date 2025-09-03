@@ -5,7 +5,7 @@ class Metanorma < Formula
   homepage "https://www.metanorma.org"
 
   url "https://github.com/metanorma/metanorma-cli/archive/refs/tags/v1.13.0.tar.gz"
-  sha256 "89db2f422fb0646ffa2d29f6d62eaf017446091afb1d127ff67351a5f90ed96d"
+  sha256 "21a15cbd5957c405629c9f77108943f060d07aa9e3c748dfd1deffee441e38d8"
 
   license "BSD-2-Clause"
   revision 1
@@ -53,10 +53,10 @@ class Metanorma < Formula
 
   def install
     platform = if OS.mac?
-                  Hardware::CPU.arm? ? "darwin-arm64" : "darwin-x86_64"
-                elsif OS.linux?
-                  Hardware::CPU.arm? ? "linux-aarch64" : "linux-x86_64"
-                end
+      Hardware::CPU.arm? ? "darwin-arm64" : "darwin-x86_64"
+    elsif OS.linux?
+      Hardware::CPU.arm? ? "linux-aarch64" : "linux-x86_64"
+    end
 
     resource("packed-mn").stage do
       bin.install "metanorma-#{platform}"

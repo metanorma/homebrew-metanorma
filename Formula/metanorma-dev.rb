@@ -7,19 +7,19 @@ class MetanormaDev < Formula
   homepage "https://www.metanorma.org"
 
   # > formula-set-version.sh metanorma-cli #
-  url "https://api.github.com/repos/metanorma/metanorma-cli/tarball/v1.13.0"
-  sha256 "89db2f422fb0646ffa2d29f6d62eaf017446091afb1d127ff67351a5f90ed96d"
+  url "https://github.com/metanorma/metanorma-cli/archive/refs/tags/v1.13.0.tar.gz"
+  sha256 "21a15cbd5957c405629c9f77108943f060d07aa9e3c748dfd1deffee441e38d8"
   # < formula-set-version.sh metanorma-cli #
 
   license "BSD-2-Clause"
 
-  depends_on "git"
   depends_on "gflags"
+  depends_on "git"
   depends_on "graphviz"
-  depends_on "xml2rfc" # required by 'metanorma-ietf' gem
   depends_on "openjdk"
   depends_on "plantuml"
   depends_on "ruby@3"
+  depends_on "xml2rfc" # required by 'metanorma-ietf' gem
 
   uses_from_macos "libxml2"
   uses_from_macos "libxslt"
@@ -60,8 +60,8 @@ class MetanormaDev < Formula
     bin.install libexec/"bin/metanorma"
     bin.env_script_all_files(
       libexec/"bin",
-      PATH: "#{Formula["ruby@3"].opt_bin}:$PATH",
-      GEM_HOME: ENV["GEM_HOME"],
+      PATH:      "#{Formula["ruby@3"].opt_bin}:$PATH",
+      GEM_HOME:  ENV["GEM_HOME"],
       JAVA_HOME: Language::Java.java_home("1.8+"),
     )
   end
@@ -75,7 +75,7 @@ class MetanormaDev < Formula
   end
 
   test do
-    metanorma_test_doc = <<~'ADOC'
+    metanorma_test_doc = <<~ADOC
       = Document title
       Author
       :docfile: test.adoc
@@ -84,54 +84,24 @@ class MetanormaDev < Formula
       :no-isobib:
     ADOC
 
-    metanorma_latexml_test_doc = <<~'ADOC'
-      = File
-      :stem
-
-      [latexmath]
-      ++++
-      M =
-      \\begin{bmatrix}
-      -\\sin λ_0 & \\cos λ_0 & 0 \\\\
-      -\\sin φ_0 \\cos λ_0 & -\\sin φ_0 \\sin λ_0 & \\cos φ_0 \\\\
-      \\cos φ_0 \\cos λ_0 & \\cos φ_0 \\sin λ_0 & \\sin φ_0
-      \\end{bmatrix}
-      ++++
-    ADOC
-
-    ietf_test_doc = <<~'ADOC'
-      :sort-refs: true
-      :revdate: 2018-04-15T00:00:00Z
-      :fullname: Test Test
-      :initials: T.
-      :surname: Test
-      :email: test@test.org
-      :docfile: document.adoc
-      :mn-document-class: ietf
-      :mn-output-extensions: rfc,xml,txt,html,rxl
-
-      == Clause
-      Clause
-    ADOC
-
     (testpath / "test-iso.adoc").write(metanorma_test_doc)
     system bin / "metanorma", "--type", "iso", testpath / "test-iso.adoc",
            "--agree-to-terms"
-    assert_predicate testpath / "test-iso.xml", :exist?
-    assert_predicate testpath / "test-iso.html", :exist?
+    assert_path_exists testpath / "test-iso.xml"
+    assert_path_exists testpath / "test-iso.html"
 
     (testpath / "test-csa.adoc").write(metanorma_test_doc)
     system bin / "metanorma", "--type", "csa", testpath / "test-csa.adoc",
            "--agree-to-terms"
-    assert_predicate testpath / "test-csa.html", :exist?
+    assert_path_exists testpath / "test-csa.html"
 
-    #(testpath / "test-ietf.adoc").write(ietf_test_doc)
-    #system bin / "metanorma", testpath / "test-ietf.adoc", "--agree-to-terms"
-    #assert_predicate testpath / "test-ietf.html", :exist?
+    # (testpath / "test-ietf.adoc").write(ietf_test_doc)
+    # system bin / "metanorma", testpath / "test-ietf.adoc", "--agree-to-terms"
+    # assert_path_exists testpath / "test-ietf.html"
 
-    #(testpath / "test-standoc.adoc").write(metanorma_latexml_test_doc)
-    #system bin / "metanorma", "--type", "standoc", "--extensions", "xml",
-    #       testpath / "test-standoc.adoc", "--agree-to-terms"
-    #assert_predicate testpath / "test-standoc.xml", :exist?
+    # (testpath / "test-standoc.adoc").write(metanorma_latexml_test_doc)
+    # system bin / "metanorma", "--type", "standoc", "--extensions", "xml",
+    #        testpath / "test-standoc.adoc", "--agree-to-terms"
+    # assert_path_exists testpath / "test-standoc.xml"
   end
 end
