@@ -112,11 +112,8 @@ class FormulaGenerator
         puts "  Processing resource: #{resource_name} (#{resource_info['type']})"
         url = case resource_info['type']
         when 'source'
-          if release.tarball_url?
-            release.tarball_url
-          else
-            raise "No tarball URL found for source resource in release #{version}"
-          end
+          # Use archive URL format instead of API tarball URL for consistent SHA256
+          "https://github.com/#{resource_repo}/archive/refs/tags/#{version}.tar.gz"
         when 'release-artifact'
           asset_name = resource_info['filename']
           asset = release.assets.find { |a| a.name == asset_name }

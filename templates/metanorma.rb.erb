@@ -10,12 +10,12 @@ class Metanorma < Formula
   license "BSD-2-Clause"
   revision 1
 
-  depends_on "git"
   depends_on "gflags"
+  depends_on "git"
   depends_on "graphviz"
-  depends_on "xml2rfc" # required by 'metanorma-ietf' gem
   depends_on "openjdk"
   depends_on "plantuml"
+  depends_on "xml2rfc" # required by 'metanorma-ietf' gem
 
   on_macos do
     on_arm do
@@ -53,10 +53,10 @@ class Metanorma < Formula
 
   def install
     platform = if OS.mac?
-                 Hardware::CPU.arm? ? "darwin-arm64" : "darwin-x86_64"
-               elsif OS.linux?
-                 Hardware::CPU.arm? ? "linux-aarch64" : "linux-x86_64"
-               end
+      Hardware::CPU.arm? ? "darwin-arm64" : "darwin-x86_64"
+    elsif OS.linux?
+      Hardware::CPU.arm? ? "linux-aarch64" : "linux-x86_64"
+    end
 
     resource("packed-mn").stage do
       bin.install "metanorma-#{platform}"
@@ -69,8 +69,8 @@ class Metanorma < Formula
 
     (bin / "metanorma").write_env_script(
       bin / "metanorma-#{platform}",
-      JAVA_HOME:  Language::Java.java_home("1.8+"),
-      PATH:       [libexec/"bin", "$PATH"].join(":"),
+      JAVA_HOME: Language::Java.java_home("1.8+"),
+      PATH:      [libexec/"bin", "$PATH"].join(":"),
     )
   end
 
@@ -125,8 +125,8 @@ class Metanorma < Formula
     (testpath / "test-iso.adoc").write(test_doc)
     system bin / "metanorma", "--type", "iso", testpath / "test-iso.adoc",
            "--agree-to-terms"
-    assert_predicate testpath / "test-iso.xml", :exist?
-    assert_predicate testpath / "test-iso.html", :exist?
+    assert_path_exists testpath / "test-iso.xml"
+    assert_path_exists testpath / "test-iso.html"
 
     # (testpath / "test-csa.adoc").write(test_doc)
     # system bin / "metanorma", "--type", "csa", testpath / "test-csa.adoc",
