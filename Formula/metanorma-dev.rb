@@ -17,7 +17,6 @@ class MetanormaDev < Formula
   depends_on "git"
   depends_on "graphviz"
   depends_on "openjdk"
-  depends_on "plantuml"
   depends_on "ruby@3"
   depends_on "xml2rfc" # required by 'metanorma-ietf' gem
 
