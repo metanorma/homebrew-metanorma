@@ -22,6 +22,25 @@ brew tap metanorma/metanorma
 brew install metanorma
 ----
 
+== Cask (macOS, recommended)
+
+The `metanorma` cask installs the signed and notarized macOS installer
+package published by
+https://github.com/metanorma/packed-metanorma[packed-metanorma]. The
+package stages the tebako toolchain under `/opt/metanorma` and seeds the
+Metanorma payload at install time — no Ruby, no Java, and no compilation
+on the host. Apple silicon only; Intel Macs use the formula below or
+`tebako install metanorma`.
+
+[source,sh]
+----
+brew install --cask metanorma/metanorma/metanorma
+----
+
+`brew uninstall --cask metanorma` removes `/opt/metanorma` and the
+`/etc/paths.d/metanorma` entry. The per-user `~/.tebako` store is shared
+with other tebako-managed tools and is left in place.
+
 
 == Formulas
 
