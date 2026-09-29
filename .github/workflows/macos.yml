@@ -65,3 +65,34 @@ jobs:
         #continue-on-error: true # Because ietf test fails anyway
 
       - run: brew uninstall metanorma/metanorma/${{ matrix.formula }}
+
+  test-cask:
+    name: Cask (pkg)
+    # The pkg ships Apple silicon only; macos-13 (Intel) is excluded by the
+    # cask's depends_on arch: :arm64, which brew enforces at install.
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: brew update-reset
+
+      - name: Add local tap for testing
+        run: brew tap metanorma/metanorma $GITHUB_WORKSPACE
+
+      - name: Install the cask
+        run: brew install --cask metanorma/metanorma/metanorma
+
+      - name: Wait for the seeded shim, then smoke it
+        run: |
+          # The pkg's postinstall seeds the payload detached into the
+          # machine-scope home; poll for the shim rather than race it.
+          for i in $(seq 1 90); do
+            [ -x /opt/metanorma/home/shims/metanorma ] && break
+            sleep 10
+          done
+          /opt/metanorma/home/shims/metanorma version | grep -q "Metanorma::Cli"
+
+      - run: brew uninstall --cask metanorma/metanorma/metanorma
+
+      - name: Uninstall removed the install root
+        run: test ! -e /opt/metanorma
