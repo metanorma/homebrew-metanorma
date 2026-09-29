@@ -62,8 +62,8 @@ class Metanorma < Formula
     end
 
     if OS.linux?
-      ENV.prepend_path "PATH", Formula["libxslt"].opt_bin.to_s
-      ENV.prepend_path "PATH", Formula["libxml2"].opt_bin.to_s
+      ENV.prepend_path "PATH", formula_opt_bin("libxslt").to_s
+      ENV.prepend_path "PATH", formula_opt_bin("libxml2").to_s
     end
 
     (bin / "metanorma").write_env_script(
