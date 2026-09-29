@@ -2,7 +2,10 @@ name: release-tag
 
 on:
   repository_dispatch:
-    types: [ metanorma/packed-mn ]
+    # metanorma/packed-metanorma is the release fan-out (payload carries
+    # client_payload.version, the plain product version); the old name
+    # stays for compatibility with in-flight senders.
+    types: [ metanorma/packed-metanorma, metanorma/packed-mn ]
   workflow_dispatch:
     inputs:
       next_version:
@@ -24,8 +27,16 @@ jobs:
         if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
           echo "METANORMA_CLI_VERSION=${{ github.event.inputs.next_version }}" >> ${GITHUB_ENV}
         elif [ "${{ github.event_name }}" = "repository_dispatch" ]; then
-          # Extract version from refs/tags/v1.2.3 -> v1.2.3
-          VERSION=$(echo "${{ github.event.client_payload.ref }}" | sed 's|refs/tags/||')
+          # Prefer the fan-out's explicit plain version: packed-metanorma
+          # tags can carry a feedstock-revision suffix (v1.17.0-1) which is
+          # not a gem version. Fall back to the ref for the gem-chain types.
+          PAYLOAD_VERSION="${{ github.event.client_payload.version }}"
+          if [ -n "$PAYLOAD_VERSION" ]; then
+            VERSION="v${PAYLOAD_VERSION}"
+          else
+            # Extract version from refs/tags/v1.2.3 -> v1.2.3
+            VERSION=$(echo "${{ github.event.client_payload.ref }}" | sed 's|refs/tags/||')
+          fi
           echo "METANORMA_CLI_VERSION=${VERSION}" >> ${GITHUB_ENV}
         else
           echo "ERROR: Unsupported event type: ${{ github.event_name }}"
@@ -45,11 +56,32 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Update the cask (packed-metanorma installer pkg)
+      run: |
+        set -euo pipefail
+        # The cask wraps the macOS pkg installer; its release tag is the
+        # plain v<version> (feedstock-respin suffixes never apply here).
+        V="${METANORMA_CLI_VERSION#v}"
+        current=$(sed -n 's/^  version "\(.*\)"$/\1/p' Casks/metanorma.rb)
+        if [ "$current" = "$V" ]; then
+          echo "cask already at $V — skipping"
+          exit 0
+        fi
+        url="https://github.com/metanorma/packed-metanorma/releases/download/v${V}/metanorma-setup-${V}-macos-arm64.pkg"
+        curl -sSfL --retry 3 -o /tmp/metanorma-setup.pkg "$url"
+        sha=$(shasum -a 256 /tmp/metanorma-setup.pkg | awk '{print $1}')
+        sed -i -E           -e "s/^  version \".*\"$/  version \"$V\"/"           -e "s/^  sha256 \".*\"$/  sha256 \"$sha\"/"           Casks/metanorma.rb
+        git --no-pager diff -- Casks/metanorma.rb
+
     - name: Push commit and tag
       run: |
         git config --global user.name "metanorma-ci"
         git config --global user.email "metanorma-ci@users.noreply.github.com"
-        git add Formula/metanorma.rb Formula/metanorma-dev.rb formula-metadata.json
+        git add Formula/metanorma.rb Formula/metanorma-dev.rb formula-metadata.json Casks/metanorma.rb
+        if git diff --cached --quiet; then
+          echo "already at ${METANORMA_CLI_VERSION} — nothing to bump"
+          exit 0
+        fi
         git commit -m "Bump version to ${METANORMA_CLI_VERSION}"
         git tag ${METANORMA_CLI_VERSION}
         git push origin HEAD:${GITHUB_REF} --tags
