@@ -11,8 +11,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # macos-13: intel; macos-14, macos-15: arm64
-        os: [ macos-15, macos-14, macos-13 ]
+        # macos-15-intel: intel; macos-14, macos-15: arm64
+        # (macos-13 runners are retired — the leg sat queued forever)
+        os: [ macos-15, macos-14, macos-15-intel ]
         formula: [ metanorma ]
         experimental: [ false ]
         # include:
@@ -21,7 +22,7 @@ jobs:
         #     experimental: true
         #     executable: metanorma
         #   - formula: metanorma-dev
-        #     os: macos-13
+        #     os: macos-15-intel
         #     experimental: true
         #     executable: metanorma
 
@@ -68,7 +69,7 @@ jobs:
 
   test-cask:
     name: Cask (pkg)
-    # The pkg ships Apple silicon only; macos-13 (Intel) is excluded by the
+    # The pkg ships Apple silicon only; Intel hosts are excluded by the
     # cask's depends_on arch: :arm64, which brew enforces at install.
     runs-on: macos-15
     steps:
@@ -82,14 +83,33 @@ jobs:
       - name: Install the cask
         run: brew install --cask metanorma/metanorma/metanorma
 
-      - name: Wait for the seeded shim, then smoke it
+      - name: Wait for the detached seed, then smoke the shim
         run: |
-          # The pkg's postinstall seeds the payload detached into the
-          # machine-scope home; poll for the shim rather than race it.
-          for i in $(seq 1 90); do
-            [ -x /opt/metanorma/home/shims/metanorma ] && break
+          # The pkg's postinstall seeds the payload DETACHED (a network
+          # prefetch PackageKit's script budget would otherwise kill), and
+          # warms the runtime into the root-owned machine home. Poll for
+          # the seed's EFFECTS — the same completion condition the pkg's
+          # own install rehearsal uses: store config, payload dir, shim,
+          # non-empty runtimes dir. The shim file alone appears long
+          # before the warm finishes; dispatching then races the
+          # root-owned runtime install lock (EACCES, os error 13).
+          deadline=$(( $(date +%s) + 900 ))
+          while :; do
+            seeded=1
+            [ -f /opt/metanorma/home/config.yaml ] || seeded=0
+            [ -d /opt/metanorma/home/payloads/metanorma ] || seeded=0
+            [ -x /opt/metanorma/home/shims/metanorma ] || seeded=0
+            [ -n "$(ls -A /opt/metanorma/home/runtimes 2>/dev/null)" ] || seeded=0
+            [ "$seeded" = 1 ] && break
+            if [ "$(date +%s)" -ge "$deadline" ]; then
+              echo "::error::the pkg's detached seed did not land within 900s — seed.log tail:"
+              sudo tail -30 /opt/metanorma/home/seed.log 2>/dev/null || true
+              exit 1
+            fi
             sleep 10
           done
+          # After the warm, a user dispatch is read-only against the
+          # root-owned machine home.
           /opt/metanorma/home/shims/metanorma version | grep -q "Metanorma::Cli"
 
       - run: brew uninstall --cask metanorma/metanorma/metanorma
