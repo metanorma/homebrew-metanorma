@@ -45,8 +45,8 @@ class MetanormaDev < Formula
       ENV.append "LDFLAGS", "-L#{zlib.opt_lib} -Wl,-rpath,#{zlib.opt_lib}"
       ENV.append "PKG_CONFIG_PATH", "#{zlib.opt_lib}/pkgconfig"
 
-      ENV.prepend_path "PATH", Formula["libxslt"].opt_bin.to_s
-      ENV.prepend_path "PATH", Formula["libxml2"].opt_bin.to_s
+      ENV.prepend_path "PATH", formula_opt_bin("libxslt").to_s
+      ENV.prepend_path "PATH", formula_opt_bin("libxml2").to_s
     end
 
     # Use Homebrew Ruby formula pattern
