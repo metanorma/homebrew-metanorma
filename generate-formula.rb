@@ -18,7 +18,7 @@ end
 class FormulaGenerator
 
   RESOURCES_AND_TEMPLATES ={
-    "metanorma/packed-mn" => {
+    "metanorma/packed-metanorma" => {
       "src" => {
         "type" => "source"
       },
@@ -26,17 +26,9 @@ class FormulaGenerator
         "type" => "release-artifact",
         "filename" => "metanorma-darwin-arm64.tgz",
       },
-      "darwin-x86_64" => {
-        "type" => "release-artifact",
-        "filename" => "metanorma-darwin-x86_64.tgz",
-      },
       "linux-x86_64" => {
         "type" => "release-artifact",
         "filename" => "metanorma-linux-x86_64.tgz",
-      },
-      "linux-aarch64" => {
-        "type" => "release-artifact",
-        "filename" => "metanorma-linux-aarch64.tgz",
       }
     },
     "metanorma/metanorma-cli" => {
@@ -57,10 +49,15 @@ class FormulaGenerator
     @dry_run = dry_run
 
     raise "Version must be specified (e.g. v1.0.0)" unless version
-    raise "Version must be a valid semantic version with 'v' prefix (e.g. v1.0.0)" unless version.match?(/^v\d+\.\d+\.\d+$/)
+    raise "Version must be a valid semantic version with 'v' prefix (e.g. v1.0.0; a packed-metanorma respin tag v1.17.0-3 also matches)" unless version.match?(/^v\d+\.\d+\.\d+(-\d+)?$/)
 
     puts "Fetching SHA256 hashes..."
     results = update_sha256_hashes(version)
+    # The formula renders the CURRENT release's hashes — previously the
+    # template read the loaded (previous run's) metadata while the fresh
+    # hashes were only saved for the NEXT run, so every shipped formula's
+    # sha256s lagged one release behind its binaries.
+    @metadata = results
 
     puts "Generating formulas..."
     generate_formula('metanorma', 'templates/metanorma.rb.erb', 'Formula/metanorma.rb')
@@ -103,9 +100,9 @@ class FormulaGenerator
 
       puts "Processing #{resource_repo}..."
 
-      # resource_repo is in the format "metanorma/packed-mn"
-      release = @client.release_for_tag(resource_repo, version)
-      raise "Release not found for #{resource_repo} at tag #{version}" unless release
+      repo_tag = resolve_release_tag(resource_repo, version)
+      release = @client.release_for_tag(resource_repo, repo_tag)
+      raise "Release not found for #{resource_repo} at tag #{repo_tag}" unless release
 
       result[resource_repo.to_s] = {}
       resources.each do |resource_name, resource_info|
@@ -113,7 +110,7 @@ class FormulaGenerator
         url = case resource_info['type']
         when 'source'
           # Use archive URL format instead of API tarball URL for consistent SHA256
-          "https://github.com/#{resource_repo}/archive/refs/tags/#{version}.tar.gz"
+          "https://github.com/#{resource_repo}/archive/refs/tags/#{repo_tag}.tar.gz"
         when 'release-artifact'
           asset_name = resource_info['filename']
           asset = release.assets.find { |a| a.name == asset_name }
@@ -138,6 +135,26 @@ class FormulaGenerator
     end
 
     result
+  end
+
+  # metanorma-cli tags the plain product version (v1.17.0);
+  # packed-metanorma respins carry a build suffix (v1.17.0-3). The
+  # release fan-out passes the plain version, so a plain version resolves
+  # to the newest matching respin; an exact respin tag is used as given.
+  def resolve_release_tag(resource_repo, version)
+    base = version.sub(/-\d+$/, "")
+    return base if resource_repo == "metanorma/metanorma-cli"
+    return version unless version == base
+
+    pattern = /\A#{Regexp.escape(base)}(?:-(\d+))?\z/
+    candidates = @client.releases(resource_repo, per_page: 100).filter_map do |r|
+      m = pattern.match(r.tag_name)
+      [m[1].to_i, r.tag_name] if m
+    end
+    tag = candidates.max_by(&:first)&.last
+    raise "Release not found for #{resource_repo} at tag #{base} or any respin" unless tag
+    puts "  Resolved #{base} -> #{tag} (newest respin)"
+    tag
   end
 
   def download_http(url)

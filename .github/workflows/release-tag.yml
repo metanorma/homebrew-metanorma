@@ -57,20 +57,37 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Update the cask (packed-metanorma installer pkg)
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         set -euo pipefail
-        # The cask wraps the macOS pkg installer; its release tag is the
-        # plain v<version> (feedstock-respin suffixes never apply here).
+        # The cask wraps the macOS pkg installer. Respins (v1.17.0-3) rebuild
+        # the installer with a newer toolchain on the SAME product version, so
+        # track the newest tag matching the product version — the plain tag's
+        # pkg can bundle a pre-era CLI that cannot read the current payload
+        # registry (the v1.17.0 pkg ships tebako 2.8.22; the v1.17.0-3 respin
+        # ships 2.8.68).
         V="${METANORMA_CLI_VERSION#v}"
+        V_ESC="${V//./\\.}"
+        TAG=$(gh api "repos/metanorma/packed-metanorma/releases?per_page=100" --jq '.[].tag_name' \
+              | grep -E "^v${V_ESC}(-[0-9]+)?$" \
+              | sort -t- -k2 -n \
+              | tail -1)
+        [ -n "$TAG" ] || { echo "::error::no packed-metanorma release tag matches v${V}"; exit 1; }
         current=$(sed -n 's/^  version "\(.*\)"$/\1/p' Casks/metanorma.rb)
-        if [ "$current" = "$V" ]; then
-          echo "cask already at $V — skipping"
+        current_tag=$(sed -n 's|^  url ".*/download/\([^/]*\)/.*$|\1|p' Casks/metanorma.rb)
+        if [ "$current" = "$V" ] && [ "$current_tag" = "$TAG" ]; then
+          echo "cask already at $V ($TAG) — skipping"
           exit 0
         fi
-        url="https://github.com/metanorma/packed-metanorma/releases/download/v${V}/metanorma-setup-${V}-macos-arm64.pkg"
+        url="https://github.com/metanorma/packed-metanorma/releases/download/${TAG}/metanorma-setup-${V}-macos-arm64.pkg"
         curl -sSfL --retry 3 -o /tmp/metanorma-setup.pkg "$url"
         sha=$(shasum -a 256 /tmp/metanorma-setup.pkg | awk '{print $1}')
-        sed -i -E           -e "s/^  version \".*\"$/  version \"$V\"/"           -e "s/^  sha256 \".*\"$/  sha256 \"$sha\"/"           Casks/metanorma.rb
+        sed -i -E \
+          -e "s/^  version \".*\"$/  version \"$V\"/" \
+          -e "s|^  url \"(.*/download/)[^/]*(/.*)\"$|  url \"\1${TAG}\2\"|" \
+          -e "s/^  sha256 \".*\"$/  sha256 \"$sha\"/" \
+          Casks/metanorma.rb
         git --no-pager diff -- Casks/metanorma.rb
 
     - name: Push commit and tag

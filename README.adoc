@@ -58,15 +58,15 @@ who need the latest features that are not available in the binary distribution.
 === `metanorma` formula
 
 The `metanorma` formula installs pre-compiled binaries from the
-https://github.com/metanorma/packed-mn[packed-mn] repository.
+https://github.com/metanorma/packed-metanorma[packed-metanorma] repository.
 
 This is the recommended installation method being much faster and does not
 require compilation.
 
-* **Source**: Pre-compiled binaries from packed-mn releases
+* **Source**: Pre-compiled binaries from packed-metanorma releases
 * **Installation time**: Fast (no compilation required)
 * **Dependencies**: Minimal system dependencies
-* **Platforms**: macOS (ARM64/x86_64), Linux (x86_64/aarch64)
+* **Platforms**: macOS (ARM64), Linux (x86_64; aarch64 pending metanorma/packed-metanorma#280)
 
 [source,sh]
 ----
@@ -129,7 +129,7 @@ bundle exec ruby generate-formula.rb --dry-run
 
 The generator script will:
 
-. Fetch SHA256 hashes from GitHub Releases of packed-mn
+. Fetch SHA256 hashes from GitHub Releases of packed-metanorma
 . Update the `formula-metadata.json` file with new version and SHA256
 . Generate new formulae from templates
 

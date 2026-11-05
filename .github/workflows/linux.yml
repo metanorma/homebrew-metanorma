@@ -14,8 +14,12 @@ jobs:
       fail-fast: true
       max-parallel: 6
       matrix:
-        # Test all options
-        os: [ ubuntu-24.04, ubuntu-22.04, ubuntu-24.04-arm, ubuntu-22.04-arm ]
+        # Test all options. The arm legs are dropped for now: the current
+        # packed-metanorma release ships no linux-gnu-arm64 binary and its
+        # musl-arm64 binary is dynamically linked against musl (needs
+        # /lib/ld-musl-aarch64.so.1, absent on Ubuntu), so there is no
+        # runnable artifact for these hosts until metanorma/packed-metanorma#280.
+        os: [ ubuntu-24.04, ubuntu-22.04 ]
         formula: [ metanorma ]
         experimental: [ false ]
         # include:
@@ -52,11 +56,13 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y libpng16-16 libfreetype6 libfontconfig
 
-      - name: Install inkscape (required for tests)
-        run: sudo apt-get install -y inkscape
-
       - name: Add local tap for testing
-        run: brew tap metanorma/metanorma $GITHUB_WORKSPACE
+        run: |
+          brew tap metanorma/metanorma $GITHUB_WORKSPACE
+          # The tap ships both a formula and a cask named metanorma; newer
+          # Homebrew refuses to load the cask from an untrusted tap, which
+          # the ambiguous uninstall below otherwise trips on.
+          brew trust metanorma/metanorma
 
       - run: brew install --build-from-source --verbose --include-test metanorma/metanorma/${{ matrix.formula }}
         # To ignore potential: The `brew link` step did not complete successfully
