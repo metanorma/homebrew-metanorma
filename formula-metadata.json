@@ -1,30 +1,22 @@
 {
-  "metanorma/packed-mn": {
+  "metanorma/packed-metanorma": {
     "src": {
-      "url": "https://api.github.com/repos/metanorma/packed-mn/tarball/v1.13.2",
-      "sha256": "f5bb8159afe0600eae9e66b5ca8d82c938006d8d95363335b49769964fbb7589"
+      "url": "https://github.com/metanorma/packed-metanorma/archive/refs/tags/v1.17.0-3.tar.gz",
+      "sha256": "823b36f98a9146cac6255987d7f29394fef9b2fb33fd3d7c1a47c5db37d4f686"
     },
     "darwin-arm64": {
-      "url": "https://github.com/metanorma/packed-mn/releases/download/v1.13.2/metanorma-darwin-arm64.tgz",
-      "sha256": "3957f72855421e3f5ad832f5ffb3ecf651c0ede3578c77f9a317369f08441164"
-    },
-    "darwin-x86_64": {
-      "url": "https://github.com/metanorma/packed-mn/releases/download/v1.13.2/metanorma-darwin-x86_64.tgz",
-      "sha256": "3b2e82e6f7e12327f93a475d55264c4f56fa64e360c239c651b525c48bda32ab"
+      "url": "https://github.com/metanorma/packed-metanorma/releases/download/v1.17.0-3/metanorma-darwin-arm64.tgz",
+      "sha256": "955d5a8529198187cd72973f6c6895f0cc1cc3d2793033a962425c2f23404f17"
     },
     "linux-x86_64": {
-      "url": "https://github.com/metanorma/packed-mn/releases/download/v1.13.2/metanorma-linux-x86_64.tgz",
-      "sha256": "80d3d1681dbd7a7845de8ac0927ffb3eeb372cce158d95184c1fe2b94a1c4b73"
-    },
-    "linux-aarch64": {
-      "url": "https://github.com/metanorma/packed-mn/releases/download/v1.13.2/metanorma-linux-aarch64.tgz",
-      "sha256": "33d5eea1a1de9cc84d2e1adc7a500c08022a119e5d4ce549896fa5e6b94f5384"
+      "url": "https://github.com/metanorma/packed-metanorma/releases/download/v1.17.0-3/metanorma-linux-x86_64.tgz",
+      "sha256": "a541cf2292caf5f751122d868a5312c688779e7e5991a5baaf1f5f1a5f318f31"
     }
   },
   "metanorma/metanorma-cli": {
     "src": {
-      "url": "https://api.github.com/repos/metanorma/metanorma-cli/tarball/v1.13.2",
-      "sha256": "c07e42d5c15a62072eb4a4d25536de4ef925e5c88c08b7d706a7b2e47b734dd9"
+      "url": "https://github.com/metanorma/metanorma-cli/archive/refs/tags/v1.17.0.tar.gz",
+      "sha256": "0f51f4110e84605c0613babe452b5a4692436c275c855781d2954353f8f5961c"
     }
   }
 }

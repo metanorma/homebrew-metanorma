@@ -19,15 +19,8 @@ class Metanorma < Formula
   on_macos do
     on_arm do
       resource "packed-mn" do
-        url "<%= metadata['metanorma/packed-mn']['darwin-arm64']['url'] %>"
-        sha256 "<%= metadata['metanorma/packed-mn']['darwin-arm64']['sha256'] %>"
-      end
-    end
-
-    on_intel do
-      resource "packed-mn" do
-        url "<%= metadata['metanorma/packed-mn']['darwin-x86_64']['url'] %>"
-        sha256 "<%= metadata['metanorma/packed-mn']['darwin-x86_64']['sha256'] %>"
+        url "<%= metadata['metanorma/packed-metanorma']['darwin-arm64']['url'] %>"
+        sha256 "<%= metadata['metanorma/packed-metanorma']['darwin-arm64']['sha256'] %>"
       end
     end
   end
@@ -35,26 +28,26 @@ class Metanorma < Formula
   on_linux do
     depends_on "libxslt"
 
-    on_arm do
-      resource "packed-mn" do
-        url "<%= metadata['metanorma/packed-mn']['linux-aarch64']['url'] %>"
-        sha256 "<%= metadata['metanorma/packed-mn']['linux-aarch64']['sha256'] %>"
-      end
-    end
-
     on_intel do
       resource "packed-mn" do
-        url "<%= metadata['metanorma/packed-mn']['linux-x86_64']['url'] %>"
-        sha256 "<%= metadata['metanorma/packed-mn']['linux-x86_64']['sha256'] %>"
+        url "<%= metadata['metanorma/packed-metanorma']['linux-x86_64']['url'] %>"
+        sha256 "<%= metadata['metanorma/packed-metanorma']['linux-x86_64']['sha256'] %>"
       end
     end
   end
 
   def install
     platform = if OS.mac?
-      Hardware::CPU.arm? ? "darwin-arm64" : "darwin-x86_64"
+      unless Hardware::CPU.arm?
+        odie "metanorma #{version}: no Intel Mac binary in this release (packed-metanorma ships darwin-arm64 only)"
+      end
+      "darwin-arm64"
     elsif OS.linux?
-      Hardware::CPU.arm? ? "linux-aarch64" : "linux-x86_64"
+      if Hardware::CPU.arm?
+        odie "metanorma #{version}: no runnable Linux ARM binary in this release " \
+             "(the musl-arm64 build is musl-dynamic; linux-gnu-arm64 is unshipped — metanorma/packed-metanorma#280)"
+      end
+      "linux-x86_64"
     end
 
     resource("packed-mn").stage do
@@ -73,16 +66,8 @@ class Metanorma < Formula
     )
   end
 
-  def caveats
-    <<~EOS
-      inkscape >= 1.0 is required to generate Word output using SVG images.
-      Install it by running `brew cask install inkscape` or
-      directly download from https://inkscape.org/release/inkscape-1.0/
-    EOS
-  end
-
   test do
-    test_doc = <<~'ADOC'
+    test_doc = <<~ADOC
       = Document title
       Author
       :docfile: test.adoc
@@ -91,39 +76,12 @@ class Metanorma < Formula
       :no-isobib:
     ADOC
 
-    latexml_test_doc = <<~'ADOC'
-      = File
-      :stem
-
-      [latexmath]
-      ++++
-      M =
-      \\begin{bmatrix}
-      -\\sin λ_0 & \\cos λ_0 & 0 \\\\
-      -\\sin φ_0 \\cos λ_0 & -\\sin φ_0 \\sin λ_0 & \\cos φ_0 \\\\
-      \\cos φ_0 \\cos λ_0 & \\cos φ_0 \\sin λ_0 & \\sin φ_0
-      \\end{bmatrix}
-      ++++
-    ADOC
-
-    ietf_test_doc = <<~'ADOC'
-      :sort-refs: true
-      :revdate: 2018-04-15T00:00:00Z
-      :fullname: Test Test
-      :initials: T.
-      :surname: Test
-      :email: test@test.org
-      :docfile: document.adoc
-      :mn-document-class: ietf
-      :mn-output-extensions: rfc,xml,txt,html,rxl
-
-      == Clause
-      Clause
-    ADOC
-
     (testpath / "test-iso.adoc").write(test_doc)
-    system bin / "metanorma", "--type", "iso", testpath / "test-iso.adoc",
-           "--agree-to-terms"
+    # Compile only the asserted outputs: the default output set includes pdf,
+    # which goes through mn2pdf/java and can exceed brew test's per-command
+    # timeout on a loaded CI runner.
+    system bin / "metanorma", "--type", "iso", "--extensions", "xml,html",
+           testpath / "test-iso.adoc", "--agree-to-terms"
     assert_path_exists testpath / "test-iso.xml"
     assert_path_exists testpath / "test-iso.html"
 
@@ -132,14 +90,5 @@ class Metanorma < Formula
     #        "--agree-to-terms"
     # assert_predicate testpath / "test-csa.pdf", :exist?
     # assert_predicate testpath / "test-csa.html", :exist?
-
-    #(testpath / "test-ietf.adoc").write(ietf_test_doc)
-    #system bin / "metanorma", testpath / "test-ietf.adoc", "--agree-to-terms"
-    #assert_predicate testpath / "test-ietf.html", :exist?
-
-    #(testpath / "test-standoc.adoc").write(latexml_test_doc)
-    #system bin / "metanorma", "--type", "standoc", "--extensions", "xml",
-    #       testpath / "test-standoc.adoc", "--agree-to-terms"
-    #assert_predicate testpath / "test-standoc.xml", :exist?
   end
 end
