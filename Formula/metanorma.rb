@@ -19,8 +19,8 @@ class Metanorma < Formula
   on_macos do
     on_arm do
       resource "packed-mn" do
-        url "https://github.com/metanorma/packed-metanorma/releases/download/v1.17.0-4/metanorma-darwin-arm64.tgz"
-        sha256 "5ec85fde02bd5f8c949727e80c7e7b78ba5a8610a30e145fe19e8fcd7c603a27"
+        url "https://github.com/metanorma/packed-metanorma/releases/download/v1.17.0-5/metanorma-darwin-arm64.tgz"
+        sha256 "2e9b407dcb26f424756d14cf993ec2713afb8890814770d01197152a0febfae2"
       end
     end
   end
@@ -30,8 +30,8 @@ class Metanorma < Formula
 
     on_intel do
       resource "packed-mn" do
-        url "https://github.com/metanorma/packed-metanorma/releases/download/v1.17.0-4/metanorma-linux-x86_64.tgz"
-        sha256 "fd2350446c090d1de65b3180c9f74840ab4b3d0f66eb7c42ede5ae45d9be27c4"
+        url "https://github.com/metanorma/packed-metanorma/releases/download/v1.17.0-5/metanorma-linux-x86_64.tgz"
+        sha256 "a67c09e3d921cf3885791318af8fff4aba9f84c07a201c12bf45cc874da96618"
       end
     end
   end
