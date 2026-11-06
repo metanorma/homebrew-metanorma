@@ -137,7 +137,7 @@ jobs:
             [ -n "$(ls -A /opt/metanorma/home/runtimes 2>/dev/null)" ] || seeded=0
             [ "$seeded" = 1 ] && break
             if [ "$(date +%s)" -ge "$deadline" ]; then
-              echo "::error::the pkg's detached seed did not land within 900s — seed.log tail:"
+              echo "::error::the pkg's detached seed did not land within the deadline — seed.log tail:"
               sudo tail -30 /opt/metanorma/home/seed.log 2>/dev/null || true
               exit 1
             fi
