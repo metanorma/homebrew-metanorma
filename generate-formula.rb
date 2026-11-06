@@ -29,6 +29,14 @@ class FormulaGenerator
       "linux-x86_64" => {
         "type" => "release-artifact",
         "filename" => "metanorma-linux-x86_64.tgz",
+      },
+      "darwin-x86_64" => {
+        "type" => "release-artifact",
+        "filename" => "metanorma-darwin-x86_64.tgz",
+      },
+      "linux-arm64" => {
+        "type" => "release-artifact",
+        "filename" => "metanorma-linux-arm64.tgz",
       }
     },
     "metanorma/metanorma-cli" => {

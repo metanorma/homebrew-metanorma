@@ -11,6 +11,14 @@
     "linux-x86_64": {
       "url": "https://github.com/metanorma/packed-metanorma/releases/download/v1.17.0-6/metanorma-linux-x86_64.tgz",
       "sha256": "919e5a41de282895a2fde0cd3c93393e8189618c7a58856248042afd4295e07d"
+    },
+    "darwin-x86_64": {
+      "url": "https://github.com/metanorma/packed-metanorma/releases/download/v1.17.0-6/metanorma-darwin-x86_64.tgz",
+      "sha256": "3211125cfa960f1715c040a013f8598bd4938bcffad6baeea1b9c7184e0e4cf9"
+    },
+    "linux-arm64": {
+      "url": "https://github.com/metanorma/packed-metanorma/releases/download/v1.17.0-6/metanorma-linux-arm64.tgz",
+      "sha256": "d6014bcf41b0de2e37013b6f1e0fad90a9c406f3bb257bec8ee1d75867290581"
     }
   },
   "metanorma/metanorma-cli": {

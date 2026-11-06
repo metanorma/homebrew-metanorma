@@ -14,12 +14,9 @@ jobs:
       fail-fast: true
       max-parallel: 6
       matrix:
-        # Test all options. The arm legs are dropped for now: the current
-        # packed-metanorma release ships no linux-gnu-arm64 binary and its
-        # musl-arm64 binary is dynamically linked against musl (needs
-        # /lib/ld-musl-aarch64.so.1, absent on Ubuntu), so there is no
-        # runnable artifact for these hosts until metanorma/packed-metanorma#280.
-        os: [ ubuntu-24.04, ubuntu-22.04 ]
+        # Test all options (the arm legs ride the gnu-arm64 binary the
+        # packed-metanorma release ships since v1.17.0-5, #280).
+        os: [ ubuntu-24.04, ubuntu-22.04, ubuntu-24.04-arm, ubuntu-22.04-arm ]
         formula: [ metanorma ]
         experimental: [ false ]
         # include:
@@ -67,10 +64,18 @@ jobs:
       - run: brew install --build-from-source --verbose --include-test metanorma/metanorma/${{ matrix.formula }}
         # To ignore potential: The `brew link` step did not complete successfully
         # continue-on-error: true
+        env:
+          # The lean package's first compile downloads the runtime + payload
+          # (cold store) before it renders — over brew test's 300 s default
+          # on the arm64 runners. HOMEBREW_TEST_TIMEOUT_SECS is private-API
+          # but is the only knob (brew wraps the whole test block in it).
+          HOMEBREW_TEST_TIMEOUT_SECS: "900"
 
       - run: which ${{ matrix.executable || matrix.formula }}
 
       - run: brew test --verbose metanorma/metanorma/${{ matrix.formula }}
+        env:
+          HOMEBREW_TEST_TIMEOUT_SECS: "900"
         # continue-on-error: true # Because ietf test fails anyway
 
       - run: brew uninstall metanorma/metanorma/${{ matrix.formula }}

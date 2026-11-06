@@ -100,5 +100,15 @@ jobs:
           exit 0
         fi
         git commit -m "Bump version to ${METANORMA_CLI_VERSION}"
-        git tag ${METANORMA_CLI_VERSION}
-        git push origin HEAD:${GITHUB_REF} --tags
+        git push origin HEAD:${GITHUB_REF}
+        # The plain product-version tag marks the FIRST formula cut of that
+        # version. A packed-metanorma respin (v1.17.0-N) re-runs this flow
+        # with the same plain version; tags move forward only — skip,
+        # never re-point (the v1.17.0-5 fan-out failed this step on
+        # "already exists").
+        if git ls-remote --exit-code --tags origin "refs/tags/${METANORMA_CLI_VERSION}" >/dev/null 2>&1; then
+          echo "tag ${METANORMA_CLI_VERSION} already exists — skipping (respin)"
+        else
+          git tag ${METANORMA_CLI_VERSION}
+          git push origin ${METANORMA_CLI_VERSION}
+        fi
