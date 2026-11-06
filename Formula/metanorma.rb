@@ -23,10 +23,24 @@ class Metanorma < Formula
         sha256 "118ddba51566759ee1e420ed520438a6d3a9db2325d5a3dc55055e750645dd2a"
       end
     end
+
+    on_intel do
+      resource "packed-mn" do
+        url "https://github.com/metanorma/packed-metanorma/releases/download/v1.17.0-6/metanorma-darwin-x86_64.tgz"
+        sha256 "3211125cfa960f1715c040a013f8598bd4938bcffad6baeea1b9c7184e0e4cf9"
+      end
+    end
   end
 
   on_linux do
     depends_on "libxslt"
+
+    on_arm do
+      resource "packed-mn" do
+        url "https://github.com/metanorma/packed-metanorma/releases/download/v1.17.0-6/metanorma-linux-arm64.tgz"
+        sha256 "d6014bcf41b0de2e37013b6f1e0fad90a9c406f3bb257bec8ee1d75867290581"
+      end
+    end
 
     on_intel do
       resource "packed-mn" do
@@ -38,16 +52,9 @@ class Metanorma < Formula
 
   def install
     platform = if OS.mac?
-      unless Hardware::CPU.arm?
-        odie "metanorma #{version}: no Intel Mac binary in this release (packed-metanorma ships darwin-arm64 only)"
-      end
-      "darwin-arm64"
+      Hardware::CPU.arm? ? "darwin-arm64" : "darwin-x86_64"
     elsif OS.linux?
-      if Hardware::CPU.arm?
-        odie "metanorma #{version}: no runnable Linux ARM binary in this release " \
-             "(the musl-arm64 build is musl-dynamic; linux-gnu-arm64 is unshipped — metanorma/packed-metanorma#280)"
-      end
-      "linux-x86_64"
+      Hardware::CPU.arm? ? "linux-arm64" : "linux-x86_64"
     end
 
     resource("packed-mn").stage do

@@ -11,10 +11,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # macos-15: arm64. macos-14 is retired (queued forever). The
-        # macos-15-intel leg is dropped for now: the current
-        # packed-metanorma release ships no darwin-x86_64 binary, so the
-        # formula odie's on Intel Macs until the coverage gap closes.
+        # macos-15: arm64. The macos-15-intel leg parks: Homebrew on the
+        # Intel runner (Tier 3, /usr/local prefix) crashes in its own
+        # keg_relocate while installing the formula's DEPENDENCIES — the
+        # packed binary never stages, so the leg tests brew-on-Intel, not
+        # us. The darwin-x86_64 binary's compile proof lives in
+        # packed-metanorma's press leg; Intel users are served by the
+        # formula's on_intel resource regardless.
         os: [ macos-15 ]
         formula: [ metanorma ]
         experimental: [ false ]
@@ -67,6 +70,8 @@ jobs:
       - run: which ${{ matrix.executable || matrix.formula }}
 
       - run: brew test --verbose metanorma/metanorma/${{ matrix.formula }}
+        env:
+          HOMEBREW_TEST_TIMEOUT_SECS: "900"
         #continue-on-error: true # Because ietf test fails anyway
 
       - run: brew uninstall metanorma/metanorma/${{ matrix.formula }}
@@ -111,15 +116,21 @@ jobs:
         run: |
           # The pkg's postinstall seeds the payload DETACHED (a network
           # prefetch PackageKit's script budget would otherwise kill), and
-          # warms the runtime into the root-owned machine home. Poll for
-          # the seed's EFFECTS — the same completion condition the pkg's
-          # own install rehearsal uses: store config, payload dir, shim,
-          # non-empty runtimes dir. The shim file alone appears long
-          # before the warm finishes; dispatching then races the
-          # root-owned runtime install lock (EACCES, os error 13).
-          deadline=$(( $(date +%s) + 900 ))
+          # warms the runtime into the root-owned machine home. The poll's
+          # primary condition is the seed's own completion marker in
+          # seed.log: the store's effects land BEFORE the warm finishes —
+          # dispatching then races the root-owned runtime install lock
+          # (EACCES, os error 13; observed when the factory published a new
+          # runtime line mid-flight and the warm's download outran the
+          # store-effect checks). 1800 s: the seed pulls the recursive
+          # closure (payloads + the openjdk/python/ruby runtime pairs) over
+          # the runner's shared egress — a 249 MB payload at 2.7 MB/s alone
+          # eats ~90 s and the closure is several hundred MB more (the 900 s
+          # budget died mid-fetch on a slow runner, seed healthy throughout).
+          deadline=$(( $(date +%s) + 1800 ))
           while :; do
             seeded=1
+            sudo grep -q "seed: complete" /opt/metanorma/home/seed.log 2>/dev/null || seeded=0
             [ -f /opt/metanorma/home/config.yaml ] || seeded=0
             [ -d /opt/metanorma/home/payloads/metanorma ] || seeded=0
             [ -x /opt/metanorma/home/shims/metanorma ] || seeded=0
