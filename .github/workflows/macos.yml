@@ -73,14 +73,14 @@ jobs:
 
   test-cask:
     name: Cask (pkg)
-    # Known product gap, tracked as metanorma/packed-metanorma#281: the pkg's
-    # detached warm leaves no resolvable ruby ~> 4.0.0 runtime on an
-    # unauthenticated machine, so the shim smoke fails at runtime resolution.
-    # The install + seed + uninstall rehearsal still runs; the verdict is
-    # non-blocking until #281 closes.
-    continue-on-error: true
     # The pkg ships Apple silicon only; Intel hosts are excluded by the
     # cask's depends_on arch: :arm64, which brew enforces at install.
+    # The smoke exports the workflow's GITHUB_TOKEN: the runtime
+    # resolution's factory-registry read rides the api.github.com
+    # contents API (60 req/h unauthenticated — exhausted on shared
+    # runner IPs), which was the flake behind
+    # metanorma/packed-metanorma#281. A red leg from here is a genuine
+    # product signal again.
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
@@ -99,6 +99,15 @@ jobs:
         run: brew install --cask metanorma/metanorma/metanorma
 
       - name: Wait for the detached seed, then smoke the shim
+        env:
+          # The smoke's runtime resolution reads the factory registry via
+          # the api.github.com contents API: 60 req/h unauthenticated, and
+          # shared runner IPs routinely start near-exhausted (the flake
+          # behind metanorma/packed-metanorma#281). The workflow's own token
+          # raises the budget (the resolver's ambient tier already honors
+          # it) — CI stays deterministic while the user-facing refusal gains
+          # the per-source reasons + the token hint in tamatebako/tebako#978.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # The pkg's postinstall seeds the payload DETACHED (a network
           # prefetch PackageKit's script budget would otherwise kill), and
