@@ -1,13 +1,9 @@
 cask "metanorma" do
-  version "1.17.0"
-  sha256 "a61d16ea12b59386e04b19241309f4def7148dfcc47995711b2189398112c0fb"
+  version "1.18.6"
+  sha256 "721570814d47e93e7887c09d36cf77e85170896b6c7faa4f510eacf13b2c16c0"
 
-  # The pkg lives at the newest packed-metanorma respin tag for this product
-  # version: the plain v1.17.0 tag's pkg bundles a pre-era tebako CLI (2.8.22)
-  # that cannot read the current payload registry (the detached seed dies at
-  # "fetching registry tfs:github:tebako-packages/metanorma"). The v1.17.0-3
-  # respin rebuilt the installer with tebako 2.8.68.
-  url "https://github.com/metanorma/packed-metanorma/releases/download/v1.17.0-6/metanorma-setup-#{version}-macos-arm64.pkg"
+  # The pkg comes from the packed-metanorma v1.18.6 release.
+  url "https://github.com/metanorma/packed-metanorma/releases/download/v1.18.6/metanorma-setup-#{version}-macos-arm64.pkg"
   name "Metanorma"
   desc "Publishing standards for tomorrow, today"
   homepage "https://www.metanorma.org/"
