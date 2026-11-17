@@ -1,9 +1,9 @@
 cask "metanorma" do
   version "1.18.6"
-  sha256 "721570814d47e93e7887c09d36cf77e85170896b6c7faa4f510eacf13b2c16c0"
+  sha256 "5920fefdb61f92705dfe16a2bc3e0033c998b125a2fddb9ade00e75f81b8aef6"
 
   # The pkg comes from the packed-metanorma v1.18.6 release.
-  url "https://github.com/metanorma/packed-metanorma/releases/download/v1.18.6/metanorma-setup-#{version}-macos-arm64.pkg"
+  url "https://github.com/metanorma/packed-metanorma/releases/download/v1.18.6-1/metanorma-setup-#{version}-macos-arm64.pkg"
   name "Metanorma"
   desc "Publishing standards for tomorrow, today"
   homepage "https://www.metanorma.org/"
